@@ -1,0 +1,56 @@
+/* Contact form (used in Index mode footer). Tokens come from src/index.css. */
+.contact-form, .cf-success { --field-line: #6e72aa; /* >= 3:1 against page (#0e0f1a) and field fill (#161830) */ }
+.contact-form { display: grid; gap: 18px; width: 100%; max-width: 560px; }
+.cf-field { display: grid; gap: 6px; }
+.cf-label { font-family: var(--pixel); font-size: 10px; letter-spacing: 0.02em; color: var(--ink); line-height: 1.6; }
+.cf-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.cf-count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cf-count.is-over { color: #ff8f8f; }
+.contact-form input:not(.cf-hp),
+.contact-form textarea {
+  width: 100%; min-height: 48px; background: var(--bg-2); color: var(--ink);
+  border: 2px solid var(--field-line); border-radius: 0; padding: 12px 14px; font: inherit; font-size: 16px; line-height: 1.5;
+  scroll-margin-top: 110px; scroll-margin-bottom: 24px;
+}
+.contact-form textarea { min-height: 150px; resize: vertical; }
+.contact-form input:not(.cf-hp):hover,
+.contact-form textarea:hover { border-color: #9296cc; }
+.contact-form input:not(.cf-hp):focus-visible,
+.contact-form textarea:focus-visible,
+.cf-submit:focus-visible,
+.cf-again:focus-visible,
+.cf-success:focus-visible,
+.cf-status a:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px; border-color: var(--accent);
+}
+.contact-form input[aria-invalid='true']:not(.cf-hp),
+.contact-form textarea[aria-invalid='true'] { border-color: #ff8f8f; }
+.cf-error { color: #ff9d9d; font-size: 14px; margin: 0; scroll-margin-top: 110px; }
+.cf-hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+.cf-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cf-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; scroll-margin-top: 110px; }
+.cf-submit {
+  min-height: 48px; min-width: 140px; background: var(--accent); color: var(--bg); border: 0;
+  font-family: var(--pixel); font-size: 10px; padding: 14px 18px; box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.12s; scroll-margin-top: 110px;
+}
+.cf-submit:hover:not([aria-disabled='true']) { transform: translate(-1px, -1px); }
+.cf-submit[aria-disabled='true'] { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+.cf-status { margin: 0; font-size: 15px; color: var(--ink); max-width: 60ch; scroll-margin-top: 110px; }
+.cf-status.is-problem { color: #ffb3b3; }
+.cf-status a { color: var(--accent); text-underline-offset: 3px; }
+.cf-success { border: 2px solid var(--accent); background: var(--bg-2); padding: 22px; max-width: 560px; display: grid; gap: 12px; justify-items: start; scroll-margin-top: 110px; }
+.cf-success h3 { font-size: 20px; margin: 0; }
+.cf-success p { margin: 0; color: var(--muted); }
+.cf-again {
+  min-height: 44px; background: none; border: 2px solid var(--field-line); color: var(--ink);
+  font-family: var(--pixel); font-size: 10px; padding: 12px 14px;
+}
+.cf-again:hover:not([aria-disabled='true']) { border-color: var(--accent); }
+.cf-again[aria-disabled='true'] { opacity: 0.6; cursor: not-allowed; }
+.contact-section { display: grid; gap: 14px; justify-items: start; width: 100%; scroll-margin-top: 90px; }
+.contact-section h2 { margin-bottom: 0; scroll-margin-top: 90px; }
+.contact-section h2:focus { outline: none; }
+@media (max-width: 640px) {
+  .cf-submit { width: 100%; }
+}

@@ -1,0 +1,74 @@
+/* Story HUD. Scoped under .hud so it never collides with index.css. */
+.hud { position: fixed; inset: 0; z-index: 50; pointer-events: none; font-family: var(--sans); color: var(--ink); }
+.hud button, .hud a { pointer-events: auto; }
+
+/* Dark scrim so every label has >= 4.5:1 over any chapter background (even pure white). */
+.hud-bar { background: linear-gradient(rgba(7, 8, 20, 0.92) 0, rgba(7, 8, 20, 0.92) calc(100% - 10px), rgba(7, 8, 20, 0)); padding: 8px 0 14px; }
+.hud-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; padding: 0 14px; }
+.hud-chapter { display: flex; flex-wrap: wrap; gap: 4px 10px; flex: 1 1 auto; min-width: 0; font-family: var(--pixel); font-size: 9px; line-height: 1.6; padding-top: 4px; overflow-wrap: anywhere; }
+.hud-ch { color: var(--hud-accent, var(--accent)); }
+.hud-era { color: var(--ink); }
+.hud-age { color: #c4c2dc; }
+.hud-actions { display: flex; gap: 6px; flex: none; }
+
+.hud-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px; padding: 0 10px;
+  background: #0e0f1a; color: var(--ink); border: 2px solid var(--ink);
+  font-family: var(--pixel); font-size: 9px; line-height: 1;
+}
+.hud-btn[aria-pressed='true'] { border-style: dashed; text-decoration: line-through; }
+.hud-btn:active { background: #ffc857; color: #0e0f1a; border-color: #ffc857; }
+@media (hover: hover) {
+  .hud-btn:hover { background: var(--ink); color: #0e0f1a; }
+  .hud-btn:active { background: #ffc857; color: #0e0f1a; }
+}
+.hud-btn:focus-visible, .hud-link:focus-visible, .hud-dismiss:focus-visible { outline: 3px solid #ffc857; outline-offset: 2px; }
+
+.hud-xp-row { display: flex; align-items: center; gap: 10px; padding: 6px 14px 0; }
+.hud-xp { flex: 1; height: 8px; background: #2a2c4d; border: 1px solid #000; overflow: hidden; }
+.hud-xp i { display: block; height: 100%; background: var(--hud-accent, var(--accent)); transform-origin: left center; transition: transform 0.6s steps(12); }
+.hud-count { font-family: var(--pixel); font-size: 8px; white-space: nowrap; color: var(--ink); }
+
+.hud-toast-zone { position: absolute; right: 14px; top: calc(var(--hud-bar-h, 84px) + 6px); left: 14px; display: flex; justify-content: flex-end; }
+.hud-toast { pointer-events: auto; width: min(100%, 380px); min-width: 0; overflow-wrap: anywhere; background: #161830; border: 3px solid var(--hud-accent, var(--accent)); box-shadow: 5px 5px 0 #000; padding: 12px 14px; display: grid; gap: 6px; animation: hud-pop 0.35s steps(6) both; }
+.hud-toast-kicker { font-family: var(--pixel); font-size: 8px; color: var(--hud-accent, var(--accent)); line-height: 1.6; }
+.hud-toast-title { font-size: 16px; line-height: 1.25; font-weight: 700; }
+.hud-toast-stat { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.hud-toast-stat strong { font-size: 34px; line-height: 1; color: var(--hud-accent, var(--accent)); }
+.hud-toast-stat span { font-size: 13px; color: #c4c2dc; }
+.hud-toast-blurb { font-size: 13px; line-height: 1.4; color: #e2e0f2; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.hud-toast-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; }
+.hud-link { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; color: var(--hud-accent, var(--accent)); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+.hud-dismiss { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; background: #0e0f1a; border: 2px solid var(--ink); font-family: var(--pixel); font-size: 9px; padding: 0 12px; color: var(--ink); }
+.hud-dismiss:active { background: #ffc857; color: #0e0f1a; border-color: #ffc857; }
+@media (hover: hover) {
+  .hud-dismiss:hover { background: var(--ink); color: #0e0f1a; }
+  .hud-link:hover { color: var(--ink); }
+}
+
+/* Tier A = big headline card with glow, B = standard card with a thick accent bar, C = thin compact ping. */
+.hud-tier-A { border-width: 4px; padding: 16px 18px; box-shadow: 5px 5px 0 #000, 0 0 28px color-mix(in srgb, var(--hud-accent, #ffc857) 45%, transparent); }
+.hud-tier-A .hud-toast-stat strong { font-size: 48px; }
+.hud-tier-A .hud-toast-title { font-size: 19px; }
+.hud-tier-B { border-left-width: 12px; }
+.hud-tier-B .hud-toast-kicker::before { content: '\25C6  '; }
+.hud-tier-C { border-width: 2px; box-shadow: 3px 3px 0 #000; padding: 6px 10px; gap: 2px; }
+.hud-tier-C .hud-toast-title { font-size: 13px; }
+.hud-tier-C .hud-toast-stat strong { font-size: 20px; }
+.hud-tier-C .hud-toast-kicker { font-size: 7px; }
+
+@keyframes hud-pop { 0% { transform: translateY(-16px) scale(0.96); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+@media (max-width: 480px) {
+  .hud-top { padding: 0 10px; }
+  .hud-chapter { font-size: 8px; }
+  .hud-btn { padding: 0 8px; font-size: 8px; }
+  .hud-xp-row { padding: 6px 10px 0; }
+  .hud-toast-zone { left: 10px; right: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-toast { animation: none; }
+  .hud-xp i { transition: none; }
+}

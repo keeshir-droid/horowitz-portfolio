@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Storyboard — Risheek Nawka</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0e0f1a; --bg2:#161830; --ink:#f4f1e8; --muted:#9a98b5; --line:#2a2c4d;
+    --c1:#9bbc0f; --c2:#ff5d73; --c3:#4cc9f0; --c4:#ffc857; --c5:#c77dff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 80px; }
+  .px { font-family:'Press Start 2P',monospace; }
+  h1 { font-size: clamp(34px, 7vw, 72px); line-height:1; letter-spacing:-.03em; margin: 12px 0 14px; }
+  h2 { font-size: 30px; margin: 0 0 6px; letter-spacing:-.01em; }
+  h3 { font-size: 18px; margin: 0 0 4px; }
+  p { margin: 0 0 10px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; line-height:1.7; color:var(--accent,var(--c4)); text-transform:uppercase; }
+  .muted { color: var(--muted); }
+  header { padding: 56px 0 28px; }
+  .lede { font-size: clamp(17px,2.2vw,22px); color:#cfcde4; max-width: 60ch; }
+  nav.jump { position: sticky; top:0; z-index: 5; background: linear-gradient(var(--bg) 75%, transparent); padding: 12px 0; display:flex; gap:8px; flex-wrap:wrap; }
+  nav.jump a { text-decoration:none; font-size:13px; border:2px solid var(--line); padding:5px 10px; color:var(--muted); }
+  nav.jump a:hover { color:var(--ink); border-color:var(--ink); }
+
+  .bar { display:flex; height: 46px; margin: 14px 0 4px; border:2px solid var(--line); }
+  .bar a { display:grid; place-items:center; text-decoration:none; color:#0e0f1a; font-size:12px; font-weight:700; overflow:hidden; white-space:nowrap; }
+  .bar-legend { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); }
+
+  section.chapter { margin-top: 72px; padding-top: 12px; border-top: 3px solid var(--accent); }
+  .grid2 { display:grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items:start; margin: 18px 0 22px; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .frame { border:3px solid var(--accent); background: var(--bg2); }
+  .frame svg { display:block; width:100%; height:auto; }
+  .frame figcaption { font-size:12px; color:var(--muted); padding:8px 12px; border-top:2px solid var(--line); }
+  figure { margin:0; }
+  .facts { display:grid; gap: 10px; font-size:14px; }
+  .facts div { border-left: 3px solid var(--accent); padding-left: 12px; }
+  .facts b { display:block; font-family:'Press Start 2P',monospace; font-size:8px; color:var(--accent); margin-bottom:4px; font-weight:400; }
+
+  .scenes { display:grid; gap: 12px; margin-top: 8px; }
+  .scene { background: var(--bg2); border:2px solid var(--line); padding: 14px 16px; display:grid; grid-template-columns: 1fr 150px; gap: 8px 18px; }
+  @media (max-width: 700px) { .scene { grid-template-columns: 1fr; } }
+  .scene h3 small { font-family:'Press Start 2P',monospace; font-size:8px; margin-left:8px; padding:3px 6px; vertical-align:middle; }
+  .t-must { background: var(--c4); color:#0e0f1a; } .t-should { background: var(--c3); color:#0e0f1a; } .t-could { background: var(--line); color: var(--ink); }
+  .scene .row { font-size:14px; color:#cfcde4; }
+  .scene .row b { color: var(--ink); font-weight:700; }
+  .scene .proof { font-size:13px; border:2px dashed var(--accent); padding:8px 10px; align-self:start; }
+  .scene .proof b { display:block; font-family:'Press Start 2P',monospace; font-size:8px; color:var(--accent); margin-bottom:4px; font-weight:400; }
+  .out { margin-top:14px; font-size:14px; color:var(--muted); border-top:2px solid var(--line); padding-top:10px; }
+  .out b { color: var(--accent); }
+
+  /* device mock */
+  .device { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:16px; }
+  .hud { position:relative; height:170px; background:#070814; border:2px solid var(--line); overflow:hidden; }
+  .hud .top { position:absolute; left:10px; right:10px; top:10px; display:flex; justify-content:space-between; font-family:'Press Start 2P',monospace; font-size:7px; color:#cfd8ff; }
+  .hud .xp { position:absolute; left:10px; right:10px; top:28px; height:8px; background:#1d2040; }
+  .hud .xp i { display:block; width:58%; height:100%; background:var(--c4); }
+  .hud .toast { position:absolute; right:10px; bottom:12px; width: 62%; background:#161830; border:2px solid var(--c4); padding:8px 10px; }
+  .hud .toast small { font-family:'Press Start 2P',monospace; font-size:6px; color:var(--c4); display:block; margin-bottom:5px; }
+  .hud .toast strong { font-size:20px; color:var(--c4); display:block; line-height:1.1; }
+  .hud .toast span { font-size:10px; color:var(--muted); }
+  .tiers { display:grid; gap:10px; font-size:14px; }
+  .tiers div { background:var(--bg2); border-left:4px solid var(--c4); padding:10px 12px; }
+  .tiers b { display:block; }
+
+  .bookend { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px; }
+  @media (max-width: 700px) { .bookend { grid-template-columns: 1fr; } }
+  .bookend div { background:var(--bg2); border:2px solid var(--line); padding:14px; font-size:14px; }
+  table { width:100%; border-collapse: collapse; font-size:14px; margin-top:12px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--muted); font-weight:400; }
+  .ask li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Storyboard v1 · Risheek Nawka · Horowitz Academy founding class</p>
+  <h1>Press Start.</h1>
+  <p class="lede">A 6-minute story you play by scrolling. It follows one kid who kept getting called to the stage, hit a wall, and kept building: told as five chapters, each in a different visual language. Every scene ends on the same thing: <b>proof</b>.</p>
+</header>
+
+<nav class="jump" aria-label="Jump to chapter">
+  <a href="#device">The system</a><a href="#ch1">1 Primary</a><a href="#ch2">2 Middle</a><a href="#ch3">3 High school</a><a href="#ch4">4 Builder years</a><a href="#ch5">5 San Francisco</a><a href="#plan">Build plan</a>
+</nav>
+
+<!-- ───────── runtime bar ───────── -->
+<div class="bar" role="img" aria-label="Runtime split by chapter: 8, 8, 35, 42, 7 percent">
+  <a href="#ch1" style="width:8%;background:var(--c1)">1</a>
+  <a href="#ch2" style="width:8%;background:var(--c2)">2</a>
+  <a href="#ch3" style="width:35%;background:var(--c3)">3 · High school · ~2:05</a>
+  <a href="#ch4" style="width:42%;background:var(--c4)">4 · Builder years · ~2:30</a>
+  <a href="#ch5" style="width:7%;background:var(--c5)">5</a>
+</div>
+<div class="bar-legend"><span>0:00 opening (10s) →</span><span>≈ 6:00 → the ask</span></div>
+
+<!-- ───────── the system ───────── -->
+<section id="device" class="chapter" style="--accent:var(--c4)">
+  <p class="eyebrow">The system that holds it together</p>
+  <h2>Every achievement is an “unlock”</h2>
+  <p class="lede">The worlds change completely from chapter to chapter, but the way you earn credit never does. That consistency is what makes a patchwork of media styles feel like one story, and it's how a skimmer gets the facts.</p>
+  <div class="device">
+    <div class="hud" aria-label="Mock of the persistent HUD with an unlock card">
+      <div class="top"><span>CH 4 · AGE 18</span><span>UNLOCKED 17 / 34</span></div>
+      <div class="xp"><i></i></div>
+      <div class="toast"><small>ACHIEVEMENT UNLOCKED</small><strong>$60 → ~$16K</strong><span>Home décor brand · under 6 months</span></div>
+    </div>
+    <div class="tiers">
+      <div><b>Tier A · Headline (its own scene)</b>The big ones: the $60 → $16K brand, the 21 projects, Adobe, the motor thesis, the visa moment, martial-arts gold. The scene dramatizes it and the unlock card lands with the number.</div>
+      <div><b>Tier B · Standard (a beat inside a scene)</b>Honor societies, carbon-neutral project, the pitch. A short moment plus a compact unlock card.</div>
+      <div><b>Tier C · Collected (a quick “ping”)</b>Subject awards, lesson plans, theater and dance. They pop in as a short row, and all of it goes into the trophy case.</div>
+    </div>
+  </div>
+  <div class="facts" style="margin-top:16px">
+    <div><b>PERSISTENT HUD</b>Chapter + age, an XP bar that fills as you unlock things, the unlock count, an always-visible “☰ Index” escape, and mute.</div>
+    <div><b>PROOF CARD</b>Every unlock has: short title, <u>one number</u>, one line, and a “view proof ↗” link (live demo, photo, certificate, article) when we have it.</div>
+    <div><b>TROPHY CASE</b>Everything unlocked collects in a case you can open at any time. It links straight into Index mode, filtered. The story and the Index are one set of data, so they never disagree.</div>
+  </div>
+</section>
+
+<!-- ───────── CHAPTER 1 ───────── -->
+<section id="ch1" class="chapter" style="--accent:var(--c1)">
+  <p class="eyebrow">Chapter 1 · ~0:30 · Primary school</p>
+  <h2>The Walk</h2>
+  <div class="grid2">
+    <figure class="frame">
+      <svg viewBox="0 0 320 180" shape-rendering="crispEdges" role="img" aria-label="Pixel overworld: a kid walks toward a stage; a trophy shelf fills up">
+        <rect width="320" height="180" fill="#9bbc0f"/>
+        <rect y="120" width="320" height="60" fill="#8bac0f"/>
+        <g fill="#306230"><rect x="20" y="96" width="14" height="24"/><rect x="14" y="88" width="26" height="14"/><rect x="60" y="102" width="10" height="18"/><rect x="55" y="96" width="20" height="10"/></g>
+        <rect x="150" y="110" width="150" height="14" fill="#0f380f"/>
+        <rect x="160" y="52" width="130" height="58" fill="#306230"/>
+        <rect x="160" y="52" width="26" height="58" fill="#0f380f"/><rect x="264" y="52" width="26" height="58" fill="#0f380f"/>
+        <rect x="190" y="62" width="70" height="6" fill="#ffd84a"/>
+        <g fill="#0f380f"><rect x="104" y="100" width="10" height="10"/><rect x="106" y="110" width="6" height="12"/><rect x="104" y="122" width="4" height="6"/><rect x="110" y="122" width="4" height="6"/></g>
+        <g fill="#ffd84a"><rect x="198" y="96" width="8" height="12"/><rect x="214" y="90" width="8" height="18"/><rect x="230" y="96" width="8" height="12"/><rect x="246" y="86" width="8" height="22"/></g>
+        <text x="12" y="20" font-family="Press Start 2P" font-size="7" fill="#0f380f">AGE 7 · YEAR 3 OF 6</text>
+      </svg>
+      <figcaption>Key frame: the kid walks right across a Game-Boy-green overworld toward the stage. Each year a ceremony fires and another trophy lands on the shelf.</figcaption>
+    </figure>
+    <div class="facts">
+      <div><b>LOOK</b>Four-shade Game Boy green, 16-bit sprites, tile map, dialogue boxes with typewriter text. It continues straight from the opening, so the screen you pushed into becomes the world.</div>
+      <div><b>SOUND</b>Chiptune walking theme; a small “ta-da” on each award.</div>
+      <div><b>TECH</b>A custom canvas/WebGL sprite engine, tile-map scrolling, a pixel-quantizing post shader, and a dialogue system.</div>
+    </div>
+  </div>
+  <div class="scenes">
+    <article class="scene">
+      <div><h3>The Walk to the Stage <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> the kid walks; each year a name is called, a spotlight snaps on, a trophy lands on the shelf. The shelf visibly fills.</p>
+        <p class="row"><b>Beats:</b> national art win (a framed painting hangs in the gallery tile) → Olympiads and the national science talent search as “gym badges” → an award every single year from Grade 1.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>“An award, every year” counter. Art: a photo/placeholder of the real piece.</div>
+    </article>
+    <article class="scene">
+      <div><h3>Checkmate <small class="t-should">SHOULD</small></h3>
+        <p class="row"><b>On screen:</b> a pixel chess board; the kid's knight takes the last piece; “Best chess player in the school” trophy drops in.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Trophy photo (placeholder until you upload).</div>
+    </article>
+  </div>
+  <p class="out"><b>Transition out →</b> the pixels get bigger and bigger until the whole screen is made of four huge blocks, then it snaps into a character-select screen. (Pixelate shader.)</p>
+</section>
+
+<!-- ───────── CHAPTER 2 ───────── -->
+<section id="ch2" class="chapter" style="--accent:var(--c2)">
+  <p class="eyebrow">Chapter 2 · ~0:30 · Middle school</p>
+  <h2>Choose Your Fighter</h2>
+  <div class="grid2">
+    <figure class="frame">
+      <svg viewBox="0 0 320 180" role="img" aria-label="Fighting-game character select with four portraits">
+        <rect width="320" height="180" fill="#1a0f1f"/>
+        <g font-family="Press Start 2P" font-size="6" fill="#fff">
+          <rect x="30" y="30" width="62" height="62" fill="#ff5d73"/><text x="34" y="106">MARTIAL ARTS</text>
+          <rect x="102" y="30" width="62" height="62" fill="#ffc857"/><text x="106" y="106">STAGE</text>
+          <rect x="174" y="30" width="62" height="62" fill="#4cc9f0"/><text x="178" y="106">COUNCIL</text>
+          <rect x="246" y="30" width="62" height="62" fill="#9bbc0f"/><text x="250" y="106">ROBOTICS</text>
+        </g>
+        <rect x="26" y="26" width="70" height="70" fill="none" stroke="#fff" stroke-width="2"/>
+        <text x="110" y="150" font-family="Press Start 2P" font-size="12" fill="#ff5d73">K.O.</text>
+      </svg>
+      <figcaption>Key frame: a fighting-game character select. Hover or scroll to cycle; each “fighter” plays a 5-second move that proves the achievement.</figcaption>
+    </figure>
+    <div class="facts">
+      <div><b>LOOK</b>Hot arcade colors, diagonal speed lines, big bold fighting-game type, VS splash screens, hit-stop flashes.</div>
+      <div><b>SOUND</b>Select blips, a “round 1 — fight!” sting, a crunchy K.O.</div>
+      <div><b>TECH</b>Shader-driven speed lines and screen shake, an interactive selector (cursor/scroll/keys), per-fighter mini-scenes sharing one layout.</div>
+    </div>
+  </div>
+  <div class="scenes">
+    <article class="scene">
+      <div><h3>Character Select <small class="t-must">MUST</small></h3>
+        <p class="row"><b>Martial arts:</b> a real K.O. and the gold medal drops in. <b>Performing arts:</b> the curtain opens on theater and dance. <b>Student council:</b> a campaign poster and a vote tally, Grade 5 through 10. <b>Robotics:</b> a robot assembles itself and rolls out to “Nationals”.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>“GOLD · international martial arts” (Tier A). “6 yrs on student council”. Robot photo placeholder.</div>
+    </article>
+  </div>
+  <p class="out"><b>Transition out →</b> the K.O. flash whites out the screen; we cut to a cold, quiet platform at night. Loud to silent, on purpose.</p>
+</section>
+
+<!-- ───────── CHAPTER 3 ───────── -->
+<section id="ch3" class="chapter" style="--accent:var(--c3)">
+  <p class="eyebrow">Chapter 3 · ~2:05 · High school</p>
+  <h2>Range</h2>
+  <p class="lede">The widest chapter. The kid is alone at boarding school and gets to try everything, so each scene gets a different medium: letters, guild boards, a living diorama, an engineering diagram, a rhythm game, a comedy special, a terminal.</p>
+  <div class="grid2">
+    <figure class="frame">
+      <svg viewBox="0 0 320 180" role="img" aria-label="Electric motor diagram with magnetic field lines">
+        <rect width="320" height="180" fill="#07142a"/>
+        <circle cx="160" cy="90" r="66" fill="none" stroke="#4cc9f0" stroke-width="2" stroke-dasharray="6 5"/>
+        <g fill="#4cc9f0"><path d="M160 24 a66 66 0 0 1 36 10 l-14 22 a40 40 0 0 0 -22 -6z" opacity=".85"/><path d="M160 156 a66 66 0 0 1 -36 -10 l14 -22 a40 40 0 0 0 22 6z" opacity=".85"/></g>
+        <circle cx="160" cy="90" r="30" fill="#ff5d73"/><circle cx="160" cy="90" r="8" fill="#07142a"/>
+        <g stroke="#ffc857" stroke-width="1.4" fill="none" opacity=".8"><path d="M40 70 C90 40 120 40 160 70"/><path d="M40 110 C90 140 120 140 160 110"/><path d="M280 70 C230 40 200 40 160 70"/><path d="M280 110 C230 140 200 140 160 110"/></g>
+        <text x="12" y="20" font-family="Press Start 2P" font-size="7" fill="#4cc9f0">TORQUE 4.2 N·m · DRAG TO SPIN</text>
+      </svg>
+      <figcaption>Key frame (the technical showpiece): an interactive electric motor with real field lines. You drive it.</figcaption>
+    </figure>
+    <div class="facts">
+      <div><b>LOOK</b>Mixed on purpose: each scene is a different medium, but all share a cool “blue-hour” palette and a quiet, intimate camera, so it reads as one lonely-then-growing stretch of life.</div>
+      <div><b>SOUND</b>Ambient dorm hum, a piano motif that returns in the rhythm game (the fear of music, beaten).</div>
+      <div><b>TECH</b>Physically-based motor sim with GPU particle field lines, instanced 3D diorama, a rhythm engine on the Web Audio clock, a real typed-code terminal.</div>
+    </div>
+  </div>
+  <div class="scenes">
+    <article class="scene">
+      <div><h3>The Platform <small class="t-could">COULD</small></h3>
+        <p class="row"><b>On screen:</b> 10 seconds, almost silent. A suitcase, a night train platform, a lit window far away. “Moved to boarding school.”</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Tier C ping.</div>
+    </article>
+    <article class="scene">
+      <div><h3>The Guild Wall <small class="t-should">SHOULD</small></h3>
+        <p class="row"><b>On screen:</b> a wall of crests that swing into focus: English honor society VP, the first Science National Honor Society chapter board, best-in-subject awards, lesson plans co-designed with teachers.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Each as a crest with the role and wording (exact “first/only” claims to be confirmed).</div>
+    </article>
+    <article class="scene">
+      <div><h3>The Carbon Meter <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> a living miniature campus. As you scroll, the carbon meter drops, solar panels spin up, trees grow, the sky clears. You “run” the flagship carbon-neutral project.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Needs a real number from you (tonnes, people, what changed).</div>
+    </article>
+    <article class="scene">
+      <div><h3>The Motor <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> the thesis made playable: exploded view, drag to spin the rotor, adjust current, watch torque and field lines respond.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>“Thesis: electric motor propulsion” + a thesis page image or PDF link.</div>
+    </article>
+    <article class="scene">
+      <div><h3>Stage Fright <small class="t-should">SHOULD</small></h3>
+        <p class="row"><b>On screen:</b> a rhythm game. At first the notes jitter and the screen shakes (fear). Over the song it steadies and you land a perfect run. Overcoming the fear of music, as a mechanic.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>A real performance clip when you have one.</div>
+    </article>
+    <article class="scene">
+      <div><h3>The Special <small class="t-could">COULD</small></h3>
+        <p class="row"><b>On screen:</b> a spotlight, a mic stand, a comedy-special title card. Lines from the research paper on stand-up comedy appear like subtitles.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Paper cover / excerpt.</div>
+    </article>
+    <article class="scene">
+      <div><h3>Zero AI <small class="t-should">SHOULD</small></h3>
+        <p class="row"><b>On screen:</b> a terminal. Java types itself out, an inventory table updates and the morning/lunch orders flow in for a real local business. Big label: <b>“0 AI. Every line by hand.”</b></p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Business name (if shareable) and how long it ran.</div>
+    </article>
+  </div>
+  <p class="out"><b>Transition out →</b> the terminal's last line is <code>exit(0)</code>. The CRT collapses to a bright dot and goes black. Silence. (Sets up the visa scene.)</p>
+</section>
+
+<!-- ───────── CHAPTER 4 ───────── -->
+<section id="ch4" class="chapter" style="--accent:var(--c4)">
+  <p class="eyebrow">Chapter 4 · ~2:30 · The builder years</p>
+  <h2>Continue?</h2>
+  <p class="lede">The emotional turn, then the evidence. Visually the story leaves the game world: it becomes real, contemporary, and fast, a startup-sim HUD over real feeds and real products.</p>
+  <div class="grid2">
+    <figure class="frame">
+      <svg viewBox="0 0 320 180" role="img" aria-label="Revenue counter over an Instagram-style product grid">
+        <rect width="320" height="180" fill="#14142a"/>
+        <g fill="#2a2c4d"><rect x="14" y="14" width="46" height="46"/><rect x="66" y="14" width="46" height="46"/><rect x="118" y="14" width="46" height="46"/><rect x="14" y="66" width="46" height="46"/><rect x="66" y="66" width="46" height="46"/><rect x="118" y="66" width="46" height="46"/><rect x="14" y="118" width="46" height="46"/><rect x="66" y="118" width="46" height="46"/><rect x="118" y="118" width="46" height="46"/></g>
+        <g fill="#ffc857" opacity=".9"><rect x="66" y="66" width="46" height="46"/></g>
+        <text x="180" y="70" font-family="Press Start 2P" font-size="8" fill="#9a98b5">REVENUE</text>
+        <text x="180" y="104" font-family="Space Grotesk" font-weight="700" font-size="30" fill="#ffc857">$16,000</text>
+        <text x="180" y="130" font-family="Press Start 2P" font-size="6" fill="#9a98b5">FROM $60 · &lt; 6 MONTHS</text>
+      </svg>
+      <figcaption>Key frame: the home décor feed on one side, the counter ticking from $60 up to ~$16K on the other, each sale pinging in.</figcaption>
+    </figure>
+    <div class="facts">
+      <div><b>LOOK</b>Modern product UI: phone mockups, feed grids, live counters, warm amber accents. Fewer “game” textures, more real screens. The world finally feels like now.</div>
+      <div><b>SOUND</b>The silence breaks into a driving, minimal beat; sale “pings” are rhythm.</div>
+      <div><b>TECH</b>Real-time data-viz counters, an embedded interactive project grid, a split-screen AI-variant generator demo, verlet-physics lanyard.</div>
+    </div>
+  </div>
+  <div class="scenes">
+    <article class="scene">
+      <div><h3>Continue? 9…8…7 <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> an acceptance letter from a top-30 US university slides in, a quiet beat… then the visa says no. Screen to black. “CONTINUE?” with a 9-second countdown. You press the key. That press is the accelerator.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Wording only (university named only if you want it).</div>
+    </article>
+    <article class="scene">
+      <div><h3>$60 → $16K <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> the home décor brand. The counter climbs as sales ping in; a line draws under it, “under six months, ~$60 to start”. Investors notice (a small “attention” gauge).</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>The number, product shots, and a dashboard screenshot if you're comfortable sharing it.</div>
+    </article>
+    <article class="scene">
+      <div><h3>The Pitch <small class="t-should">SHOULD</small></h3>
+        <p class="row"><b>On screen:</b> Instagram and LinkedIn posts scroll past, then the feed folds into a stage and a spotlight. “Content got a top Indian investor to the accelerator, and I pitched.”</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Post screenshots; investor named only if confirmed.</div>
+    </article>
+    <article class="scene">
+      <div><h3>Gotta Ship ’Em All <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> the 21-in-21 Pokédex. 21 capsules, 7 open and playable (Handwriting Font, Doodle Alive, Pocket Booth…), 14 silhouettes with a day counter. Click one and the live project opens. It calls back to the Game Boy from scene one.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Live links to each shipped project (“7 / 21”, updating as you ship).</div>
+    </article>
+    <article class="scene">
+      <div><h3>Test the Idea <small class="t-should">SHOULD</small></h3>
+        <p class="row"><b>On screen:</b> a split screen. Type an idea → AI generates variants → synthetic customers vote with bars → winner. Then the end-to-end ad automation turns a product photo into a finished ad.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>A live demo or screen recording.</div>
+    </article>
+    <article class="scene">
+      <div><h3>Badge &amp; Whiteboard <small class="t-could">COULD</small></h3>
+        <p class="row"><b>On screen:</b> a conference lanyard that swings with physics, the badge reads “Youngest attendee, Product Folks Unconference 2025”. Then a whiteboard where the prototyping framework draws itself, and the class you taught fills with students.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Badge wording (to confirm), student count.</div>
+    </article>
+    <article class="scene">
+      <div><h3>The Pet-Care Brand <small class="t-could">COULD</small></h3>
+        <p class="row"><b>On screen:</b> a product reveal with a gentle diagram of the prebiotic helping digestion.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>Product shots + brand name.</div>
+    </article>
+  </div>
+  <p class="out"><b>Transition out →</b> the camera pulls back <i>out of</i> your laptop screen and through a window, the mirror of the opening. We were inside the screen; now we're outside the window, in San Francisco.</p>
+</section>
+
+<!-- ───────── CHAPTER 5 ───────── -->
+<section id="ch5" class="chapter" style="--accent:var(--c5)">
+  <p class="eyebrow">Chapter 5 · ~0:25 · San Francisco</p>
+  <h2>The Ask</h2>
+  <div class="grid2">
+    <figure class="frame">
+      <svg viewBox="0 0 320 180" role="img" aria-label="Golden hour skyline with a bridge silhouette">
+        <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1f5e"/><stop offset=".6" stop-color="#ff8a5c"/><stop offset="1" stop-color="#ffc857"/></linearGradient></defs>
+        <rect width="320" height="180" fill="url(#sky)"/>
+        <circle cx="240" cy="110" r="26" fill="#ffe8a3"/>
+        <g fill="#1a1030"><rect x="0" y="130" width="320" height="50"/><rect x="20" y="96" width="22" height="40"/><rect x="48" y="80" width="18" height="56"/><rect x="72" y="104" width="26" height="32"/><rect x="104" y="88" width="16" height="48"/>
+        <rect x="150" y="104" width="4" height="30"/><rect x="250" y="104" width="4" height="30"/>
+        <path d="M130 134 Q202 96 270 134" stroke="#1a1030" stroke-width="3" fill="none"/></g>
+        <text x="14" y="26" font-family="Press Start 2P" font-size="7" fill="#fff">FOUNDING CLASS</text>
+      </svg>
+      <figcaption>Key frame: golden hour. The camera rises over an original skyline and settles on the final card.</figcaption>
+    </figure>
+    <div class="facts">
+      <div><b>LOOK</b>Warm, hopeful golden hour after cool blues. Calm, wide, uncluttered.</div>
+      <div><b>SOUND</b>The Game Boy chime returns, played as a full, warm chord.</div>
+      <div><b>TECH</b>Procedural skyline, a real-time sky/sun shader, a camera crane move.</div>
+    </div>
+  </div>
+  <div class="scenes">
+    <article class="scene">
+      <div><h3>The City &amp; the Card <small class="t-must">MUST</small></h3>
+        <p class="row"><b>On screen:</b> invited to San Francisco, consulting for Adobe on Firefly go-to-market and how consumers in India use AI in creative workflows. Then the final screen: “Do you want to save your progress?” → the trophy case (“34 achievements unlocked”), the contact form, the Index, and the ask.</p></div>
+      <div class="proof"><b>PROOF SHOWN</b>“Adobe · Firefly GTM, India” (Tier A, wording to confirm). Contact form, GitHub, LinkedIn, Instagram.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ───────── bookend + plan ───────── -->
+<section id="plan" class="chapter" style="--accent:var(--c4)">
+  <p class="eyebrow">Why it feels like one story</p>
+  <h2>Three devices that tie it together</h2>
+  <div class="bookend">
+    <div><b>The bookend.</b> We open by going <i>into</i> a Game Boy screen. We close by coming <i>out of</i> a laptop screen into the real city. The kid you started with becomes the person you are now.</div>
+    <div><b>The echoes.</b> The Game Boy chime returns as a chord. The “gym badges” return as the 21-project Pokédex. The stage and the spotlight from Chapter 1 return at the pitch.</div>
+  </div>
+
+  <h2 style="margin-top:40px">Build plan: 3-day sprint through the agents</h2>
+  <table>
+    <tr><th>DAY</th><th>CINEMATIC AGENTS</th><th>FRONTEND AGENTS</th><th>BACKEND AGENTS</th></tr>
+    <tr><td>1</td><td>Shared Story engine: scene contract, timeline, unlock system + HUD, pixelate transition. Ch1 Walk.</td><td>Index polish and mobile pass; entry detail; trophy case UI.</td><td>Contact form + silent visit recording.</td></tr>
+    <tr><td>2</td><td>Ch2 select, Ch3 Motor + Carbon Meter, then Guild Wall / Rhythm / Zero AI.</td><td>Contact form UI, loading/fallback states, accessibility pass.</td><td>Verify, deploy config, smoke test.</td></tr>
+    <tr><td>3</td><td>Ch4 Continue, Revenue, Pokédex; Ch5; then Pitch / Test the Idea if time allows.</td><td>Final responsive + performance pass.</td><td>Done by day 2; reviews only.</td></tr>
+  </table>
+  <p class="muted" style="margin-top:10px">Every scene goes build → independent verify → integrate → verify again. <span class="t-must px" style="font-size:8px;padding:3px 6px">MUST</span> scenes first; <span class="t-should px" style="font-size:8px;padding:3px 6px">SHOULD</span> next; <span class="t-could px" style="font-size:8px;padding:3px 6px">COULD</span> only if time is left. If a day slips, we drop COULDs, never the ones that carry the proof.</p>
+
+  <h2 style="margin-top:40px">What I still need from you</h2>
+  <ul class="ask">
+    <li><b>Numbers:</b> the carbon-neutral project result, the prototyping class size, how long the Java system ran.</li>
+    <li><b>Confirm wording:</b> the two honor-society claims (“only/first in the country”), the investor's name or anonymous, Adobe/Firefly, “youngest at the Unconference”.</li>
+    <li><b>Media</b> when you're ready (trophies, medals, robot, products, pitch, dashboard). Until then the proof slots show labelled placeholders.</li>
+    <li><b>Sound:</b> yes or no? The Game Boy chime and the chord at the end are a big part of the bookend.</li>
+    <li><b>Your reaction:</b> anything here that doesn't feel like you, any scene you'd cut, any you'd add.</li>
+  </ul>
+</section>
+
+</div>
+</body>
+</html>

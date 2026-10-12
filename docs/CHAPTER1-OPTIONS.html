@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 1 options — A, B, C</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0e0f1a; --bg2:#161830; --ink:#f4f1e8; --muted:#9a98b5; --line:#2a2c4d; --gold:#ffc857; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width:1000px; margin:0 auto; padding:0 20px 80px; }
+  h1 { font-size:clamp(30px,6vw,56px); line-height:1; letter-spacing:-.03em; margin:12px 0; }
+  h2 { font-size:28px; margin:0 0 4px; }
+  p { margin:0 0 10px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; line-height:1.7; color:var(--gold); text-transform:uppercase; }
+  .muted { color:var(--muted); }
+  header { padding:48px 0 16px; }
+  .note { background:var(--bg2); border-left:4px solid var(--gold); padding:12px 14px; margin:16px 0; font-size:15px; }
+  section.opt { margin-top:56px; padding-top:14px; border-top:3px solid var(--gold); }
+  .frame { border:4px solid #000; background:#000; box-shadow:0 0 0 2px var(--line); margin:14px 0; }
+  .frame svg { display:block; width:100%; height:auto; image-rendering:pixelated; }
+  .cols { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px; }
+  @media (max-width:760px){ .cols{grid-template-columns:1fr;} }
+  .cols div { background:var(--bg2); padding:12px 14px; font-size:14px; border-top:3px solid var(--line); }
+  .cols b { display:block; font-family:'Press Start 2P',monospace; font-size:8px; color:var(--gold); margin-bottom:6px; font-weight:400; }
+  .badge { display:inline-block; font-family:'Press Start 2P',monospace; font-size:9px; padding:5px 8px; background:var(--gold); color:#0e0f1a; margin-left:10px; vertical-align:middle; }
+  table { width:100%; border-collapse:collapse; font-size:14px; margin-top:10px; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--muted); font-weight:400; }
+  .strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  @media (max-width:760px){ .strip{grid-template-columns:1fr;} }
+  .swatches { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+  .swatches i { width:34px; height:34px; border:2px solid #000; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Chapter 1 · three options to pick from</p>
+  <h1>A, B or C</h1>
+  <p class="muted" style="max-width:62ch">These are quick concept frames, <b>not</b> the real build. They show roughly how each option would look and feel so you can choose. The final art will be tidier. In every option: colour, a Pokémon Red-style text box for each win, and a clear break into Chapter 2.</p>
+  <div class="note">All art here is original. The look is “Game Boy Color-era top-down RPG”, not copied from any game. The kid is shown as short hair, round glasses, brown skin, a black jacket, a white tee, jeans and white sneakers. No uniform.</div>
+</header>
+
+<!-- ───────── A ───────── -->
+<section class="opt" id="a">
+  <p class="eyebrow">Option A</p>
+  <h2>Recolour the side view <span class="badge">CHEAPEST</span></h2>
+  <p class="muted">Keep the current side-scrolling street. Add colour, the text boxes and a Chapter 2 title card.</p>
+  <figure class="frame" style="margin:14px 0"><svg id="svgA" viewBox="0 0 160 144" shape-rendering="crispEdges" role="img" aria-label="Option A: coloured side-view street with a text box"></svg></figure>
+  <div class="cols">
+    <div><b>FEEL</b>A cosy diorama. You walk left to right past things. Closest to what's already built, so it feels the least “Pokémon”.</div>
+    <div><b>COST</b>About 20–30 min. Roughly a quarter of the last Chapter 1 cycle. Reuses the existing kid, props and shelf with a new palette.</div>
+    <div><b>TRADE-OFF</b>Not top-down. You said you'd like top-down if it works well, and A can't give you that.</div>
+  </div>
+</section>
+
+<!-- ───────── B ───────── -->
+<section class="opt" id="b">
+  <p class="eyebrow">Option B · recommended</p>
+  <h2>Lean top-down town <span class="badge">BEST VALUE</span></h2>
+  <p class="muted">One compact Pokémon-style town seen from above. The kid walks along a path between four spots as you scroll.</p>
+  <figure class="frame"><svg id="svgB" viewBox="0 0 160 144" shape-rendering="crispEdges" role="img" aria-label="Option B: compact top-down town with a text box"></svg></figure>
+  <div class="cols">
+    <div><b>FEEL</b>Immediately reads as “a Pokémon town”. You follow a little loop path: chess board, easel, science kit, robot, then the shelf window.</div>
+    <div><b>COST</b>About 45–60 min. Roughly the last cycle. New tiles and a 3-direction kid (down, up, side).</div>
+    <div><b>TRADE-OFF</b>The world is small, about two screens. It's a charming vignette, not an open map, and that's right for a 15-second chapter.</div>
+  </div>
+</section>
+
+<!-- ───────── C ───────── -->
+<section class="opt" id="c">
+  <p class="eyebrow">Option C</p>
+  <h2>Full scrolling top-down world <span class="badge">MOST COSTLY</span></h2>
+  <p class="muted">A longer map the camera follows (the dashed box is what the viewer sees at once): a school, a stream, fences, other kids.</p>
+  <figure class="frame"><svg id="svgC" viewBox="0 0 320 144" shape-rendering="crispEdges" role="img" aria-label="Option C: wide top-down world with a camera frame"></svg></figure>
+  <div class="cols">
+    <div><b>FEEL</b>Richest and most explorable. More life: NPC kids, a stream with a bridge, a school building.</div>
+    <div><b>COST</b>About 90 min or more. Needs a real tile map, camera follow, NPCs and much more art.</div>
+    <div><b>TRADE-OFF</b>Too much for 15 seconds and for a chapter a16z cares least about. I'd avoid it.</div>
+  </div>
+</section>
+
+<!-- ───────── shared ───────── -->
+<section class="opt" id="shared">
+  <p class="eyebrow">In every option</p>
+  <h2>The Chapter 2 break</h2>
+  <p class="muted">After the last text box the screen flashes and wipes in the “a battle begins” stripe style, then holds on a black title card so nobody misses the change.</p>
+  <div class="strip">
+    <figure class="frame" style="margin:6px 0"><svg id="svgT1" viewBox="0 0 160 144" shape-rendering="crispEdges"></svg></figure>
+    <figure class="frame" style="margin:6px 0"><svg id="svgT2" viewBox="0 0 160 144" shape-rendering="crispEdges"></svg></figure>
+    <figure class="frame" style="margin:6px 0"><svg id="svgT3" viewBox="0 0 160 144" shape-rendering="crispEdges"></svg></figure>
+  </div>
+  <p class="muted" style="text-align:center;font-size:13px">1 · last text box &nbsp;→&nbsp; 2 · stripe wipe &nbsp;→&nbsp; 3 · title card</p>
+
+  <h2 style="margin-top:36px">The win text boxes (draft wording, for your approval)</h2>
+  <table>
+    <tr><th>WIN</th><th>BOX TEXT (2 lines, a few seconds each)</th></tr>
+    <tr><td>Art</td><td>RISHEEK won a national art competition.</td></tr>
+    <tr><td>Olympiads</td><td>RISHEEK won a bunch of academic Olympiads.</td></tr>
+    <tr><td>Science</td><td>RISHEEK placed among the top positions in a national science talent search.</td></tr>
+    <tr><td>Chess</td><td>RISHEEK got the school CHESS TROPHY in Grade 5!</td></tr>
+  </table>
+  <p class="muted" style="margin-top:10px">Short, factual, a little playful, and no fanfare. Click or tap to advance, or they auto-advance after a couple of seconds.</p>
+
+  <h2 style="margin-top:36px">The colour palette (Game Boy Color-style)</h2>
+  <div class="swatches" id="sw"></div>
+</section>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const PAL = { sky:'#8ad1ff', hill:'#6cc08b', grass1:'#78c850', grass2:'#6dbd45', path:'#e8d090', pathD:'#d0b873', water:'#4aa3df', waterL:'#8fd0f5',
+  roofR:'#c8463c', roofRD:'#9e3329', roofB:'#4a6fc8', roofBD:'#3856a0', wall:'#f2e6c4', wallD:'#d8c9a0', door:'#8a5a3a', win:'#ffd84a',
+  tree:'#2f7a3a', treeL:'#4fa24c', trunk:'#6b4a2e', black:'#1a1a2e', white:'#ffffff', skin:'#8a5a3a', jeans:'#3b5fa8', wood:'#a9764a', flowerR:'#ff6b81', flowerY:'#ffd84a', flowerW:'#ffffff', lamp:'#ffd84a', fence:'#e0c9a0' };
+
+function el(svg, tag, attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); svg.appendChild(e); return e; }
+function R(svg,x,y,w,h,c){ return el(svg,'rect',{x,y,width:w,height:h,fill:c}); }
+function T(svg,x,y,s,c,anchor){ const t=el(svg,'text',{x,y,'font-family':'"Press Start 2P",monospace','font-size':s,fill:c,'text-anchor':anchor||'start'}); t.textContent=arguments[5]||''; return t; }
+function text(svg,x,y,size,color,str,anchor){ const t=el(svg,'text',{x,y,'font-family':'"Press Start 2P",monospace','font-size':size,fill:color,'text-anchor':anchor||'start'}); t.textContent=str; return t; }
+
+// sprites (. = transparent)
+const KID_FRONT = [
+ "...KKKKKK...","..KKKKKKKK..","..KSSSSSSK..","..SDLDDLDS..","..KSSSSSSK..","...SSSSSS...",
+ "..KKKKKKKK..",".KKKWWWWKKK.",".KKKKWWKKKK.",".SKKKKKKKKS.",".SKKKKKKKKS.","...BBBBBB...","...BBBBBB...","...BB..BB...","..WWW..WWW..","..WWW..WWW.."];
+const KID_SIDE = [
+ "...KKKK...","..KKKKKK..","..KKKSSS..","..KKSDLS..","..KSSSSS..","...SSSS...",
+ "..KKKKK...",".KKKKKKK..",".KKKWWKK..",".KKKKKKKS.",".KKKKKKK..","..BBBBB...","..BBBBB...","..BB.BB...","..WW.WWW..","..WW.WWW.."];
+const KID_COL = { K:PAL.black, S:PAL.skin, D:'#1a1a2e', L:'#dff4ff', W:PAL.white, B:PAL.jeans };
+function sprite(svg,map,x,y,cols){ map.forEach((row,j)=>{ for(let i=0;i<row.length;i++){ const ch=row[i]; if(ch!=='.') R(svg,x+i,y+j,1,1,cols[ch]); } }); }
+
+function textBox(svg, l1, l2){
+  R(svg,4,98,152,42,'#000'); R(svg,6,100,148,38,'#fff'); R(svg,8,102,144,34,'#000'); R(svg,10,104,140,30,'#fff');
+  text(svg,16,118,6,'#1a1a2e',l1); text(svg,16,130,6,'#1a1a2e',l2);
+  el(svg,'polygon',{points:'142,126 150,126 146,131',fill:'#1a1a2e'});
+}
+function banner(svg,l1,l2){
+  R(svg,4,4,92,22,'#000'); R(svg,6,6,88,18,'#fff'); R(svg,7,7,86,16,'#1a1a2e');
+  text(svg,12,14,5,'#ffd84a',l1); text(svg,12,21,5,'#fff',l2);
+}
+function houseTop(svg,x,y,w,h,roof,roofD){ // top-down house: roof + wall strip with door
+  R(svg,x,y,w,h,roof); for(let i=3;i<h-2;i+=4) R(svg,x+1,y+i,w-2,1,roofD); R(svg,x,y+h-1,w,1,'#000');
+  R(svg,x,y+h,w,9,PAL.wall); R(svg,x,y+h+8,w,1,PAL.wallD);
+  R(svg,x+w/2-3,y+h+2,6,7,PAL.door); R(svg,x+3,y+h+2,5,4,PAL.win); R(svg,x+w-8,y+h+2,5,4,PAL.win);
+}
+function treeTop(svg,x,y,r){ R(svg,x-r,y-r+2,r*2,r*2-2,PAL.tree); R(svg,x-r+2,y-r,r*2-4,r*2,PAL.tree); R(svg,x-r+3,y-r+2,r-1,r-1,PAL.treeL); R(svg,x-1,y+r-1,2,3,PAL.trunk); }
+function grass(svg,w,h){ for(let y=0;y<h;y+=8) for(let x=0;x<w;x+=8) R(svg,x,y,8,8,((x+y)/8)%2?PAL.grass2:PAL.grass1); }
+function flowers(svg,pts){ pts.forEach(([x,y,c])=>{ R(svg,x,y,2,2,c); R(svg,x+1,y+1,1,1,'#fff'); }); }
+function chessTable(svg,x,y){ R(svg,x,y,14,12,'#000'); R(svg,x+1,y+1,12,10,PAL.wood); for(let j=0;j<3;j++)for(let i=0;i<4;i++) if((i+j)%2) R(svg,x+2+i*2.5,y+2+j*2.6,2.5,2.6,'#fff'); else R(svg,x+2+i*2.5,y+2+j*2.6,2.5,2.6,'#3a2a1a'); }
+function easel(svg,x,y){ R(svg,x,y,14,13,'#000'); R(svg,x+1,y+1,12,9,'#fff'); R(svg,x+2,y+2,4,3,'#ff6b81'); R(svg,x+6,y+3,4,3,'#4a6fc8'); R(svg,x+4,y+6,5,3,'#ffd84a'); R(svg,x+2,y+10,2,3,PAL.wood); R(svg,x+10,y+10,2,3,PAL.wood); }
+function sciBench(svg,x,y){ R(svg,x,y,14,10,'#000'); R(svg,x+1,y+1,12,8,'#9aa4c8'); R(svg,x+3,y+2,3,5,'#b6f0ff'); R(svg,x+3,y+5,3,2,'#4adf8a'); R(svg,x+8,y+3,3,4,'#ff6b81'); }
+function robot(svg,x,y){ R(svg,x,y,9,10,'#000'); R(svg,x+1,y+1,7,8,'#c0c6d8'); R(svg,x+2,y+3,2,2,'#ff4d4d'); R(svg,x+5,y+3,2,2,'#ff4d4d'); R(svg,x+3,y+6,3,1,'#555'); R(svg,x+4,y-2,1,2,'#000'); R(svg,x+3,y-3,3,1,'#ffd84a'); }
+
+// ───────── A: coloured side view ─────────
+(function(){ const s=document.getElementById('svgA');
+  R(s,0,0,160,144,PAL.sky); R(s,0,50,160,20,PAL.hill); for(let i=0;i<8;i++) R(s,i*22+4,44+(i%2)*4,18,10,PAL.hill);
+  // buildings
+  function house(x,w,roof,roofD){ R(s,x,40,w,40,PAL.wall); R(s,x-2,34,w+4,8,roof); R(s,x-2,41,w+4,1,roofD); R(s,x+w/2-4,58,8,22,PAL.door); R(s,x+4,48,8,8,PAL.win); R(s,x+w-12,48,8,8,PAL.win); R(s,x,80,w,1,'#000'); }
+  house(4,44,PAL.roofR,PAL.roofRD); house(56,38,PAL.roofB,PAL.roofBD); house(104,50,PAL.roofR,PAL.roofRD);
+  // street + ground
+  R(s,0,81,160,18,PAL.path); R(s,0,81,160,2,PAL.pathD); R(s,0,99,160,45,PAL.grass1);
+  // lamp, props
+  R(s,96,56,2,26,'#444'); R(s,94,54,6,3,PAL.lamp);
+  // chess board prop
+  R(s,108,76,12,6,'#000'); R(s,109,77,10,4,'#fff'); for(let i=0;i<5;i++) R(s,109+i*2,77+(i%2),2,2,'#3a2a1a');
+  sprite(s,KID_SIDE,50,66,KID_COL);
+  textBox(s,'RISHEEK got the','school CHESS TROPHY!');
+  banner(s,'CHAPTER 1','PRIMARY SCHOOL');
+})();
+
+// ───────── B: lean top-down ─────────
+(function(){ const s=document.getElementById('svgB');
+  grass(s,160,144);
+  // paths (loop)
+  R(s,70,26,20,76,PAL.path); R(s,28,60,104,16,PAL.path); R(s,28,60,16,42,PAL.path); R(s,116,60,16,42,PAL.path);
+  R(s,70,26,20,1,PAL.pathD); R(s,28,75,104,1,PAL.pathD);
+  // houses
+  houseTop(s,12,12,36,14,PAL.roofR,PAL.roofRD); houseTop(s,112,12,36,14,PAL.roofB,PAL.roofBD);
+  // pond
+  R(s,6,80,18,12,PAL.water); R(s,9,83,8,2,PAL.waterL);
+  // trees
+  [[10,56],[150,56],[52,34],[108,34],[20,100]].forEach(([x,y])=>treeTop(s,x,y,6));
+  flowers(s,[[40,24,PAL.flowerR],[46,28,PAL.flowerY],[100,22,PAL.flowerW],[96,28,PAL.flowerR],[58,86,PAL.flowerY],[96,84,PAL.flowerR]]);
+  // props on path
+  chessTable(s,36,62); easel(s,108,60); sciBench(s,120,82); robot(s,32,84);
+  // fence
+  for(let i=0;i<8;i++) R(s,56+i*6,92,4,2,PAL.fence);
+  sprite(s,KID_FRONT,74,58,KID_COL);
+  banner(s,'CHAPTER 1','PRIMARY SCHOOL');
+  textBox(s,'RISHEEK got the','school CHESS TROPHY!');
+})();
+
+// ───────── C: wide top-down with camera frame ─────────
+(function(){ const s=document.getElementById('svgC');
+  grass(s,320,144);
+  // stream
+  R(s,196,0,16,144,PAL.water); for(let y=6;y<144;y+=14) R(s,200,y,6,2,PAL.waterL); R(s,194,60,20,14,PAL.wood); R(s,194,62,20,1,'#000'); R(s,194,72,20,1,'#000');
+  // paths
+  R(s,0,60,320,14,PAL.path); R(s,70,20,14,80,PAL.path); R(s,250,40,14,60,PAL.path); R(s,0,74,320,1,PAL.pathD);
+  // school (big)
+  R(s,226,6,70,20,PAL.roofB); for(let i=3;i<18;i+=4) R(s,227,6+i,68,1,PAL.roofBD); R(s,226,26,70,16,PAL.wall); R(s,255,30,12,12,PAL.door); [232,244,272,284].forEach(x=>R(s,x,31,7,7,PAL.win)); R(s,258,0,2,8,'#000'); R(s,260,0,8,5,PAL.flowerR);
+  houseTop(s,10,8,34,14,PAL.roofR,PAL.roofRD); houseTop(s,100,8,34,14,PAL.roofB,PAL.roofBD); houseTop(s,140,8,34,14,PAL.roofR,PAL.roofRD);
+  [[20,50],[60,40],[130,46],[180,100],[300,70],[10,110],[110,110],[236,110]].forEach(([x,y])=>treeTop(s,x,y,6));
+  for(let i=0;i<14;i++) R(s,216+i*6,46,4,2,PAL.fence);
+  flowers(s,[[40,30,PAL.flowerR],[48,34,PAL.flowerY],[150,34,PAL.flowerW],[90,90,PAL.flowerR],[170,86,PAL.flowerY],[150,100,PAL.flowerR],[280,100,PAL.flowerY]]);
+  chessTable(s,30,62); easel(s,100,62); sciBench(s,150,60); robot(s,176,64);
+  // NPC kids
+  const NPC = {K:'#4a6fc8',S:'#e8b48a',D:'#1a1a2e',L:'#dff4ff',W:'#fff',B:'#2a2a4a'}; sprite(s,KID_FRONT,236,64,NPC);
+  const NPC2 = {K:'#ff6b81',S:'#c68a5a',D:'#1a1a2e',L:'#dff4ff',W:'#fff',B:'#3b5fa8'}; sprite(s,KID_FRONT,276,78,NPC2);
+  // lamp posts
+  [[60,56],[160,56],[240,56]].forEach(([x,y])=>{ R(s,x,y,2,10,'#444'); R(s,x-1,y-2,4,3,PAL.lamp); });
+  sprite(s,KID_FRONT,74,58,KID_COL);
+  // camera frame
+  const f=el(s,'rect',{x:2,y:2,width:156,height:140,fill:'none',stroke:'#fff','stroke-width':1.5,'stroke-dasharray':'4 3'});
+  text(s,8,14,5,'#fff','CAMERA FOLLOWS');
+  R(s,168,6,0,0,'#000');
+})();
+
+// ───────── transition strip ─────────
+(function(){
+  let s=document.getElementById('svgT1'); grass(s,160,144); sprite(s,KID_FRONT,74,58,KID_COL); textBox(s,'RISHEEK got the','school CHESS TROPHY!');
+  s=document.getElementById('svgT2'); grass(s,160,144); sprite(s,KID_FRONT,74,58,KID_COL);
+  // stripe wipe: rows slide in alternately from the left and right, with a white leading edge, scene still visible in the middle
+  for(let i=0;i<9;i++){ const h=16, w=70; if(i%2===0){ R(s,0,i*h,w,h,'#000'); R(s,w,i*h,4,h,'#fff'); } else { R(s,160-w,i*h,w,h,'#000'); R(s,160-w-4,i*h,4,h,'#fff'); } }
+  s=document.getElementById('svgT3'); R(s,0,0,160,144,'#000');
+  text(s,80,56,8,'#9a98b5','CHAPTER 2','middle'); text(s,80,80,7,'#ff5d73','CHOOSE YOUR','middle'); text(s,80,92,7,'#ff5d73','FIGHTER','middle'); text(s,80,124,5,'#9a98b5','AGE 11','middle');
+})();
+
+// palette swatches
+(function(){ const sw=document.getElementById('sw'); ['#8ad1ff','#6cc08b','#78c850','#6dbd45','#e8d090','#4aa3df','#c8463c','#4a6fc8','#f2e6c4','#8a5a3a','#2f7a3a','#ffd84a','#1a1a2e','#ffffff'].forEach(c=>{ const i=document.createElement('i'); i.style.background=c; i.title=c; sw.appendChild(i); }); })();
+</script>
+</body>
+</html>
