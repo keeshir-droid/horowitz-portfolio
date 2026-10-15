@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState, useSyncExternalStore } from 'react'
-import { hasSeenIntro, markIntroSeen, replayIntro, useApp } from '../store'
+import { hasSeenIntro, markIntroSeen, prefersReducedMotion, replayIntro, useApp, webglAvailable } from '../store'
 import { person } from '../content/entries'
 import { audio, sfx } from '../story/engine/audio'
 
@@ -115,9 +115,8 @@ function Menu({ visible }: { visible: boolean }) {
 }
 
 export default function Gate() {
-  // Anyone coming back to the menu in-session lands straight on the menu. The opening is plain SVG (no WebGL needed)
-  // and has its own reduced-motion version (still shots with crossfades), so everyone else gets it.
-  const [playCinematic] = useState(() => !hasSeenIntro())
+  // Anyone coming back to the menu in-session, reduced-motion users and no-WebGL devices land straight on the menu.
+  const [playCinematic] = useState(() => !hasSeenIntro() && !prefersReducedMotion() && webglAvailable())
   const [phase, setPhase] = useState<Phase>(playCinematic ? 'cinematic' : 'menu')
   const [ready, setReady] = useState(!playCinematic)
   const [menuIn, setMenuIn] = useState(!playCinematic)
@@ -128,14 +127,14 @@ export default function Gate() {
     setMenuIn(true)
   }, [])
 
-  // Drop the poster from the DOM shortly after the opening's first frame.
+  // Drop the poster from the DOM shortly after the first 3D frame.
   useEffect(() => {
     if (!ready) return
     const id = window.setTimeout(() => setPosterGone(true), 450)
     return () => window.clearTimeout(id)
   }, [ready])
 
-  // If the opening hasn't produced a frame in 4s, don't make anyone wait: show the menu.
+  // If the 3D hasn't produced a frame in 4s, don't make anyone wait: show the menu.
   useEffect(() => {
     if (!playCinematic || ready) return
     const id = window.setTimeout(toMenu, 4000)
