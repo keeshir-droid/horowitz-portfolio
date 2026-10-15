@@ -30,30 +30,14 @@ const TRACKS: { id: TrackId; note: string }[] = [
     id: 'diary',
     note: 'Chapter 3 diary (live): "Uplifting Funny Whistle Folk" by Emmraan (Pixabay): guitar, whistle, claps, 110 bpm',
   },
-  {
-    id: 'diaryAlt1',
-    note: 'runner-up 1: "Happy Clappy Ukulele" by Shane Ivers (CC BY 4.0, needs a footer credit): ukulele, glockenspiel, whistle, claps, 90 bpm',
-  },
-  {
-    id: 'diaryAlt2',
-    note: 'runner-up 2: "Upbeat Acoustic" by Stockaudios (Pixabay): acoustic guitar, claps, glockenspiel, 120 bpm',
-  },
   { id: 'diaryScore', note: 'old procedural diary score (rejected; no longer used, not even as a fallback)' },
   {
     id: 'desk',
     note: 'Chapter 4 family PC (live): "Energetic Funky Groove" by _Music_for_Creators_ (Pixabay): drums, funk bass, clean guitar, 100 bpm',
   },
   {
-    id: 'deskAlt',
-    note: 'Ch4 runner-up: "Jazzy Abstract Beat_Chops" by Coma-Media (Pixabay): minimal jazzy hip-hop beat, 93 bpm',
-  },
-  {
     id: 'city',
     note: 'Chapter 5 San Francisco (live): "Soft Hopeful Piano" by PaulYudin (Pixabay): piano, string/bass swell, C major',
-  },
-  {
-    id: 'cityAlt',
-    note: 'Ch5 runner-up: "Ambient Piano and Strings" by Good_B_Music (Pixabay): slower, lusher strings, 80 bpm',
   },
 ]
 
@@ -441,13 +425,9 @@ export default function AudioDemo() {
         {(
           [
             [{ track: 'diary' }, 'diary-recorded-with-loop-seam.wav'],
-            [{ track: 'diaryAlt1' }, 'diary-alt1-with-loop-seam.wav'],
-            [{ track: 'diaryAlt2' }, 'diary-alt2-with-loop-seam.wav'],
             [{ track: 'diaryScore' }, 'diary-procedural.wav'],
             [{ track: 'desk' }, 'desk-with-loop-seam.wav'],
-            [{ track: 'deskAlt' }, 'desk-alt-with-loop-seam.wav'],
             [{ track: 'city' }, 'city-with-loop-seam.wav'],
-            [{ track: 'cityAlt' }, 'city-alt-with-loop-seam.wav'],
             [{ sfx: 'bootChime' }, 'desk-boot-chime-procedural.wav'],
             [{ sfx: 'warmChord' }, 'city-save-chord-procedural.wav'],
             [{ track: 'town', seconds: 22 }, 'town.wav'],

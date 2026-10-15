@@ -124,3 +124,5 @@ Wikimedia Commons licence as shown on each file page.
 Optional (not required) thanks: Kenney (kenney.nl), Joseph Sardin / BigSoundBank.com, the Freesound CC0 recordists
 (corkob, kyles, jcallison, KittyKatHunter, Unicornaphobist, shogah, BapttX, SoundsofTheMachine), and the Pixabay
 musicians Emmraan, Stockaudios, _Music_for_Creators_ and PaulYudin ("Music by ... from Pixabay").
+
+> **2026-10-15:** the runner-up tracks (`music-diary-alt1/alt2`, `music-desk-alt`, `music-city-alt`) were removed from the site after Risheek kept the main picks. Their rows above are kept for the record; the files are in git history (commit dd6a9bb). Nothing CC BY remains except the lonemonk laugh, which is credited in the Index footer.

@@ -256,7 +256,7 @@ export default function IndexMode() {
           ▶ Play the story
         </button>
         {/* Required by CC BY (see public/audio/CREDITS.md). Everything else in public/audio needs no credit (CC0 /
-            public domain / Pixabay licence). If music-diary-alt1.mp3 is ever swapped in, add its CC BY credit here. */}
+            public domain / Pixabay licence). */}
         <p className="muted small credits">
           Audience laugh: &ldquo;approx-800-laugh-1&rdquo; by lonemonk (
           <a href="https://freesound.org/people/lonemonk/" target="_blank" rel="noreferrer">freesound.org</a>),{' '}

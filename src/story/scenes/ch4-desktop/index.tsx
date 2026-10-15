@@ -264,7 +264,8 @@ export default function Ch4Desktop({ progress: rawProgress, active }: SceneProps
   const sk = useMemo(() => (cityOn && size.w > 1 && size.h > 1 ? buildSkyline(size.w, size.h) : null), [cityOn, size])
 
   return (
-    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+    // isolate: the hand-over city's z-index must stay inside this scene (Ch5 is mounted on top during the crossfade)
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', isolation: 'isolate' }}>
       <div ref={hostRef} style={{ position: 'absolute', inset: 0, overflow: 'hidden', background: '#1b1622' }} role="group" aria-label={ARIA} />
       {sk && (
         <div className="c5-view" style={{ position: 'absolute', inset: 0, zIndex: 45, opacity: cityK, pointerEvents: 'none' }} aria-hidden="true">

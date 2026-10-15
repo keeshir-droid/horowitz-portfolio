@@ -444,12 +444,9 @@ const SAMPLE_FILES = {
   'paper-book-close': 'paper-book-close.mp3',
   'paper-pencil-tick-1': 'paper-pencil-tick-1.mp3',
   'paper-pencil-tick-2': 'paper-pencil-tick-2.mp3',
-  // Ch3 diary music. To swap in a runner-up, change only this filename to 'music-diary-alt1.mp3' or
-  // 'music-diary-alt2.mp3' (all three share the same loop layout; alt1 needs its CC BY credit added to the Index footer).
+  // Ch3 diary music. The auditioned runners-up were removed on 2026-10-15 (Risheek kept the main picks); they are in git
+  // history (commit dd6a9bb) if a swap is ever wanted.
   'music-diary': 'music-diary.mp3',
-  // runners-up, auditioned on /?audio-demo (tracks diaryAlt1 / diaryAlt2); never loaded by the story
-  'music-diary-alt1': 'music-diary-alt1.mp3',
-  'music-diary-alt2': 'music-diary-alt2.mp3',
   // Ch4 (2000s family PC) sound cues (`sfx.desk`): real recordings, see CREDITS.md
   'desk-crt-on': 'desk-crt-on.mp3',
   'desk-boot': 'desk-boot.mp3',
@@ -479,13 +476,9 @@ const SAMPLE_FILES = {
   'city-card': 'city-card.mp3',
   'city-save': 'city-save.mp3',
   'city-saved': 'city-saved.mp3',
-  // Ch4 / Ch5 music. To swap in a runner-up, change only the filename to 'music-desk-alt.mp3' / 'music-city-alt.mp3'
-  // (each file is cut as a whole-bar loop like the diary files, so nothing else changes).
+  // Ch4 / Ch5 music (runners-up removed 2026-10-15, see above).
   'music-desk': 'music-desk.mp3',
   'music-city': 'music-city.mp3',
-  // runners-up, auditioned on /?audio-demo (tracks deskAlt / cityAlt); never loaded by the story
-  'music-desk-alt': 'music-desk-alt.mp3',
-  'music-city-alt': 'music-city-alt.mp3',
 } as const
 export type SampleId = keyof typeof SAMPLE_FILES
 export const SAMPLE_IDS = Object.keys(SAMPLE_FILES) as SampleId[]
@@ -518,8 +511,6 @@ const SAMPLE_GAIN: Record<SampleId, number> = {
   'paper-pencil-tick-1': 0.4,
   'paper-pencil-tick-2': 0.4,
   'music-diary': 0.9,
-  'music-diary-alt1': 0.9,
-  'music-diary-alt2': 0.9,
   // Ch4/Ch5 sfx (peak -3 dBFS files; balanced by ear-free loudness estimates against the Ch2/Ch3 sfx)
   'desk-crt-on': 0.9,
   'desk-boot': 0.5,
@@ -551,8 +542,6 @@ const SAMPLE_GAIN: Record<SampleId, number> = {
   // music files are loudness-matched (-18.5 LUFS), so they share the diary's level
   'music-desk': 0.9,
   'music-city': 0.9,
-  'music-desk-alt': 0.9,
-  'music-city-alt': 0.9,
 }
 
 /** Recorded music files (played on the music bus, not the sfx bus). */
@@ -1712,26 +1701,18 @@ const SAMPLE_TRACKS = {
    * if the file fails, Chapter 3 is silent rather than playing the rejected synth score.
    */
   diary: { sample: 'music-diary', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
-  /** Runner-up 1 (audition only): "Happy Clappy Ukulele" by Shane Ivers, CC BY 4.0. 90 bpm, 38-bar loop (101.3 s). */
-  diaryAlt1: { sample: 'music-diary-alt1', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
-  /** Runner-up 2 (audition only): "Upbeat Acoustic" by Stockaudios, Pixabay licence. 120 bpm, 56-bar loop (112 s). */
-  diaryAlt2: { sample: 'music-diary-alt2', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
   /**
    * Chapter 4 (the family PC): "Energetic Funky Groove" by _Music_for_Creators_ (Pixabay Content License, no credit
    * required). Tight drums, funk bass, clean electric guitar, 100 bpm, sparse midrange so the sale pings sit on top.
    * 28-bar loop (67.2 s) from bar 7 of the original, including its breakdown. No fallback: silent if the file fails.
    */
   desk: { sample: 'music-desk', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
-  /** Ch4 runner-up (audition only): "Jazzy Abstract Beat_Chops" by Coma-Media, Pixabay licence. 93 bpm, 20-bar loop (51.6 s). */
-  deskAlt: { sample: 'music-desk-alt', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
   /**
    * Chapter 5 (San Francisco): "Soft Hopeful Piano" by PaulYudin (Pixabay Content License, no credit required). Piano
    * ostinato with a low string/bass swell and light percussion, C major, ~105 bpm; 40-bar loop (91.1 s) from bar 5
    * (the build and the full section). C major matches the SAVE chord (`sfx.city('chord')`). No fallback.
    */
   city: { sample: 'music-city', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
-  /** Ch5 runner-up (audition only): "Ambient Piano and Strings" by Good_B_Music, Pixabay licence. 80 bpm, 32-bar loop (96 s). */
-  cityAlt: { sample: 'music-city-alt', loopStart: 0, loopEnd: 0, xfade: DIARY_XFADE, fallback: null },
 } satisfies Record<string, SampleTrack>
 type SampleTrackId = keyof typeof SAMPLE_TRACKS
 

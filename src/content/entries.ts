@@ -341,6 +341,15 @@ export const entries: Entry[] = [
 
   // ───────────── Chapter 5 · San Francisco ─────────────
   {
+    id: 'berkeley-summer',
+    chapter: 5,
+    title: 'UC Berkeley summer session: film and business',
+    blurb:
+      'Spent a couple of months in the Bay Area for the UC Berkeley summer session, studying film and business. While there I joined build sessions and consulted for Adobe.',
+    category: 'Education',
+    scene: 'ch5-sf',
+  },
+  {
     id: 'adobe',
     chapter: 5,
     title: 'Consulted for Adobe in San Francisco',

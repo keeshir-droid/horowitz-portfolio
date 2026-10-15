@@ -12,7 +12,7 @@ import { SAMPLE_SETS, audio, music, sfx } from '../../engine/audio'
 import type { SceneProps } from '../../engine/types'
 import { getEntry, unlock, unlockGroup, useUnlocks } from '../../engine/unlocks'
 import City, { type CityFrame } from './City'
-import { ACHIEVEMENT_COUNT, COPY, CUES, DUR, ENTRY_IDS, SAFE_TOP, SUN, SUN_DROP, T, UNLOCK_AT, safeBottom } from './config'
+import { ACHIEVEMENT_COUNT, COPY, CUES, DUR, SAFE_TOP, SUN, SUN_DROP, T, UNLOCK_AT, UNLOCKS, safeBottom } from './config'
 import { buildSkyline } from './skyline'
 import './city.css'
 
@@ -91,17 +91,27 @@ const onIndex = (e: MouseEvent<HTMLAnchorElement>): void => {
   useApp.getState().setMode('index')
 }
 
-/** Phone = the compact group card (like Chapter 3), wider screens = the entry's own headline card. */
-function unlockScene(compact: boolean): void {
-  if (!ENTRY_IDS.length) return
-  if (compact) unlockGroup(ENTRY_IDS, ENTRY_IDS.map((id) => getEntry(id)?.title ?? id).join(' · '))
-  else for (const id of ENTRY_IDS) unlock(id)
+/** Phone = the compact single-line card (like Chapter 3), wider screens = the entry's own card. */
+function unlockOne(id: string, compact: boolean): void {
+  if (compact) unlockGroup([id], getEntry(id)?.title ?? id)
+  else unlock(id)
 }
 
 const ADOBE = getEntry('adobe')
+const BERKELEY = getEntry('berkeley-summer')
 const ERA = chapters[5].era
 
-const ARIA = `Chapter 5, ${ERA}: a golden-hour view over the bay. ${ADOBE ? `${ADOBE.title}. ` : ''}${ACHIEVEMENT_COUNT} ${COPY.unlocked.toLowerCase()}.`
+/** The three lines of the Bay Area card. */
+const LINES: readonly { head: string; sub?: string }[] = [
+  { head: 'UC Berkeley summer session', sub: BERKELEY ? 'Studied film and business.' : undefined },
+  { head: COPY.buildSessions },
+  {
+    head: ADOBE?.title ?? 'Consulted for Adobe',
+    sub: 'Firefly go-to-market and competitive analysis for India.',
+  },
+]
+
+const ARIA = `Chapter 5, ${ERA}: a golden-hour view over the bay. ${LINES.map((l) => l.head).join('. ')}. ${ACHIEVEMENT_COUNT} ${COPY.unlocked.toLowerCase()}.`
 
 type SavePhase = 'ask' | 'yes' | 'saving' | 'saved'
 
@@ -173,11 +183,14 @@ export default function Ch5City({ progress: rawProgress, active }: SceneProps) {
   }, [active])
 
   // ── unlock: idempotent, never while inactive; deep links past the moment unlock too ──
-  const unlocked = useRef(false)
+  const unlocked = useRef(new Set<string>())
   useEffect(() => {
-    if (!active || unlocked.current || t < UNLOCK_AT || size.w < 1) return
-    unlocked.current = true
-    unlockScene(compact)
+    if (!active || t < UNLOCK_AT || size.w < 1) return
+    for (const u of UNLOCKS) {
+      if (t < u.t || unlocked.current.has(u.id)) continue
+      unlocked.current.add(u.id)
+      unlockOne(u.id, compact)
+    }
   }, [active, t, compact, size.w])
 
   // ── sound cues: forward crossings only, small steps only, each fired once ──
@@ -231,13 +244,23 @@ export default function Ch5City({ progress: rawProgress, active }: SceneProps) {
         {sk && <City sk={sk} fr={fr} />}
       </div>
 
-      {/* the Adobe card: proof of the chapter, wording from src/content/entries.ts */}
-      {ADOBE && card > 0.001 && (
+      {/* the Bay Area card: the chapter's proof; each line's wording comes from src/content/entries.ts */}
+      {card > 0.001 && (
         <div className="c5-safe" style={{ top: SAFE_TOP, bottom }} aria-hidden="true">
           <article className="c5-card" style={{ opacity: card, transform: `translateY(${cardRise.toFixed(1)}px)` }}>
             <p className="c5-card-eyebrow">{ERA.toUpperCase()}</p>
-            <h2 className="c5-card-title">{ADOBE.title}</h2>
-            <p className="c5-card-blurb">{ADOBE.blurb}</p>
+            <h2 className="c5-card-title">{COPY.bayTitle}</h2>
+            <ul className="c5-card-list">
+              {LINES.map((ln, k) => {
+                const a = reduced ? 1 : easeOut(seg(t, T.lines[k], T.lines[k] + 0.5))
+                return (
+                  <li key={k} style={{ opacity: a, transform: `translateY(${((1 - a) * 8).toFixed(1)}px)` }}>
+                    <strong>{ln.head}</strong>
+                    {ln.sub && <span>{ln.sub}</span>}
+                  </li>
+                )
+              })}
+            </ul>
           </article>
         </div>
       )}

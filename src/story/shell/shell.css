@@ -5,7 +5,7 @@ html.story-active body { overflow-x: hidden; }
 .story-root { position: relative; }
 .story-spacer { width: 1px; pointer-events: none; }
 .story-stage { position: fixed; inset: 0; z-index: 1; overflow: hidden; background: var(--bg); }
-.story-layer { position: absolute; inset: 0; }
+.story-layer { position: absolute; inset: 0; isolation: isolate; } /* each scene is its own stacking context: z-indexes never leak between crossfading scenes */
 .story-loading { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--pixel); font-size: 12px; color: var(--ink); }
 .story-fatal { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
 .story-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

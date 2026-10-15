@@ -6,7 +6,7 @@ import IndexMode from './index-mode/IndexMode'
 import AppBoundary from './AppBoundary'
 import { clearReloadGuard } from './chunkGuard'
 
-// Story mode pulls in three.js scenes; keep it out of the Index bundle.
+// Story mode pulls in the heavy scene code; keep it out of the Index bundle.
 const StoryMode = lazy(() => import('./story/StoryMode'))
 // Dev-only engine harness (?engine-demo). The DEV guard is statically false in production, so this is tree-shaken.
 const DemoHarness = import.meta.env.DEV ? lazy(() => import('./story/engine/DemoHarness')) : null

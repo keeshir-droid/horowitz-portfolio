@@ -9,6 +9,7 @@ export type Category =
   | 'Teaching'
   | 'Art'
   | 'Consulting'
+  | 'Education'
 
 export interface Chapter {
   id: ChapterId

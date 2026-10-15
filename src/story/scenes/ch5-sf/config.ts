@@ -4,7 +4,7 @@
  *
  *   0          first frame = Chapter 4's last frame (its camera pushed through the window into this sky)
  *   CRANE      the camera cranes up over the bay: towers and the bridge rise into view, the sun lowers, lights come on
- *   CARD       the Adobe card rises in (the chapter's proof; unlocks `adobe`)
+ *   CARD       the Bay Area card: UC Berkeley summer session, build sessions, consulting for Adobe (unlocks both)
  *   SAVE       a Game Boy dialog: "Do you want to save your progress?" ▶YES blinks, SAVING…, PROGRESS SAVED.
  *   FINAL      "<N> ACHIEVEMENTS UNLOCKED", the ask, and the contact buttons; it stays up to the end of the scroll
  */
@@ -28,31 +28,37 @@ export const T = {
   sun: [0, DUR] as const,
   /** Window lights switch on one by one. */
   lights: [2.2, 9.5] as const,
-  /** Adobe card: rises in, holds, fades out. */
-  cardIn: [1.3, 2.0] as const,
-  cardOut: [5.6, 6.1] as const,
+  /** The Bay Area card: rises in, its three lines appear one by one, holds, fades out. */
+  cardIn: [1.0, 1.6] as const,
+  lines: [1.4, 2.5, 3.6] as const,
+  cardOut: [6.6, 7.0] as const,
   /** Save dialog. */
-  saveIn: [6.1, 6.4] as const,
+  saveIn: [7.0, 7.3] as const,
   /** ▶YES blinks (selected), then SAVING…, then PROGRESS SAVED. */
-  yes: [6.9, 7.6] as const,
-  saving: [7.6, 8.2] as const,
-  saved: 8.2,
-  saveOut: [8.75, 9.0] as const,
+  yes: [7.7, 8.3] as const,
+  saving: [8.3, 8.8] as const,
+  saved: 8.8,
+  saveOut: [9.3, 9.5] as const,
   /** The final screen (darkening + text + buttons), then holds to DUR. */
-  finalIn: [8.8, 9.6] as const,
+  finalIn: [9.35, 10.1] as const,
 } as const
 
 /** Unlock time for this scene's entries (forward or deep link: everything up to the current time). */
 export const UNLOCK_AT = 1.6
+/** Each entry unlocks as its line appears on the Bay Area card. */
+export const UNLOCKS: readonly { t: number; id: string }[] = [
+  { t: 1.7, id: 'berkeley-summer' },
+  { t: 3.9, id: 'adobe' },
+]
 
 export type CueName = 'whoosh' | 'card' | 'save' | 'saved' | 'chord'
 /** Sound cues, fired once when scrolling forward past them. */
 export const CUES: readonly { t: number; cue: CueName }[] = [
   { t: 0.2, cue: 'whoosh' },
-  { t: 1.4, cue: 'card' },
-  { t: 6.15, cue: 'save' },
-  { t: 8.2, cue: 'saved' },
-  { t: 8.9, cue: 'chord' },
+  { t: 1.1, cue: 'card' },
+  { t: 7.05, cue: 'save' },
+  { t: 8.8, cue: 'saved' },
+  { t: 9.45, cue: 'chord' },
 ]
 
 /** Space kept clear for the story HUD bar (top) and the chapter dock (bottom), CSS px (same as Chapters 2 and 3). */
@@ -85,4 +91,7 @@ export const COPY = {
   saved: 'PROGRESS SAVED.',
   unlocked: 'ACHIEVEMENTS UNLOCKED',
   ask: 'Next level: the Horowitz Academy founding class.',
+  /** The Bay Area card (Risheek, 2026-10-15). The lines themselves come from the entries. */
+  bayTitle: 'A couple of months in the Bay Area',
+  buildSessions: 'Build sessions',
 } as const
