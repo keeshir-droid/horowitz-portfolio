@@ -8,16 +8,20 @@ import './hud.css'
 
 export interface HudProps {
   chapter: ChapterId
-  /** Placeholder until the age beats are decided; shown as "AGE --" when omitted. */
+  /** Optional age label; nothing is shown when omitted. */
   age?: number | string
   /** Debug/verification: never auto-dismiss toasts (still dismissable by button/Escape). */
   pinToast?: boolean
 }
 
-const TOAST_MS: Record<Tier, number> = { A: 6500, B: 4800, C: 2600 }
-const PROOF_MS = 9000
+// Short on purpose: scenes carry their own captions, the card is a quick "+1" (Risheek, 2026-10-15: cards lingered,
+// queued up behind each other and covered the scenes).
+const TOAST_MS: Record<Tier, number> = { A: 4200, B: 3400, C: 2400 }
+const PROOF_MS = 6000
 /** A combined group card holds a long line of text. */
-const GROUP_MS = 6500
+const GROUP_MS = 3800
+/** While more cards are waiting, each one only gets this long so the queue never lags behind the story. */
+const BACKLOG_MS = 1600
 /** After a pause, never dismiss sooner than this so the viewer can still read/click. */
 const MIN_RESUME_MS = 1500
 
@@ -26,6 +30,11 @@ export default function Hud({ chapter, age, pinToast }: HudProps) {
   const count = useUnlocks(selectUnlockedCount)
   const toastId = useUnlocks((s) => s.toastQueue[0])
   const shiftToast = useUnlocks((s) => s.shiftToast)
+  const backlog = useUnlocks((s) => s.toastQueue.length > 1)
+  // Entering a new chapter drops cards still queued from earlier chapters.
+  useEffect(() => {
+    useUnlocks.getState().dropBefore(chapter)
+  }, [chapter])
   const muted = useSyncExternalStore(audio.subscribe, audio.isMuted, () => false)
   // The toast sits just under the top bar (never over the bottom dock or its SKIP button); follow the bar's real height.
   const hudRef = useRef<HTMLDivElement>(null)
@@ -58,10 +67,9 @@ export default function Hud({ chapter, age, pinToast }: HudProps) {
   useEffect(() => {
     if (!toastId) return
     remaining.current = hasProof ? PROOF_MS : isGroup ? GROUP_MS : TOAST_MS[tier]
-    if (tier === 'A') {
-      sfx.tada(4)
-      sfx.applause(2.2)
-    } else if (tier === 'B') sfx.tada(1)
+    // No applause here: scenes play their own crowd sounds where a crowd actually exists.
+    if (tier === 'A') sfx.tada(4)
+    else if (tier === 'B') sfx.tada(1)
     else sfx.coin()
   }, [toastId, hasProof, tier, isGroup])
 
@@ -69,12 +77,13 @@ export default function Hud({ chapter, age, pinToast }: HudProps) {
   useEffect(() => {
     if (!toastId || pinToast || hold) return
     const started = performance.now()
+    if (backlog) remaining.current = Math.min(remaining.current, BACKLOG_MS)
     const t = window.setTimeout(shiftToast, Math.max(MIN_RESUME_MS, remaining.current))
     return () => {
       window.clearTimeout(t)
       remaining.current = Math.max(MIN_RESUME_MS, remaining.current - (performance.now() - started))
     }
-  }, [toastId, pinToast, hold, shiftToast])
+  }, [toastId, pinToast, hold, shiftToast, backlog])
 
   // Escape dismisses the front toast from anywhere, but only while one is visible.
   useEffect(() => {
@@ -93,7 +102,7 @@ export default function Hud({ chapter, age, pinToast }: HudProps) {
           <div className="hud-chapter">
             <span className="hud-ch">CH {chapter}</span>
             <span className="hud-era">{ch.era.toUpperCase()}</span>
-            <span className="hud-age">AGE {age ?? '--'}</span>
+            {age !== undefined && <span className="hud-age">AGE {age}</span>}
           </div>
           <div className="hud-actions">
             <button
@@ -174,7 +183,6 @@ export default function Hud({ chapter, age, pinToast }: HudProps) {
                 <span>{entry.stat.label}</span>
               </p>
             )}
-            {tier !== 'C' && <p className="hud-toast-blurb">{entry.blurb}</p>}
             <div className="hud-toast-actions">
               {entry.links?.[0] && (
                 <a className="hud-link" href={entry.links[0].href} target="_blank" rel="noreferrer">

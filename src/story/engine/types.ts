@@ -11,6 +11,11 @@ export interface SceneMeta {
   entryIds: string[]
   /** Optional sort key inside the chapter (ascending; ties and missing values fall back to the folder name). */
   order?: number
+  /**
+   * Enter this scene with a crossfade instead of the cross-chapter pixelate (for a chapter that continues the previous
+   * one's camera move, e.g. Ch4's push through the window into Ch5's city).
+   */
+  softEntry?: boolean
 }
 
 /** Props every scene component receives. Scenes are pure of global state. */

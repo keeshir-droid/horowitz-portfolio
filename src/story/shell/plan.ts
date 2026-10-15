@@ -14,6 +14,11 @@ export const PX_PER_SECOND = 100
 const DEFAULT_SECONDS_PER_WEIGHT = 3.6 // 360 s story / 100 weight units
 /** Half-width of a transition zone in total progress (zone = 4%), clamped to 40% of each neighbouring slot. */
 const ZONE_HALF = 0.02
+/**
+ * ...and never longer than this many scroll-seconds per side, so a transition doesn't grow as chapters are added
+ * (Risheek, 2026-10-14: the Ch1->Ch2 pixelate swallowed Ch2's whole select screen).
+ */
+const ZONE_SECONDS = 0.9
 
 export interface Slide {
   meta: SceneMeta
@@ -37,6 +42,12 @@ export interface Plan {
   /** Total progress where each chapter is fully entered, and the same per slide. */
   chapterStart: Readonly<Record<ChapterId, number>>
   slideEntry: readonly number[]
+  /**
+   * Per slide, the part of its slot NOT covered by a transition zone. A scene's local progress runs 0..1 across this
+   * window only (frozen at 0 / 1 while a transition covers it), so every scene plays its first and last frames in
+   * full view instead of losing them under the pixelate.
+   */
+  windows: readonly { a: number; b: number }[]
 }
 
 export const soonId = (ch: ChapterId): string => `coming-soon-ch${ch}`
@@ -61,18 +72,6 @@ export function buildPlan(registry: readonly SceneEntry[]): Plan {
   )
   const { slots } = timeline
 
-  const zones: Zone[] = []
-  for (let k = 0; k < slides.length - 1; k++) {
-    const left = slots[k].end - slots[k].start
-    const right = slots[k + 1].end - slots[k + 1].start
-    zones.push({
-      center: slots[k].end,
-      half: Math.max(0, Math.min(ZONE_HALF, left * 0.4, right * 0.4)),
-      cross: slides[k].meta.chapter !== slides[k + 1].meta.chapter,
-    })
-  }
-  const slideEntry = slides.map((_, i) => (i === 0 ? 0 : Math.min(1, zones[i - 1].center + zones[i - 1].half + 1e-6)))
-
   // Runtime: seconds-per-weight-unit measured from the real scenes (so partial stories keep their pace).
   let realSeconds = 0
   let realWeight = 0
@@ -85,11 +84,31 @@ export function buildPlan(registry: readonly SceneEntry[]): Plan {
   const perWeight = realWeight > 0 && realSeconds > 0 ? realSeconds / realWeight : DEFAULT_SECONDS_PER_WEIGHT
   const totalWeight = CHAPTER_IDS.reduce((n, ch) => n + weights[ch], 0)
 
+  const scrollSeconds = perWeight * totalWeight
+  const secondsCap = scrollSeconds > 0 ? ZONE_SECONDS / scrollSeconds : ZONE_HALF
+
+  const zones: Zone[] = []
+  for (let k = 0; k < slides.length - 1; k++) {
+    const left = slots[k].end - slots[k].start
+    const right = slots[k + 1].end - slots[k + 1].start
+    zones.push({
+      center: slots[k].end,
+      half: Math.max(0, Math.min(ZONE_HALF, secondsCap, left * 0.4, right * 0.4)),
+      cross: slides[k].meta.chapter !== slides[k + 1].meta.chapter && !slides[k + 1].meta.softEntry,
+    })
+  }
+  const slideEntry = slides.map((_, i) => (i === 0 ? 0 : Math.min(1, zones[i - 1].center + zones[i - 1].half + 1e-6)))
+
   const chapterStart = {} as Record<ChapterId, number>
   for (const ch of CHAPTER_IDS) {
     chapterStart[ch] = slideEntry[slides.findIndex((s) => s.meta.chapter === ch)]
   }
-  return { slides, timeline, zones, scrollSeconds: perWeight * totalWeight, chapterStart, slideEntry }
+  const windows = slides.map((_, i) => {
+    const a = slots[i].start + (i > 0 ? zones[i - 1].half : 0)
+    const b = slots[i].end - (i < zones.length ? zones[i].half : 0)
+    return b > a ? { a, b } : { a: slots[i].start, b: slots[i].end }
+  })
+  return { slides, timeline, zones, scrollSeconds, chapterStart, slideEntry, windows }
 }
 
 /** Resolve a deep-link / Index-focus id to a slide index: exact scene id, else the first scene of the entry's chapter. */
@@ -114,10 +133,9 @@ export interface View {
 const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n)
 
 export function viewAt(plan: Plan, p: number, reduced: boolean, locateIndex: number): View {
-  const { slots } = plan.timeline
   const local = (i: number): number => {
-    const len = slots[i].end - slots[i].start
-    return len > 0 ? clamp01((p - slots[i].start) / len) : 1
+    const { a, b } = plan.windows[i]
+    return b > a ? clamp01((p - a) / (b - a)) : 1
   }
   let k = -1
   if (locateIndex > 0) {

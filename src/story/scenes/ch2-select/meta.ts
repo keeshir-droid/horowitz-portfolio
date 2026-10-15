@@ -1,11 +1,11 @@
 import type { SceneMeta } from '../../engine/types'
-import { DUR, ENTRY_IDS, TRANSITION_COLORS } from './config'
+import { ENTRY_IDS, SCROLL_DUR, TRANSITION_COLORS } from './config'
 
 /** Tiny and eager: the shell may read this without loading the scene itself. */
 export const meta: SceneMeta = {
   id: 'ch2-select',
   chapter: 2,
-  duration: DUR,
+  duration: SCROLL_DUR,
   entryIds: [...ENTRY_IDS],
 }
 

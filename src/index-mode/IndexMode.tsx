@@ -255,6 +255,24 @@ export default function IndexMode() {
         <button className="btn-story" onClick={() => setMode('story')}>
           ▶ Play the story
         </button>
+        {/* Required by CC BY (see public/audio/CREDITS.md). Everything else in public/audio needs no credit (CC0 /
+            public domain / Pixabay licence). If music-diary-alt1.mp3 is ever swapped in, add its CC BY credit here. */}
+        <p className="muted small credits">
+          Audience laugh: &ldquo;approx-800-laugh-1&rdquo; by lonemonk (
+          <a href="https://freesound.org/people/lonemonk/" target="_blank" rel="noreferrer">freesound.org</a>),{' '}
+          <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>.
+        </p>
+        {/* Voluntary thanks (Risheek asked for sound credits); full list with sources in public/audio/CREDITS.md. */}
+        <p className="muted small credits">
+          Music from{' '}
+          <a href="https://pixabay.com/music/" target="_blank" rel="noreferrer">Pixabay</a>: Emmraan, _Music_for_Creators_,
+          PaulYudin. Sound effects: Joseph Sardin &amp; Pierre Sibanarco (
+          <a href="https://bigsoundbank.com" target="_blank" rel="noreferrer">BigSoundBank.com</a>),{' '}
+          <a href="https://kenney.nl" target="_blank" rel="noreferrer">Kenney</a>, and the{' '}
+          <a href="https://freesound.org" target="_blank" rel="noreferrer">Freesound</a> recordists corkob, kyles,
+          jcallison, KittyKatHunter, Unicornaphobist, shogah, BapttX, SoundsofTheMachine, Sandermotions, DenisChardonnet,
+          starlite, stilgar and Axeline T.
+        </p>
       </footer>
     </div>
   )

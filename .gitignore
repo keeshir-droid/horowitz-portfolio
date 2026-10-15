@@ -28,3 +28,6 @@ dist-ssr
 .env.*
 !.env.example
 .vercel
+
+# Generated audio previews (rendered locally from audio.ts)
+docs/audio-preview/

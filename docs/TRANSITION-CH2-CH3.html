@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Disc insert prototype v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Russo+One&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0b0a09; --ink:#f1ece4; --muted:#9a9388; --line:#2b2824; --acc:#7fb2ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:32px 16px 80px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; color:var(--acc); text-transform:uppercase; line-height:1.7; }
+  h1 { font-size:clamp(26px,5vw,44px); line-height:1.05; margin:10px 0 8px; letter-spacing:-.02em; }
+  p { margin:0 0 10px; } .muted { color:var(--muted); }
+  .controls { display:flex; gap:12px; align-items:center; margin:14px 0 0; flex-wrap:wrap; }
+  .controls input { flex:1; min-width:180px; }
+  button { background:#1f1c19; color:var(--ink); border:1px solid #3a352f; padding:8px 14px; font:inherit; cursor:pointer; }
+  .t { font-variant-numeric:tabular-nums; color:var(--muted); width:52px; }
+  ol { padding-left:20px; } li { margin-bottom:4px; }
+  section { margin-top:40px; padding-top:14px; border-top:1px solid var(--line); }
+
+  .stage { position:relative; aspect-ratio:16/9; overflow:hidden; background:#000; border:1px solid var(--line); margin-top:18px; }
+  .layer { position:absolute; inset:0; }
+
+  /* ── Chapter 2 arcade end ── */
+  #crt { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4%; z-index:30;
+         background:radial-gradient(ellipse at center,#2a0a10,#0a0306 75%); transform-origin:center; }
+  #crt .big { font-family:'Press Start 2P',monospace; font-size:clamp(14px,3.4vw,34px); color:#ffd84a; text-shadow:3px 3px 0 #e0343c; }
+  #crt .small { font-family:'Press Start 2P',monospace; font-size:clamp(7px,1.2vw,11px); color:#f4f1e8; }
+  #crt::after { content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 4px); }
+  #crtline { z-index:31; background:#fff; opacity:0; transform-origin:center; }
+
+  /* ── the bedroom / console ── */
+  #room { z-index:5; background:
+      radial-gradient(ellipse 55% 60% at 22% 30%, rgba(255,170,90,.20), transparent 70%),
+      linear-gradient(#14110e, #0a0807 70%); perspective:900px; display:flex; align-items:center; justify-content:center; opacity:0; }
+  #desk { position:absolute; left:0; right:0; bottom:0; height:30%; background:linear-gradient(#3a2a1e,#22180f); box-shadow:inset 0 2px 0 rgba(255,200,150,.12); }
+  #plane { position:relative; width:48%; aspect-ratio:1/1; transform:rotateX(55deg); margin-top:6%; }
+  /* console: two-tone, ribbed, chunky */
+  #body { position:absolute; left:0; right:0; top:0; height:50%;
+          background:repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 9px), linear-gradient(180deg,#3a3b3f,#26272b);
+          border-radius:2%; box-shadow:0 26px 40px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.12); }
+  #front { position:absolute; left:0; right:0; top:44%; height:8%; background:linear-gradient(#4b4c51,#2b2c30); border-radius:0 0 3px 3px; box-shadow:0 2px 0 #111; }
+  .btn { position:absolute; top:46%; width:7%; height:4%; background:linear-gradient(#5c5d63,#3a3b40); border-radius:2px; box-shadow:inset 0 -1px 0 #222; }
+  #bpow { right:5%; } #bopen { right:14%; }
+  .led { position:absolute; top:46.6%; width:1.6%; aspect-ratio:1; border-radius:50%; }
+  #lpow { right:3%; background:#c0392b; box-shadow:0 0 4px #c0392b; }
+  #lopen { right:12%; background:#1b3a1b; }
+  #mc { position:absolute; left:6%; top:46%; width:10%; height:4%; background:#151618; border-radius:1px; }
+  #trayclip { position:absolute; left:18%; right:22%; top:51%; height:49%; overflow:hidden; }
+  #tray { position:absolute; left:4%; right:4%; top:0; height:96%; transform:translateY(-100%);
+          background:linear-gradient(#2c2d31,#1d1e21); border-radius:0 0 3% 3%; box-shadow:inset 0 0 0 1px rgba(255,255,255,.05); }
+  #well { position:absolute; left:50%; top:50%; width:90%; aspect-ratio:1; transform:translate(-50%,-50%); border-radius:50%; background:#141518; box-shadow:inset 0 2px 6px #000; }
+  #disc { position:absolute; left:50%; top:50%; width:86%; aspect-ratio:1; border-radius:50%; opacity:0; overflow:hidden;
+          background:radial-gradient(circle, transparent 0 15%, #e9e6df 15.5% 17.5%, transparent 18%),
+                     linear-gradient(180deg,#1d3f8c 0%,#2b63c6 52%,#f2efe8 52.5%);
+          box-shadow:0 0 0 2px #cfd6e2, 0 0 0 3px rgba(255,190,240,.6); }
+  #disc::before { content:""; position:absolute; left:50%; top:50%; width:13%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); background:#141518; box-shadow:0 0 0 3px #bfc6d2; }
+  #disc .lt { position:absolute; left:0; right:0; top:22%; text-align:center; font-family:'Russo One',sans-serif; color:#fff; font-size:clamp(9px,1.6vw,17px); letter-spacing:.04em; text-shadow:1px 1px 0 #0b1a3a; font-style:italic; }
+  #disc .ls { position:absolute; left:0; right:0; top:13%; text-align:center; font-family:'Press Start 2P'; font-size:clamp(4px,.7vw,7px); color:#ffd84a; }
+  #disc .lb { position:absolute; left:0; right:0; bottom:16%; text-align:center; font-family:'Press Start 2P'; font-size:clamp(4px,.6vw,6px); color:#1d3f8c; }
+  #dshadow { position:absolute; left:50%; top:53%; width:86%; aspect-ratio:1; border-radius:50%; background:rgba(0,0,0,.7); filter:blur(6px); opacity:0; transform:translate(-50%,-50%); }
+
+  /* ── the CRT TV ── */
+  #tv { z-index:20; opacity:0; background:#000; }
+  #screen { position:absolute; inset:0; overflow:hidden; border-radius:4%/6%; transform-origin:center; background:#000;
+            box-shadow:inset 0 0 60px 20px rgba(0,0,0,.85); }
+  #scan { position:absolute; inset:0; z-index:9; pointer-events:none;
+          background:repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 3px); }
+  #curve { position:absolute; inset:0; z-index:10; pointer-events:none; border-radius:4%/6%;
+           background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.6) 100%); box-shadow:inset 0 0 0 6px #050505; }
+  #glare { position:absolute; inset:0; z-index:11; pointer-events:none; background:radial-gradient(ellipse 50% 35% at 30% 22%, rgba(255,255,255,.07), transparent 70%); }
+  .rgb { text-shadow:-1.5px 0 rgba(255,40,40,.55), 1.5px 0 rgba(40,140,255,.55); }
+
+  /* memory card screen */
+  #mem { position:absolute; inset:0; background:linear-gradient(#0b1440,#050a24); display:flex; align-items:center; justify-content:center; opacity:0; }
+  #panel { width:62%; border:2px solid #8ea3d6; box-shadow:inset 0 0 0 2px #233a7a, 0 0 0 2px #050a24; background:rgba(20,34,90,.7); padding:2.2% 3%; font-family:'Press Start 2P',monospace; color:#e8eeff; font-size:clamp(6px,1.1vw,11px); line-height:1.9; }
+  #panel .hd { color:#9fb6ef; border-bottom:1px solid #4a63a8; padding-bottom:.6em; margin-bottom:.8em; }
+  #panel .row { display:flex; gap:1em; align-items:center; background:rgba(120,150,230,.18); padding:.5em .6em; }
+  #card { width:2.2em; height:2.6em; background:linear-gradient(#cfd6e6,#8a95ad); border-radius:2px; position:relative; flex:none; }
+  #card::after { content:""; position:absolute; left:20%; right:20%; bottom:12%; height:22%; background:#2b3550; }
+  #panel .q { margin-top:1em; } #panel .opt { margin-top:.4em; } #panel .sel { color:#ffd84a; }
+
+  /* title screen */
+  #title { position:absolute; inset:0; opacity:0; overflow:hidden;
+           background:linear-gradient(180deg,#1a1240 0%,#5a2d6e 45%,#e0784a 72%,#f2b45c 100%); }
+  .poly { position:absolute; left:0; right:0; bottom:0; }
+  #p1 { height:52%; background:#3a2350; clip-path:polygon(0 60%,12% 30%,22% 48%,36% 12%,48% 40%,60% 22%,74% 46%,86% 18%,100% 38%,100% 100%,0 100%); }
+  #p2 { height:38%; background:#24163a; clip-path:polygon(0 40%,10% 62%,24% 30%,38% 56%,52% 26%,66% 52%,80% 34%,92% 58%,100% 44%,100% 100%,0 100%); }
+  #p3 { height:20%; background:#120b20; clip-path:polygon(0 50%,18% 20%,34% 46%,50% 18%,68% 44%,84% 22%,100% 40%,100% 100%,0 100%); }
+  #logo { position:absolute; left:0; right:0; top:22%; text-align:center; }
+  #logo .sm { font-family:'Russo One',sans-serif; font-size:clamp(9px,1.6vw,16px); letter-spacing:.35em; color:#ffe6b0; }
+  #logo .chrome { display:inline-block; font-family:'Russo One',sans-serif; font-style:italic; font-size:clamp(30px,7.4vw,78px); letter-spacing:.02em; line-height:1.1;
+           background:linear-gradient(180deg,#ffffff 0%,#e3e8f0 38%,#7c8597 49%,#2c3446 52%,#a9b4c8 70%,#ffffff 100%);
+           -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-stroke:1.5px #1a2140;
+           filter:drop-shadow(0 4px 0 #1a2140) drop-shadow(0 0 14px rgba(255,190,120,.45)); transform:skew(-4deg); }
+  #flare { position:absolute; top:24%; width:22%; aspect-ratio:1; margin-left:-11%; border-radius:50%; pointer-events:none; mix-blend-mode:screen;
+           background:radial-gradient(circle, #fff 0 3%, rgba(255,240,200,.9) 5%, rgba(255,200,120,.35) 18%, transparent 55%); }
+  #flare::after { content:""; position:absolute; left:-120%; right:-120%; top:49%; height:2%; background:linear-gradient(90deg,transparent,rgba(255,240,210,.9),transparent); }
+  #start { position:absolute; left:0; right:0; bottom:16%; text-align:center; font-family:'Press Start 2P',monospace; font-size:clamp(8px,1.4vw,14px); color:#fff; }
+  #tvline { position:absolute; inset:0; z-index:12; background:#fff; opacity:0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Transition prototype v2 · Chapter 2 → Chapter 3 · ~4 s</p>
+  <h1>Disc in, TV on, press start</h1>
+  <p class="muted" style="max-width:70ch">v1 was too long and felt like a sci-fi show. v2 is a 2000s bedroom at night: a chunky console on the desk, a disc with a printed label, a curved CRT TV that switches on, a memory-card screen carrying over your Chapter 2 save, and a chrome title with a lens flare. All designs are original, with no real console logos or sounds.</p>
+
+  <div class="stage" aria-label="Arcade powers down, a disc goes into a console, a CRT TV boots into Chapter 3">
+    <div class="layer" id="room">
+      <div id="desk"></div>
+      <div id="plane">
+        <div id="body"></div><div id="front"></div>
+        <div id="mc"></div><div class="btn" id="bopen"></div><div class="btn" id="bpow"></div>
+        <div class="led" id="lopen"></div><div class="led" id="lpow"></div>
+        <div id="trayclip"><div id="tray"><div id="well"></div><div id="dshadow"></div>
+          <div id="disc"><div class="ls">CHAPTER 3</div><div class="lt">HIGH SCHOOL</div><div class="lb">DISC 1</div></div></div></div>
+      </div>
+    </div>
+    <div class="layer" id="tv"><div id="screen">
+      <div id="mem"><div id="panel">
+        <div class="hd">MEMORY CARD (8MB) · SLOT 1</div>
+        <div class="row"><div id="card"></div><div>RISHEEK<br>CHAPTER 2 · COMPLETE</div></div>
+        <div class="q">Load this data?</div>
+        <div class="opt"><span class="sel" id="yes">▶ YES</span>&nbsp;&nbsp;&nbsp; NO</div>
+      </div></div>
+      <div id="title">
+        <div class="poly" id="p1"></div><div class="poly" id="p2"></div><div class="poly" id="p3"></div>
+        <div id="logo"><div class="sm rgb">CHAPTER 3</div><div class="chrome">HIGH SCHOOL</div></div>
+        <div id="flare"></div>
+        <div id="start" class="rgb">PRESS START</div>
+      </div>
+      <div id="tvline"></div>
+      <div id="scan"></div><div id="curve"></div><div id="glare"></div>
+    </div></div>
+    <div class="layer" id="crt"><div class="big">STAGE CLEAR</div><div class="small">SAVING… DO NOT TURN OFF</div></div>
+    <div class="layer" id="crtline"></div>
+  </div>
+  <div class="controls">
+    <button id="play" type="button">▶ Replay</button>
+    <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Scrub the transition" />
+    <span class="t" id="tlabel">0.0 s</span>
+  </div>
+
+  <section>
+    <p class="eyebrow">Beat by beat · 4.2 s</p>
+    <ol>
+      <li><b>0.0–0.5 s · Save, power down.</b> Chapter 2's arcade screen: STAGE CLEAR, "SAVING… DO NOT TURN OFF", then it collapses to a line.</li>
+      <li><b>0.5–1.9 s · Disc in.</b> A dim bedroom with a warm lamp. The console on the desk: the tray opens, a disc with a printed "CHAPTER 3 · HIGH SCHOOL" label drops in, the tray closes, and the LED goes from red to green.</li>
+      <li><b>1.9–2.2 s · TV on.</b> The CRT switches on: a white line snaps open into a picture, the mirror of Chapter 2's power-down.</li>
+      <li><b>2.2–2.8 s · Memory card.</b> "Load this data? RISHEEK · CHAPTER 2 · COMPLETE ▶ YES". Your save carries over, so the story is continuous.</li>
+      <li><b>2.8–4.2 s · Title screen.</b> Low-poly sunset hills, a chrome bevelled "HIGH SCHOOL" with a lens flare sweeping across, and a blinking PRESS START. Scrolling on is pressing start.</li>
+    </ol>
+    <p class="muted">Sound on the real site: CRT thunk, tray motor, disc click and whirr, the TV's high-pitched whine on power-up, a short memory-card blip, and a title sting. All original.</p>
+  </section>
+</div>
+
+<script>
+(() => {
+  const DUR = 4.2
+  const $ = (id) => document.getElementById(id)
+  const q = (s) => document.querySelector(s)
+  const el = { crt:$('crt'), crtline:$('crtline'), room:$('room'), plane:$('plane'), tray:$('tray'), disc:$('disc'), dshadow:$('dshadow'),
+    lopen:$('lopen'), lpow:$('lpow'), tv:$('tv'), screen:$('screen'), tvline:$('tvline'), mem:$('mem'), yes:$('yes'),
+    title:$('title'), logo:$('logo'), flare:$('flare'), start:$('start'), scrub:$('scrub'), tl:$('tlabel') }
+  const cl = (x) => Math.max(0, Math.min(1, x))
+  const seg = (t, a, b) => cl((t - a) / (b - a))
+  const ease = (x) => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2
+  const out = (x) => 1 - Math.pow(1 - x, 3)
+
+  function frame(p) {
+    const t = p * DUR
+    // 1. arcade collapse
+    const cy = seg(t, .25, .4), cx = seg(t, .4, .5)
+    el.crt.style.transform = `scale(${1 - cx * .995}, ${1 - cy * .99})`
+    el.crt.style.opacity = t < .5 ? 1 : 0
+    el.crt.style.filter = `brightness(${1 + cy * 2.5})`
+    el.crtline.style.opacity = t > .3 && t < .62 ? (1 - seg(t, .5, .62)) : 0
+    el.crtline.style.transform = `scale(${1 - cx * .98}, ${.006 + (1 - cy) * .2})`
+
+    // 2. room + console
+    el.room.style.opacity = ease(seg(t, .5, .75)) * (1 - seg(t, 1.85, 1.95))
+    el.plane.style.transform = `rotateX(${55 - seg(t, .5, 1.9) * 4}deg) scale(${.96 + seg(t, .5, 1.9) * .1})`
+    const trayOut = ease(seg(t, .7, 1.0)), trayIn = ease(seg(t, 1.45, 1.75))
+    el.tray.style.transform = `translateY(${-100 + trayOut * 100 - trayIn * 100}%)`
+    const drop = seg(t, 1.05, 1.35), d = out(drop)
+    el.disc.style.opacity = drop > 0 ? Math.min(1, drop * 4) : 0
+    el.disc.style.transform = `translate(-50%, ${-50 - (1 - d) * 22}%) scale(${1.22 - d * .22}) rotate(${-8 + d * 8}deg)`
+    el.dshadow.style.opacity = drop > 0 ? d * .8 : 0
+    const ok = t > 1.75
+    el.lpow.style.background = ok ? '#3bd16f' : '#c0392b'
+    el.lpow.style.boxShadow = ok ? '0 0 5px #3bd16f' : '0 0 4px #c0392b'
+    el.lopen.style.background = t > .65 && t < 1.75 ? '#e8a23a' : '#1b3a1b'
+
+    // 3. TV on: a line snaps open into the picture
+    el.tv.style.opacity = t >= 1.9 ? 1 : 0
+    const on = seg(t, 1.9, 2.15)
+    el.screen.style.transform = `scale(${on < .4 ? .2 + on * 2 : 1}, ${on < .4 ? .006 : .006 + seg(on, .4, 1) * .994})`
+    el.tvline.style.opacity = 1 - seg(t, 2.05, 2.3)
+
+    // 4. memory card
+    el.mem.style.opacity = t >= 2.1 && t < 2.85 ? 1 : 0
+    el.yes.style.opacity = t > 2.55 && Math.floor(t * 16) % 2 === 0 ? .3 : 1
+
+    // 5. title screen
+    const ti = seg(t, 2.8, 3.0)
+    el.title.style.opacity = ti
+    el.logo.style.transform = `translateY(${(1 - out(seg(t, 2.8, 3.25))) * -30}%) scale(${1.25 - out(seg(t, 2.8, 3.25)) * .25})`
+    el.flare.style.left = `${-10 + seg(t, 3.15, 3.85) * 120}%`
+    el.flare.style.opacity = seg(t, 3.1, 3.25) * (1 - seg(t, 3.75, 3.95))
+    el.start.style.opacity = t > 3.6 ? (Math.floor(t * 3) % 2 === 0 ? 1 : 0) : 0
+
+    el.scrub.value = p
+    el.tl.textContent = `${t.toFixed(1)} s`
+  }
+
+  let start = null, raf = 0
+  function play() {
+    cancelAnimationFrame(raf); start = null
+    const step = (now) => {
+      if (start === null) start = now
+      const p = Math.min(1, (now - start) / (DUR * 1000))
+      frame(p)
+      if (p < 1) raf = requestAnimationFrame(step)
+    }
+    raf = requestAnimationFrame(step)
+  }
+  $('play').addEventListener('click', play)
+  el.scrub.addEventListener('input', () => { cancelAnimationFrame(raf); frame(Number(el.scrub.value)) })
+  const qt = Number(new URLSearchParams(location.search).get('t'))
+  if (qt > 0) frame(cl(qt / DUR))
+  else if (matchMedia('(prefers-reduced-motion: reduce)').matches) frame(1)
+  else { frame(0); setTimeout(play, 500) }
+})()
+</script>
+</body>
+</html>

@@ -10,6 +10,10 @@ import { clearReloadGuard } from './chunkGuard'
 const StoryMode = lazy(() => import('./story/StoryMode'))
 // Dev-only engine harness (?engine-demo). The DEV guard is statically false in production, so this is tree-shaken.
 const DemoHarness = import.meta.env.DEV ? lazy(() => import('./story/engine/DemoHarness')) : null
+// Dev-only Chapter 3 page preview (?ch3-pages&spread=1&u=0.6): renders one diary spread statically, no engine.
+const DiaryPageHarness = import.meta.env.DEV ? lazy(() => import('./story/scenes/ch3-diary/PageHarness')) : null
+// Dev-only audio audition page (?audio-demo): play every track, fire every sfx, download WAV renders.
+const AudioDemo = import.meta.env.DEV ? lazy(() => import('./story/engine/AudioDemo')) : null
 
 export default function App() {
   const mode = useApp((s) => s.mode)
@@ -32,6 +36,14 @@ export default function App() {
         <DemoHarness />
       </Suspense>
     )
+  if (import.meta.env.DEV && DiaryPageHarness && window.location.search.includes('ch3-pages'))
+    return (
+      <Suspense fallback={null}>
+        <DiaryPageHarness />
+      </Suspense>
+    )
+  if (import.meta.env.DEV && AudioDemo && window.location.search.includes('audio-demo'))
+    return <Suspense fallback={null}><AudioDemo /></Suspense>
   if (mode === 'index') return <IndexMode />
   return (
     <AppBoundary resetKey={mode}>

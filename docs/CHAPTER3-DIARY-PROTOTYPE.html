@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 3 diary prototype v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Gochi+Hand&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0d0b0a; --ink:#f1ece4; --muted:#9a9388; --line:#2b2824; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:32px 16px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; color:#7fe3ff; text-transform:uppercase; line-height:1.7; }
+  h1 { font-size:clamp(26px,5vw,44px); line-height:1.05; margin:10px 0 8px; letter-spacing:-.02em; }
+  p { margin:0 0 10px; } .muted { color:var(--muted); }
+
+  .scroller { position:relative; height:1000vh; }
+  .sticky { position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; }
+  .stage { position:relative; width:min(calc(100vw - 32px), calc(86vh * 16 / 9)); aspect-ratio:16/9; overflow:hidden; border:1px solid var(--line);
+           container-type:size; --lh:3.464cqh;
+           background:radial-gradient(ellipse 60% 70% at 30% 20%, rgba(255,190,120,.16), transparent 70%), linear-gradient(#3b2d23,#221812); }
+  .bar { width:min(calc(100vw - 32px), calc(86vh * 16 / 9)); height:3px; background:#2b2824; }
+  .bar > div { height:100%; width:0; background:#7fe3ff; }
+  .hint { font-size:13px; color:var(--muted); }
+  .layer { position:absolute; inset:0; }
+
+  /* arcade end card */
+  #arcade { z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4%;
+            background:radial-gradient(ellipse at center,#2a0a10,#0a0306 75%); }
+  #arcade .big { font-family:'Press Start 2P',monospace; font-size:5.5cqh; color:#ffd84a; text-shadow:.5cqh .5cqh 0 #e0343c; }
+  #arcade .small { font-family:'Press Start 2P',monospace; font-size:1.9cqh; color:#f4f1e8; }
+  #arcade::after { content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(0,0,0,.3) 0 2px, transparent 2px 4px); }
+
+  /* book */
+  #world { z-index:5; }
+  #bookwrap { position:absolute; left:11%; top:8.4%; width:78%; height:83.2%; perspective:2600px; transform-origin:50% 100%; }
+  #book { position:absolute; inset:0; transform-style:preserve-3d; }
+  .slot { position:absolute; top:0; width:50%; height:100%; }
+  #left { left:0; z-index:1; } #right { left:50%; z-index:2; }
+  #under, #front, #flap, #shadeUnder { position:absolute; left:0; top:0; width:100%; height:100%; }
+  #under { z-index:1; } #shadeUnder { z-index:2; pointer-events:none; } #front { z-index:3; } #flap { z-index:4; transform-origin:0 0; pointer-events:none; }
+  .fill { position:absolute; inset:0; }
+  .shade { position:absolute; inset:0; pointer-events:none; }
+  #booksh { position:absolute; left:-1%; right:-1%; bottom:-2.5%; height:5%; background:radial-gradient(ellipse at center, rgba(0,0,0,.55), transparent 70%); z-index:0; }
+
+  .page { position:absolute; inset:0; overflow:hidden; background-color:#fdfcf6; font-family:'Gochi Hand',cursive; color:#161616;
+          background-image:repeating-linear-gradient(180deg, transparent 0 calc(var(--lh) - 1px), rgba(118,166,220,.55) calc(var(--lh) - 1px) var(--lh)); }
+  .page.r { box-shadow:inset 2.2cqh 0 2.6cqh -1.6cqh rgba(0,0,0,.32); }
+  .page.l { box-shadow:inset -2.2cqh 0 2.6cqh -1.6cqh rgba(0,0,0,.32); }
+  .row { position:absolute; left:9%; right:8%; font-size:2.75cqh; line-height:var(--lh); white-space:nowrap; transform:translateY(.06em); }
+  .month { text-align:center; font-size:3.5cqh; letter-spacing:.08em; }
+  .day { text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:.16em; }
+  .grey { color:#7a7a7a; }
+  .u2 { border-bottom:3px double #161616; }
+  .pno { position:absolute; bottom:.8%; left:0; right:0; text-align:center; font-size:2.1cqh; color:#555; }
+  .doodle { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+  .corner { position:absolute; right:4.5%; bottom:5.2%; width:25%; aspect-ratio:1; overflow:visible; }
+  .cb { width:.95em; height:.95em; vertical-align:-.12em; margin-right:.35em; overflow:visible; }
+  .motor { pointer-events:auto; cursor:grab; touch-action:none; }
+
+  /* cover */
+  #cover { position:absolute; left:50%; top:0; width:50%; height:100%; transform-origin:left center; transform-style:preserve-3d; z-index:20; }
+  .face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; overflow:hidden; }
+  .back { transform:rotateY(180deg); }
+  #cfront { background:#2f7fc0; border-radius:0 .8cqh .8cqh 0; box-shadow:inset 1.4cqh 0 0 rgba(0,0,0,.18), inset -.3cqh 0 0 rgba(255,255,255,.08);
+            background-image:repeating-linear-gradient(35deg, rgba(255,255,255,.025) 0 2px, transparent 2px 5px), repeating-linear-gradient(-35deg, rgba(0,0,0,.03) 0 2px, transparent 2px 6px); }
+  #cpanel { position:absolute; left:14%; right:9%; top:9%; height:46%; background-color:#fdfcf6; transform:rotate(-1.2deg);
+            background-image:repeating-linear-gradient(180deg, transparent 0 calc(var(--lh) - 1px), rgba(118,166,220,.5) calc(var(--lh) - 1px) var(--lh));
+            box-shadow:0 .4cqh .8cqh rgba(0,0,0,.35); text-align:center; font-family:'Gochi Hand'; color:#111; }
+  .tape { position:absolute; width:22%; height:6%; background:rgba(236,226,196,.85); top:-2.5%; box-shadow:0 1px 2px rgba(0,0,0,.15); }
+  #cpanel .t1 { left:-5%; transform:rotate(-32deg); } #cpanel .t2 { right:-5%; transform:rotate(30deg); }
+  #cdiary { position:absolute; left:0; right:0; top:10%; font-size:4.4cqh; }
+  #ctitle { position:absolute; left:0; right:0; top:28%; font-size:7.6cqh; line-height:.95; letter-spacing:.01em; }
+  #ckid { position:absolute; left:28%; width:44%; top:47%; height:46%; overflow:visible; }
+  #cch { position:absolute; left:14%; top:3%; font-family:'Gochi Hand'; font-size:2.4cqh; color:rgba(255,255,255,.85); letter-spacing:.12em; }
+  #cauth { position:absolute; left:0; right:0; bottom:3.5%; text-align:center; font-family:'Gochi Hand'; font-size:3.6cqh; color:#fff; }
+  #cback { background:#2f7fc0; }
+  #cback .page { inset:1.5% 1.5% 1.5% 3%; }
+  .puff { position:absolute; width:5%; aspect-ratio:1; border-radius:50%; background:rgba(235,220,200,.5); filter:blur(3px); opacity:0; z-index:6; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><pattern id="hatch" width="2.2" height="2.2" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0,0 L0,2.2" stroke="#161616" stroke-width=".7"/></pattern></defs>
+</svg>
+
+<div class="wrap">
+  <p class="eyebrow">Chapter 3 · diary prototype v2 · scroll to play</p>
+  <h1>Diary of a Boarding School Kid</h1>
+  <p class="muted" style="max-width:72ch">Rebuilt in the school-diary comic format: solid-colour cover with a taped lined-paper title, black-and-white cartoons, speech bubbles, day headers, page numbers. The pages curl from the corner like paper, and every right page has a flipbook doodle in the corner. <b>Scroll down</b> to play it; on the motor page you can grab the rotor. All designs are original, inspired by the style only. The wording is a draft.</p>
+</div>
+
+<div class="scroller" id="scroller">
+  <div class="sticky">
+    <div class="stage" id="stage" aria-label="Chapter 3 diary prototype">
+      <div class="layer" id="arcade"><div class="big">STAGE CLEAR</div><div class="small">SAVING… DO NOT TURN OFF</div></div>
+      <div class="layer" id="world">
+        <div id="bookwrap">
+          <div id="booksh"></div>
+          <div id="book">
+            <div class="slot" id="left"><div class="fill" id="leftPage"></div></div>
+            <div class="slot" id="right">
+              <div id="under"><div class="fill" id="underPage"></div></div>
+              <div id="shadeUnder"></div>
+              <div id="front"><div class="fill" id="frontPage"></div><div class="shade" id="frontShade"></div></div>
+              <div id="flap"><div class="fill" id="flapPage"></div><div class="shade" id="flapShade"></div></div>
+            </div>
+            <div id="cover"><div class="face" id="cfront"></div><div class="face back" id="cback"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bar"><div id="barfill"></div></div>
+    <div class="hint" id="hint">scroll ↓</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">In the full chapter</p>
+  <p class="muted" style="max-width:72ch">More dated entries before the riffle: the carbon-neutral project (a cartoon meter that drops), the hand-coded Java system ("0 AI. every line by hand."), the stage (solo, music, a new field) as a three-panel strip, and the pet therapy attempt (a plan with a crossed-out box, told honestly). Then the riffle, and the book closes into Chapter 4.</p>
+</div>
+
+<script>
+(() => {
+  const cl = (x) => Math.max(0, Math.min(1, x))
+  const seg = (t, a, b) => cl((t - a) / (b - a))
+  const ease = (x) => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2
+  const $ = (id) => document.getElementById(id)
+  const INK = '#161616', SKIN = '#f3d6bb'
+
+  // ───────── the character: big head, short hair, round glasses, black jacket (angles: degrees outward from straight down)
+  function kid(x, y, s, o = {}) {
+    const { armL = 22, armR = 22, legL = 7, legR = 7, extra = '' } = o
+    const pt = (sx, sy, a, len, side) => { const r = a * Math.PI / 180; return [sx + side * Math.sin(r) * len, sy + Math.cos(r) * len].map((v) => +v.toFixed(2)) }
+    const [alx, aly] = pt(-6, -25, armL, 12, -1), [arx, ary] = pt(6, -25, armR, 12, 1)
+    const [llx, lly] = pt(-3, -10, legL, 10, -1), [lrx, lry] = pt(3, -10, legR, 10, 1)
+    return `<g transform="translate(${x} ${y}) scale(${s})" stroke="${INK}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-3,-10 L${llx},${lly} M3,-10 L${lrx},${lry}" fill="none" stroke-width="1.5"/>
+      <ellipse cx="${llx - 1.3}" cy="${lly}" rx="2.5" ry="1.3" fill="${INK}"/><ellipse cx="${lrx + 1.3}" cy="${lry}" rx="2.5" ry="1.3" fill="${INK}"/>
+      <path d="M-6,-26 L6,-26 L7.5,-10 L-7.5,-10 Z" fill="${INK}"/>
+      <path d="M-2.2,-26 L0,-22.4 L2.2,-26 Z" fill="#fff" stroke-width=".8"/>
+      <path d="M-6,-25 L${alx},${aly} M6,-25 L${arx},${ary}" fill="none" stroke-width="2.6"/>
+      <circle cx="${alx}" cy="${aly}" r="1.6" fill="${SKIN}" stroke-width="1"/><circle cx="${arx}" cy="${ary}" r="1.6" fill="${SKIN}" stroke-width="1"/>
+      <ellipse cx="0" cy="-38" rx="11" ry="12" fill="${SKIN}"/>
+      <path d="M-11,-40 Q-11.6,-51 0,-50.6 Q11.6,-51 11,-40 L9,-43.2 L6.8,-41 L4,-44 L1.2,-41.8 L-2,-44.4 L-5,-41.8 L-8,-44 Z" fill="${INK}"/>
+      <circle cx="-4.4" cy="-37" r="3.6" fill="#fff"/><circle cx="4.4" cy="-37" r="3.6" fill="#fff"/><path d="M-0.8,-37 L0.8,-37" fill="none"/>
+      <circle cx="-4.2" cy="-36.8" r=".95" fill="${INK}" stroke="none"/><circle cx="4.6" cy="-36.8" r=".95" fill="${INK}" stroke="none"/>
+      <path d="M-2.4,-30.6 Q0,-29.4 2.4,-30.6" fill="none" stroke-width="1"/>
+      ${extra}
+    </g>`
+  }
+  const bubble = (x, y, text, tx, ty, fs = 3.4) => {
+    const w = text.length * fs * .5 + 5, h = fs * 1.9
+    return `<g><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="#fff" stroke="${INK}" stroke-width=".9"/>
+      <path d="M${x - 2},${y + h / 2 - .4} L${tx},${ty} L${x + 2},${y + h / 2 - .4}" fill="#fff" stroke="${INK}" stroke-width=".9" stroke-linejoin="round"/>
+      <path d="M${x - 1.6},${y + h / 2 - .5} L${x + 1.6},${y + h / 2 - .5}" stroke="#fff" stroke-width="1.4"/>
+      <text x="${x}" y="${y + fs * .36}" text-anchor="middle" font-family="Gochi Hand" font-size="${fs}" fill="${INK}">${text}</text></g>`
+  }
+  const cap = (cx, cy) => `<path d="M${cx - 6},${cy} L${cx},${cy - 2.4} L${cx + 6},${cy} L${cx},${cy + 2.4} Z" fill="${INK}"/><path d="M${cx},${cy} L${cx + 4.6},${cy + .6} L${cx + 5},${cy + 4.6}" fill="none" stroke="${INK}" stroke-width=".6"/>`
+
+  // ───────── flipbook corner: you walk, grow from grade 9 to 12, then throw your cap
+  const FR = 15
+  function corner(j) {
+    const s = .4 + .22 * (j / (FR - 1)), step = j % 2
+    const top = 36 - 50.6 * s
+    let o = { legL: step ? 26 : 4, legR: step ? 4 : 26, armL: step ? 8 : 34, armR: step ? 34 : 8 }, extra = ''
+    if (j === FR - 3) { o = { legL: 7, legR: 7, armL: 18, armR: 18 }; extra = cap(20, top + 1.2) }
+    if (j === FR - 2) { o = { legL: 9, legR: 9, armL: 150, armR: 150 }; extra = cap(23, top - 7) }
+    if (j === FR - 1) { o = { legL: 10, legR: 10, armL: 160, armR: 160 }; extra = cap(28, 2.5) + `<path d="M31,8 L34,5 M33,11 L37,10" stroke="${INK}" stroke-width=".6"/>` }
+    return `<svg class="corner" viewBox="0 0 40 40"><path d="M3,36.4 L37,36.4" stroke="${INK}" stroke-width=".8"/>${kid(20, 36, s, o)}${extra}</svg>`
+  }
+
+  // ───────── pages
+  const row = (r, html, cls = '', style = '') => `<div class="row ${cls}" style="top:calc(var(--lh) * ${r});${style}">${html}</div>`
+  const pno = (n) => `<div class="pno">${n}</div>`
+  const tick = (t) => `<svg class="cb" viewBox="0 0 10 10"><rect x=".6" y=".6" width="8.4" height="8.4" fill="none" stroke="${INK}" stroke-width="1"/>
+    <path class="tick" data-t="${t}" d="M1.8,5 L4.2,8 L10.5,-1.5" pathLength="1" fill="none" stroke="${INK}" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"/></svg>`
+  let sd = 11; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647
+  const scribble = (r, x0, w) => { let d = `M${x0},${4 * r + 2.9}`, x = x0; while (x < x0 + w) { const k = .8 + rnd() * 1.2; d += ` q${k / 2},${-(.4 + rnd() * 1.1)} ${k},0`; x += k; if (rnd() < .12) { x += 1.6; d += ` m1.6,0` } } return `<path d="${d}" fill="none" stroke="#9a9a9a" stroke-width=".32"/>` }
+  const scribbles = (r0, n, maxW = 62) => `<svg class="doodle" viewBox="0 0 80 96">${Array.from({ length: n }, (_, i) => scribble(r0 + i, 7, 22 + rnd() * (maxW - 22))).join('')}</svg>`
+  const page = (side, html) => `<div class="page ${side}">${html}</div>`
+
+  const P = {}
+  P.end = page('l', `${row(6, 'THIS JOURNAL BELONGS TO:', 'month', 'font-size:2.8cqh')}${row(8, 'Risheek', 'month', 'font-size:5cqh')}${row(11, 'if found: do NOT read.', 'grey', 'text-align:center')}`)
+  P.p1 = page('r', `
+    ${row(1, 'SEPTEMBER', 'month')}
+    ${row(2, 'Monday', 'day')}
+    ${row(3, 'So I moved to a boarding school.')}
+    ${row(4, 'Home is now one suitcase.')}
+    <svg class="doodle" viewBox="0 0 80 96"><g class="draw" data-a="4.4" data-b="5.4">
+      ${kid(64, 39.2, .44, { armR: 12, extra: '<rect x="8" y="-15" width="12" height="9" rx="1.4" fill="#fff"/><path d="M12,-15 Q14,-18 16,-15" fill="none"/>' })}
+      ${bubble(64, 12, '...OK.', 63.5, 16.4, 3)}</g></svg>
+    ${row(10, 'Tuesday', 'day')}
+    ${row(11, 'Turns out if you sign up for everything, they let you.')}
+    ${row(12, tick(6.0) + 'VP, English honor society')}
+    ${row(13, tick(6.45) + 'Board, Science honor society')}
+    ${row(14, tick(6.9) + 'Lesson plans, co-written with teachers')}
+    ${row(15, tick(7.35) + 'Best in [subjects?]')}
+    ${row(16, tick(7.8) + "Ran the school's first official esports tournament")}
+    ${corner(0)}${pno(1)}`)
+  P.p2 = page('l', `
+    ${row(1, 'OCTOBER', 'month')}
+    ${row(2, 'Thursday', 'day')}
+    ${row(3, 'I wrote a thesis on electric motor propulsion.')}
+    ${row(4, 'Short version: current + magnets = <span class="u2">spin</span>.')}
+    ${row(5, 'Long version: a lot more pages than this.')}
+    <svg class="doodle" viewBox="0 0 80 96"><g class="draw" data-a="10.2" data-b="11.2">
+      ${kid(26, 66, .56, { armL: 60, armR: 62 })}
+      <rect x="10" y="53" width="52" height="11" fill="#fff" stroke="${INK}" stroke-width="1"/>
+      <path d="M13,64 L13,70 M59,64 L59,70" stroke="${INK}" stroke-width="1"/>
+      ${Array.from({ length: 8 }, (_, i) => `<rect x="${40 + (i % 2) * .8 - (i % 3) * .5}" y="${50.6 - i * 2.3}" width="15" height="2.3" fill="#fff" stroke="${INK}" stroke-width=".7"/>`).join('')}
+      ${bubble(28, 30.5, 'ALMOST DONE.', 26, 36, 3)}
+    </g></svg>
+    ${row(18, "Don't believe me? Spin it yourself. →")}
+    ${pno(2)}`)
+  P.p3 = page('r', `
+    <svg class="doodle" viewBox="0 0 80 96"><g class="draw" data-a="10.6" data-b="11.8" stroke="${INK}" stroke-linecap="round">
+      <path d="M8,32 C20,24 28,25 40,30 M8,44 C20,52 28,51 40,46 M72,32 C60,24 52,25 40,30 M72,44 C60,52 52,51 40,46" stroke-width=".6" stroke-dasharray="1.6 1.4" fill="none"/>
+      <circle cx="40" cy="38" r="22" stroke-width="1.6" fill="none"/>
+      <path d="M20.8,27.8 A22,22 0 0 0 20.8,48.2 L26.6,45 A15.5,15.5 0 0 1 26.6,31 Z" fill="url(#hatch)" stroke-width="1.1"/>
+      <path d="M59.2,27.8 A22,22 0 0 1 59.2,48.2 L53.4,45 A15.5,15.5 0 0 0 53.4,31 Z" fill="#fff" stroke-width="1.1"/>
+      <text x="12.6" y="39.4" font-family="Gochi Hand" font-size="4" fill="${INK}" stroke="none">N</text>
+      <text x="64.6" y="39.4" font-family="Gochi Hand" font-size="4" fill="${INK}" stroke="none">S</text>
+      <path d="M12,13 Q15,22 21,28" fill="none" stroke-width=".7"/><path d="M21,28 L18.6,26.8 M21,28 L20.6,25.4" stroke-width=".7"/>
+      <text x="5" y="11" font-family="Gochi Hand" font-size="3.6" fill="${INK}" stroke="none">MAGNET</text>
+      <path d="M64,14 Q55,18 47,25" fill="none" stroke-width=".7"/><path d="M47,25 L49.6,24.6 M47,25 L48.2,22.8" stroke-width=".7"/>
+      <text x="61" y="12" font-family="Gochi Hand" font-size="3.6" fill="${INK}" stroke="none">COIL</text>
+      <path d="M40,67.5 Q41.6,58 40.6,48" fill="none" stroke-width=".7"/><path d="M40.6,48 L39.4,50.4 M40.6,48 L42,50.2" stroke-width=".7"/>
+      <text x="40" y="71.5" text-anchor="middle" font-family="Gochi Hand" font-size="3.6" fill="${INK}" stroke="none">THIS PART SPINS</text>
+    </g>
+    <g class="draw" data-a="11.2" data-b="11.9"><g class="rotor">
+      ${[0, 120, 240].map((a) => `<g transform="rotate(${a} 40 38)"><path d="M40,34.6 L40,24" stroke="${INK}" stroke-width="1.6"/>
+        <path d="M37.4,28.4 L42.6,27.6 L37.4,26.6 L42.6,25.8 L37.4,24.8 L42.6,24" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M36.4,22.2 L43.6,22.2" stroke="${INK}" stroke-width="1.8"/></g>`).join('')}
+      <circle class="hub" cx="40" cy="38" r="3.4" fill="#fff" stroke="${INK}" stroke-width="1.3"/></g></g>
+    <circle class="motor" cx="40" cy="38" r="22" fill="transparent"/>
+    </svg>
+    ${row(20, 'FIG. 1: a motor. (drawn by me, badly.)', '', 'right:36%')}
+    ${row(21, '↻ grab the middle and spin', 'grey', 'right:36%;font-size:2.3cqh')}
+    ${corner(1)}${pno(3)}`)
+  P.p4 = page('l', `${row(10, '(okay. now flip fast.)', 'grey', 'text-align:center')}${pno(4)}`)
+  const HEAD = ['NOVEMBER', 'JANUARY', 'APRIL', 'GRADE 10', 'OCTOBER', 'FEBRUARY', 'GRADE 11', 'SEPTEMBER', 'MARCH', 'GRADE 12', 'JANUARY', 'MAY']
+  const rf = HEAD.map((h, k) => page('r', `${row(1, h, 'month')}${scribbles(3, 5 + Math.floor(rnd() * 5))}${corner(2 + k)}${pno(5 + 2 * k)}`))
+  const rb = HEAD.map((_, k) => page('l', `${scribbles(1, 8 + Math.floor(rnd() * 8))}${pno(6 + 2 * k)}`))
+  P.fin = page('r', `${row(1, 'JUNE', 'month')}${row(3, '...and that was high school.')}${row(4, '(more or less.)', 'grey')}${corner(FR - 1)}${pno(29)}`)
+
+  const LEAVES = [
+    { front: ['p1', P.p1], back: ['p2', P.p2], a: 8.8, b: 10.0, lift: .3 },
+    { front: ['p3', P.p3], back: ['p4', P.p4], a: 15.6, b: 16.8, lift: .3 },
+    ...HEAD.map((_, k) => ({ front: ['rf' + k, rf[k]], back: ['rb' + k, rb[k]], a: 17.6 + k * .34, b: 17.6 + k * .34 + .52, lift: .14 })),
+  ]
+  const FIN = ['fin', P.fin]
+  const DUR = 24
+
+  // ───────── cover
+  $('cfront').innerHTML = `<div id="cch">CHAPTER 3</div>
+    <div id="cpanel"><div class="tape t1"></div><div class="tape t2"></div><div id="cdiary">Diary of a</div><div id="ctitle">BOARDING<br>SCHOOL KID</div></div>
+    <svg id="ckid" viewBox="0 0 40 52">${kid(20, 51, .98, { armL: 14, armR: 40, extra: '<rect x="10.5" y="-16" width="12" height="9" rx="1.4" fill="#fff"/><path d="M14.5,-16 Q16.5,-19 18.5,-16" fill="none"/>' })}</svg>
+    <div id="cauth">Risheek Nawka</div>`
+  $('cback').innerHTML = P.end
+
+  // dust
+  const stage = $('stage')
+  const puffs = Array.from({ length: 8 }, () => { const d = document.createElement('div'); d.className = 'puff'; stage.appendChild(d); return d })
+
+  // ───────── slots
+  const slots = { left: $('leftPage'), under: $('underPage'), front: $('frontPage'), flap: $('flapPage') }
+  function mount(slot, item) {
+    const key = item ? item[0] : ''
+    if (slot.dataset.k === key) return
+    slot.dataset.k = key
+    slot.innerHTML = item ? item[1] : ''
+    slot.querySelectorAll('.draw *').forEach((el) => { if (el.tagName !== 'g' && el.tagName !== 'text') { el.setAttribute('pathLength', '1'); el.style.strokeDasharray = '1' } })
+  }
+
+  // ───────── page-curl geometry (right page coords, corner peels from bottom-right)
+  function clipPoly(poly, M, n, keepPos) {
+    const s = (p) => (p[0] - M.x) * n.x + (p[1] - M.y) * n.y, inside = (v) => keepPos ? v >= 0 : v < 0, out = []
+    for (let i = 0; i < poly.length; i++) {
+      const A = poly[i], B = poly[(i + 1) % poly.length], sa = s(A), sb = s(B)
+      if (inside(sa)) out.push(A)
+      if (inside(sa) !== inside(sb)) { const k = sa / (sa - sb); out.push([A[0] + (B[0] - A[0]) * k, A[1] + (B[1] - A[1]) * k]) }
+    }
+    return out
+  }
+  const poly = (pts) => pts.length < 3 ? 'polygon(0 0, 0 0, 0 0)' : `polygon(${pts.map((p) => `${p[0].toFixed(1)}px ${p[1].toFixed(1)}px`).join(',')})`
+  function grad(W, H, g, P0, color, len) {
+    const ang = Math.atan2(g.x, -g.y) * 180 / Math.PI, L = Math.abs(W * g.x) + Math.abs(H * g.y)
+    const p = ((P0.x - W / 2) * g.x + (P0.y - H / 2) * g.y) / L + .5
+    return `linear-gradient(${ang.toFixed(2)}deg, ${color} ${(p * 100).toFixed(2)}%, transparent ${((p + len) * 100).toFixed(2)}%)`
+  }
+  const frontEl = $('front'), flapEl = $('flap'), shadeUnder = $('shadeUnder'), frontShade = $('frontShade'), flapShade = $('flapShade')
+  function curl(f, lift, W, H) {
+    const C = { x: W - 2 * W * f, y: H - lift * H * Math.sin(Math.PI * f) }, dx = C.x - W, dy = C.y - H, d = Math.hypot(dx, dy)
+    if (d < .5) return false
+    const n = { x: dx / d, y: dy / d }, M = { x: (W + C.x) / 2, y: (H + C.y) / 2 }
+    const rect = [[0, 0], [W, 0], [W, H], [0, H]]
+    const keep = clipPoly(rect, M, n, true), cut = clipPoly(rect, M, n, false)
+    frontEl.style.clipPath = poly(keep)
+    shadeUnder.style.clipPath = poly(cut)
+    shadeUnder.style.background = grad(W, H, { x: -n.x, y: -n.y }, M, 'rgba(0,0,0,.38)', .16)
+    frontShade.style.background = grad(W, H, n, M, 'rgba(0,0,0,.12)', .05)
+    // flap = back of the leaf: mirror into paper coords, then reflect across the fold
+    const Mn = M.x * n.x + M.y * n.y
+    const a = -(1 - 2 * n.x * n.x), b = 2 * n.x * n.y, c = -2 * n.x * n.y, dd = 1 - 2 * n.y * n.y
+    const e = W * (1 - 2 * n.x * n.x) + 2 * Mn * n.x, f2 = -2 * n.x * n.y * W + 2 * Mn * n.y
+    flapEl.style.transform = `matrix(${a},${b},${c},${dd},${e},${f2})`
+    flapEl.style.clipPath = poly(cut.map(([x, y]) => [W - x, y]))
+    flapShade.style.background = grad(W, H, { x: n.x, y: -n.y }, { x: W - M.x, y: M.y }, 'rgba(0,0,0,.22)', .22)
+    return true
+  }
+
+  // ───────── frame (pure function of scroll progress)
+  const bookwrap = $('bookwrap'), book = $('book'), coverEl = $('cover'), arcade = $('arcade'), world = $('world')
+  let drag = 0
+  function frame(p) {
+    const t = p * DUR
+    // arcade, then the diary drops onto it
+    arcade.style.opacity = 1 - seg(t, 1.5, 1.95)
+    const dp = seg(t, .9, 1.42), fall = dp * dp
+    const bounce = Math.sin(seg(t, 1.42, 1.7) * Math.PI) * 1.6 * (t > 1.42 ? 1 : 0)
+    const cf = ease(seg(t, 3.0, 4.1))
+    bookwrap.style.opacity = t < .9 ? 0 : 1
+    bookwrap.style.transform = `translateY(${-150 * (1 - fall) - bounce}%) rotate(${-9 * (1 - fall) - 1.6 * (1 - cf)}deg) scale(${1.12 - .12 * fall})`
+    const shk = t > 1.42 && t < 1.66 ? Math.sin(t * 140) * (1 - seg(t, 1.42, 1.66)) * .5 : 0
+    world.style.transform = `translate(${shk}%, ${shk * .7}%)`
+    puffs.forEach((d, i) => {
+      const pr = seg(t, 1.42, 2.1), sx = i < 4 ? 30 : 70, dir = i < 4 ? -1 : 1
+      d.style.left = `${sx + dir * (pr * (6 + i % 4 * 3))}%`; d.style.top = `${88 - pr * (2 + i % 3 * 2)}%`
+      d.style.opacity = pr > 0 && pr < 1 ? (1 - pr) * .9 : 0; d.style.transform = `scale(${.6 + pr * (1.4 + i % 2)})`
+    })
+
+    // cover opens, book recentres
+    book.style.transform = `translateX(${-25 + 25 * cf}%)`
+    coverEl.style.transform = `rotateY(${-180 * cf}deg)`
+    coverEl.style.display = cf >= 1 ? 'none' : ''
+    const W = $('right').offsetWidth, H = $('right').offsetHeight
+
+    let turning = -1, f = 0, turned = 0
+    if (cf >= 1) LEAVES.forEach((L, i) => { const v = i < 2 ? ease(seg(t, L.a, L.b)) : seg(t, L.a, L.b); if (v >= 1) turned = i + 1; else if (v > 0 && turning < 0) { turning = i; f = v } })
+    if (cf < 1) { mount(slots.left, null); mount(slots.under, LEAVES[0].front); turning = -1 }
+    else {
+      mount(slots.left, turned === 0 ? ['end', P.end] : LEAVES[turned - 1].back)
+      if (turning >= 0) {
+        mount(slots.under, LEAVES[turning + 1] ? LEAVES[turning + 1].front : FIN)
+        mount(slots.front, LEAVES[turning].front); mount(slots.flap, LEAVES[turning].back)
+      } else mount(slots.under, LEAVES[turned] ? LEAVES[turned].front : FIN)
+    }
+    const showTurn = turning >= 0 && curl(f, LEAVES[turning].lift, W, H)
+    frontEl.style.display = flapEl.style.display = shadeUnder.style.display = showTurn ? '' : 'none'
+    if (!showTurn) { mount(slots.front, null); mount(slots.flap, null) }
+
+    // ink draws itself, boxes get ticked, rotor spins
+    stage.querySelectorAll('.draw').forEach((g) => {
+      const pr = seg(t, +g.dataset.a, +g.dataset.b)
+      g.querySelectorAll('*').forEach((el) => {
+        if (el.tagName === 'text') el.style.opacity = pr
+        else if (el.tagName !== 'g') { el.style.strokeDashoffset = 1 - pr; el.style.fillOpacity = cl((pr - .6) / .4) }
+      })
+    })
+    stage.querySelectorAll('.tick').forEach((el) => { const a = +el.dataset.t; el.style.strokeDashoffset = 1 - seg(t, a, a + .3) })
+    const ang = seg(t, 11.9, 15.4) * 720 + drag
+    stage.querySelectorAll('.rotor').forEach((r) => r.setAttribute('transform', `rotate(${ang.toFixed(1)} 40 38)`))
+
+    $('barfill').style.width = `${(p * 100).toFixed(1)}%`
+    $('hint').style.opacity = p > .02 ? 0 : 1
+  }
+
+  // grab the rotor
+  let last = null, hub = null
+  const angAt = (e) => { const b = hub.getBoundingClientRect(); return Math.atan2(e.clientY - (b.top + b.height / 2), e.clientX - (b.left + b.width / 2)) * 180 / Math.PI }
+  stage.addEventListener('pointerdown', (e) => { const m = e.target.closest('.motor'); if (!m) return; hub = m.ownerSVGElement.querySelector('.hub'); last = angAt(e); stage.setPointerCapture(e.pointerId); e.preventDefault() })
+  stage.addEventListener('pointermove', (e) => { if (last === null) return; const a = angAt(e); let d = a - last; if (d > 180) d -= 360; if (d < -180) d += 360; drag += d; last = a; frame(prog()) })
+  const up = () => { last = null }
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up)
+
+  const scroller = $('scroller')
+  const qt = Number(new URLSearchParams(location.search).get('t'))
+  const prog = () => qt > 0 ? cl(qt / DUR) : cl(-scroller.getBoundingClientRect().top / (scroller.offsetHeight - innerHeight))
+  let queued = false
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; frame(prog()) }) } }, { passive: true })
+  addEventListener('resize', () => frame(prog()))
+  document.fonts.ready.then(() => { if (qt > 0) window.scrollTo(0, scroller.offsetTop + 2); frame(prog()) })
+  frame(prog())
+})()
+</script>
+</body>
+</html>

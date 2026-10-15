@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 4 + 5 prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0d0b0a; --ink:#f1ece4; --muted:#9a9388; --line:#2b2824; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:32px 16px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; color:#ffc857; text-transform:uppercase; line-height:1.7; }
+  h1 { font-size:clamp(26px,5vw,44px); line-height:1.05; margin:10px 0 8px; letter-spacing:-.02em; }
+  p { margin:0 0 10px; } .muted { color:var(--muted); }
+  ol.beats { color:var(--muted); font-size:14px; padding-left:20px; columns:2; column-gap:32px; }
+  ol.beats b { color:var(--ink); font-weight:500; }
+
+  .scroller { position:relative; height:1500vh; }
+  .sticky { position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; }
+  .stage { position:relative; width:min(calc(100vw - 32px), calc(86vh * 16 / 9)); aspect-ratio:16/9; overflow:hidden; border:1px solid var(--line);
+           container-type:size; background:#000; }
+  .bar { width:min(calc(100vw - 32px), calc(86vh * 16 / 9)); height:3px; background:#2b2824; }
+  .bar > div { height:100%; width:0; background:#ffc857; }
+  .hint { font-size:13px; color:var(--muted); }
+  .layer { position:absolute; inset:0; }
+
+  /* ── room + camera ── */
+  #room { transform-origin:0 0; will-change:transform; }
+  #room svg.roomart { position:absolute; inset:0; width:100%; height:100%; }
+  #screen { position:absolute; left:46%; top:28%; width:24%; height:32%; overflow:hidden; border-radius:4%/5.3%;
+            container-type:size; background:#000; }
+  #screen .crt { position:absolute; inset:0; pointer-events:none; z-index:90;
+                 background:repeating-linear-gradient(0deg, rgba(0,0,0,.13) 0 1px, transparent 1px 3px),
+                            radial-gradient(ellipse 75% 70% at 50% 50%, transparent 62%, rgba(0,0,0,.45) 100%); }
+  #screen .glare { position:absolute; inset:0; pointer-events:none; z-index:91;
+                   background:radial-gradient(ellipse 60% 40% at 30% 18%, rgba(255,255,255,.09), transparent 70%); }
+
+  /* ── desktop (units = the 4:3 screen) ── */
+  .xp { font-family:Tahoma, Verdana, 'DejaVu Sans', sans-serif; color:#000; }
+  #desktop { position:absolute; inset:0; }
+  #wall { position:absolute; inset:0; width:100%; height:100%; }
+  .icons { position:absolute; left:2cqw; top:2.5cqh; display:flex; flex-direction:column; gap:3cqh; }
+  .icon { width:13cqw; text-align:center; font-size:2.3cqh; color:#fff; text-shadow:.15cqh .15cqh .2cqh #000; line-height:1.2; }
+  .icon svg { width:7.2cqh; height:7.2cqh; display:block; margin:0 auto .6cqh; }
+  #taskbar { position:absolute; left:0; right:0; bottom:0; height:6.2cqh; z-index:50; display:flex; align-items:stretch;
+             background:linear-gradient(#3a7cf0 0%, #245edb 12%, #1f55cc 80%, #1941a5 100%); }
+  #start { width:15cqw; display:flex; align-items:center; gap:1cqh; padding-left:1.6cqh; color:#fff; font:italic bold 3cqh Tahoma, Verdana, sans-serif;
+           text-shadow:.12cqh .12cqh .2cqh rgba(0,0,0,.6); border-radius:0 2.4cqh 2.4cqh 0;
+           background:linear-gradient(#5fb85a 0%, #3c9a37 15%, #328b2e 80%, #2a7426 100%); }
+  #start i { width:2.6cqh; height:2.6cqh; border-radius:50%; background:radial-gradient(circle at 35% 35%, #fff, #e8f5e3 30%, #9bd18f); display:block; }
+  #tasks { flex:1; display:flex; gap:.6cqw; padding:.8cqh 1cqw; }
+  .task { width:17cqw; border-radius:.5cqh; color:#fff; font-size:2cqh; padding:0 1cqh; display:flex; align-items:center; white-space:nowrap; overflow:hidden;
+          background:linear-gradient(#3c81f3,#2b6ae4); border:1px solid rgba(255,255,255,.25); }
+  .task.on { background:linear-gradient(#1e4fbf,#1946b0); box-shadow:inset 0 0 .6cqh rgba(0,0,0,.4); }
+  #tray { width:16cqw; display:flex; align-items:center; justify-content:flex-end; padding-right:2cqh; color:#fff; font-size:2.1cqh;
+          background:linear-gradient(#18a4ef,#0f8ee0 20%, #0c7ccd); border-left:1px solid #0a62a8; }
+
+  .win { position:absolute; background:#ece9d8; border:.45cqh solid #0b48d6; border-top:0; border-radius:1.4cqh 1.4cqh .3cqh .3cqh;
+         box-shadow:.8cqh 1.2cqh 2.4cqh rgba(0,0,0,.4); overflow:hidden; transform-origin:50% 60%; display:flex; flex-direction:column; }
+  .tb { height:4.8cqh; flex:none; display:flex; align-items:center; gap:1cqh; padding:0 .8cqh 0 1.4cqh; color:#fff; font:bold 2.3cqh Tahoma, Verdana, sans-serif;
+        text-shadow:.1cqh .1cqh .1cqh rgba(0,0,0,.5); background:linear-gradient(#0997ff 0%, #0053ee 9%, #0050ee 60%, #0447d8 85%, #0339b8 100%); }
+  .tb .t { flex:1; white-space:nowrap; overflow:hidden; }
+  .tb b { width:3.3cqh; height:3.3cqh; border-radius:.5cqh; border:.2cqh solid #fff; background:linear-gradient(#5a96ff,#2a6cf0); display:inline-block; }
+  .tb b.x { background:linear-gradient(#f08b6c,#d6421d); }
+  .wb { flex:1; position:relative; overflow:hidden; font-size:2.3cqh; }
+  .btn { display:inline-block; padding:.5cqh 2.2cqh; border:.2cqh solid #003c74; border-radius:.5cqh; background:linear-gradient(#fff,#ece9d8 85%,#d6d0c5); font-size:2.2cqh; }
+
+  /* full-screen overlays inside the monitor */
+  .full { position:absolute; inset:0; z-index:60; }
+  #powerline { position:absolute; left:0; right:0; top:50%; height:100%; background:#fff; transform-origin:50% 0; }
+  #boot { background:#000; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3cqh; font-family:Tahoma, Verdana, sans-serif; }
+  #boot .logo { font:bold 9cqh Tahoma, Verdana, sans-serif; letter-spacing:-.04em; }
+  #boot .logo span { color:#ff8c1a; }
+  #boot .sub { font-size:2.4cqh; color:#bbb; }
+  .loadbar { width:24cqw; height:2.6cqh; border:.25cqh solid #b2b2b2; border-radius:.6cqh; position:relative; overflow:hidden; }
+  .loadbar i { position:absolute; top:.35cqh; width:1.6cqh; height:1.4cqh; border-radius:.2cqh; background:linear-gradient(#2c5ce9,#7fa7ff 50%,#2c5ce9); }
+  #cont { background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3cqh; font-family:'Press Start 2P', monospace; color:#fff; }
+  #cont .q { font-size:6cqh; color:#ffd84a; text-shadow:.6cqh .6cqh 0 #e0343c; }
+  #cont .n { font-size:16cqh; }
+  #cont .s { font-size:2.4cqh; color:#ccc; }
+  #cont .yes { font-size:5cqh; color:#7dff8a; }
+  #pitch { background:#050505; overflow:hidden; }
+
+  /* toast + hud (live in the room's frame, outside the screen) */
+  #hud { position:absolute; left:2%; top:3%; font-family:'Press Start 2P', monospace; font-size:1.7cqh; color:#ffc857; z-index:200; text-shadow:0 0 .6cqh rgba(0,0,0,.9); }
+  #toast { position:absolute; right:2%; top:3%; width:24%; z-index:200; padding:1.4cqh 1.6cqh; border-radius:1cqh; background:rgba(14,12,10,.86); border:1px solid #ffc857;
+           font-size:1.9cqh; line-height:1.35; color:#f6efe3; box-shadow:0 1cqh 3cqh rgba(0,0,0,.5); }
+  #toast .k { font-family:'Press Start 2P', monospace; font-size:1.3cqh; color:#ffc857; display:block; margin-bottom:.8cqh; }
+
+  /* ── chapter 5 ── */
+  #city { z-index:100; }
+  #city svg { position:absolute; inset:0; width:100%; height:100%; }
+  #adobe { position:absolute; left:50%; bottom:9%; width:52%; transform:translateX(-50%); padding:2.6cqh 3cqh; border-radius:1.6cqh;
+           background:rgba(255,248,236,.92); color:#2a1a10; box-shadow:0 2cqh 5cqh rgba(60,20,0,.35); }
+  #adobe .e { font-family:'Press Start 2P', monospace; font-size:1.5cqh; color:#c8501e; letter-spacing:.06em; }
+  #adobe h3 { margin:1.2cqh 0 .8cqh; font-size:3.8cqh; line-height:1.1; letter-spacing:-.01em; }
+  #adobe p { margin:0; font-size:2.2cqh; line-height:1.45; color:#5a4636; }
+  #save { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:46%; padding:3cqh; z-index:3;
+          background:#f8f8f0; color:#1c1c1c; border:.6cqh solid #1c1c1c; box-shadow:0 0 0 .6cqh #f8f8f0, 0 3cqh 6cqh rgba(0,0,0,.4);
+          font-family:'Press Start 2P', monospace; font-size:2.3cqh; line-height:1.8; }
+  #save .opts { margin-top:2cqh; display:flex; gap:6cqh; }
+  #final { position:absolute; inset:0; z-index:4; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2.2cqh; text-align:center;
+           background:radial-gradient(ellipse at 50% 40%, rgba(40,18,8,.55), rgba(10,6,4,.92) 75%); color:#fff7ea; }
+  #final .big { font-family:'Press Start 2P', monospace; font-size:4.4cqh; color:#ffd36b; text-shadow:.5cqh .5cqh 0 #a2381c; }
+  #final .row { display:flex; gap:1.6cqh; flex-wrap:wrap; justify-content:center; }
+  #final .row a { font-size:2.2cqh; padding:1.2cqh 2.4cqh; border-radius:99px; border:1px solid rgba(255,220,170,.5); color:#fff7ea; text-decoration:none; }
+  #final .row a.p { background:#ffc857; color:#1a1007; border-color:#ffc857; font-weight:700; }
+  #final .ask { font-size:2.5cqh; color:#e8d6bd; max-width:70%; }
+
+  .note { border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:22px 0; }
+  .note h3 { margin:0 0 6px; font-size:15px; }
+  .note li { color:var(--muted); font-size:14px; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Chapters 4 + 5 · prototype · scroll to play</p>
+  <h1>The builder years, on the family computer. Then San Francisco.</h1>
+  <p class="muted">Ch3's diary closes to black. A chunky CRT clicks on, and every venture opens as a program on a 2000s desktop. Ch5 pulls back out of the screen, through the window, into golden-hour San Francisco. This is the timing and the look. Sound, polish and the phone layout come in the real build.</p>
+  <ol class="beats">
+    <li><b>Power on</b>: CRT click, boot screen, desktop.</li>
+    <li><b>Mail</b>: the admission letter (university not named).</li>
+    <li><b>Visa error</b>: a dialog says no; the screen dies.</li>
+    <li><b>CONTINUE? 9…8…7</b>: the arcade comes back; YES.</li>
+    <li><b>Setup wizard</b>: installing the accelerator.</li>
+    <li><b>Décor Tycoon</b>: $60 → ≈$16K, under 6 months, investor meter.</li>
+    <li><b>Pet brand</b>: product sheet, the prebiotic diagram.</li>
+    <li><b>Feed → IM → pitch</b>: posts, a chat ping, the pitch slideshow.</li>
+    <li><b>21 in 21</b>: a folder, 7 real icons (clickable), 14 locked.</li>
+    <li><b>Idea Tester + Ad Maker</b>: variants, votes, a finished ad.</li>
+    <li><b>Badge + class</b>: the conference lanyard, the class you taught.</li>
+    <li><b>Ch5</b>: pull back to the room, through the window, Adobe, SAVE?</li>
+  </ol>
+</div>
+
+<div class="scroller" id="scroller">
+  <div class="sticky">
+    <div class="stage" id="stage">
+
+      <!-- ───────── the room (camera moves this layer) ───────── -->
+      <div class="layer" id="room">
+        <svg class="roomart" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="gWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2333"/><stop offset="1" stop-color="#1b1622"/></linearGradient>
+            <linearGradient id="gDesk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a5536"/><stop offset=".08" stop-color="#5e3f27"/><stop offset="1" stop-color="#3c2717"/></linearGradient>
+            <linearGradient id="gNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1330"/><stop offset="1" stop-color="#26315c"/></linearGradient>
+            <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f6fb0"/><stop offset=".45" stop-color="#f2a65a"/><stop offset=".75" stop-color="#ffd27a"/><stop offset="1" stop-color="#ffb35c"/></linearGradient>
+            <linearGradient id="gBeige" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6dfcb"/><stop offset="1" stop-color="#c9bfa6"/></linearGradient>
+            <radialGradient id="gGlow" cx="58%" cy="44%" r="45%"><stop offset="0" stop-color="#7fb2ff" stop-opacity=".35"/><stop offset="1" stop-color="#7fb2ff" stop-opacity="0"/></radialGradient>
+            <radialGradient id="gSunlight" cx="20%" cy="30%" r="80%"><stop offset="0" stop-color="#ffb35c" stop-opacity=".45"/><stop offset="1" stop-color="#ff8a3c" stop-opacity="0"/></radialGradient>
+            <clipPath id="cWin"><rect x="96" y="81" width="416" height="378"/></clipPath>
+          </defs>
+          <rect width="1600" height="900" fill="url(#gWall)"/>
+          <!-- window -->
+          <g clip-path="url(#cWin)">
+            <rect x="96" y="81" width="416" height="378" fill="url(#gNight)"/>
+            <g id="winStars" fill="#fff"><circle cx="150" cy="120" r="2"/><circle cx="260" cy="150" r="1.5"/><circle cx="420" cy="110" r="2"/><circle cx="350" cy="200" r="1.3"/><circle cx="470" cy="180" r="1.6"/></g>
+            <g id="winGold" opacity="0">
+              <rect x="96" y="81" width="416" height="378" fill="url(#gGold)"/>
+              <circle cx="380" cy="330" r="38" fill="#fff1c4"/>
+              <path d="M96 380 L120 380 L120 300 L150 300 L150 340 L175 340 L175 250 L182 236 L189 250 L189 340 L215 340 L215 290 L250 290 L250 352 L290 352 L290 318 L330 318 L330 372 L512 372 L512 459 L96 459Z" fill="#7a3d2c" opacity=".85"/>
+              <rect x="96" y="410" width="416" height="49" fill="#c76a3a" opacity=".6"/>
+            </g>
+          </g>
+          <rect x="96" y="81" width="416" height="378" fill="none" stroke="#e9e1d1" stroke-width="16"/>
+          <rect x="298" y="81" width="12" height="378" fill="#e9e1d1"/><rect x="96" y="264" width="416" height="12" fill="#e9e1d1"/>
+          <rect x="80" y="459" width="448" height="20" rx="4" fill="#d9cfbd"/>
+          <!-- shelf with earlier chapters -->
+          <rect x="1240" y="300" width="300" height="12" fill="#6b4a2f"/>
+          <rect x="1262" y="214" width="62" height="86" rx="4" fill="#2f7fc0"/><rect x="1270" y="230" width="46" height="18" fill="#fdfcf6"/>
+          <path d="M1370 220 L1385 262 M1410 220 L1395 262" stroke="#d6342c" stroke-width="8"/><circle cx="1390" cy="276" r="20" fill="#f2c14e" stroke="#b8860b" stroke-width="4"/>
+          <rect x="1440" y="236" width="70" height="64" fill="#3a2e22"/><rect x="1446" y="242" width="58" height="52" fill="#c9a24a"/><rect x="1452" y="248" width="46" height="40" fill="#8b6b4a"/>
+          <!-- desk -->
+          <rect y="630" width="1600" height="270" fill="url(#gDesk)"/>
+          <rect y="626" width="1600" height="8" fill="#8c6644"/>
+          <rect id="glow" width="1600" height="900" fill="url(#gGlow)" opacity="0"/>
+          <rect id="sunlight" width="1600" height="900" fill="url(#gSunlight)" opacity="0"/>
+          <!-- game boy from chapter 1 -->
+          <g transform="translate(408 596) rotate(-12)"><rect width="74" height="116" rx="8" fill="#c8c4bc"/><rect x="10" y="10" width="54" height="42" rx="3" fill="#6b7353"/><rect x="16" y="16" width="42" height="30" fill="#9bbc0f"/><circle cx="54" cy="76" r="7" fill="#8c1d40"/><path d="M16 74h18M25 65v18" stroke="#333" stroke-width="7"/></g>
+          <!-- monitor -->
+          <rect x="682" y="230" width="492" height="350" rx="26" fill="#000" opacity=".35" transform="translate(10 14)"/>
+          <rect x="696" y="220" width="464" height="352" rx="22" fill="url(#gBeige)"/>
+          <rect x="722" y="240" width="412" height="312" rx="16" fill="#9e957f"/>
+          <rect x="1100" y="552" width="22" height="9" rx="3" fill="#a8a08a"/>
+          <circle id="led" cx="1080" cy="557" r="5" fill="#3a3a2c"/>
+          <path d="M880 572 L976 572 L992 614 L864 614Z" fill="#c9bfa6"/>
+          <path d="M820 614 L1036 614 L1050 640 L806 640Z" fill="#d8d0bc"/>
+          <!-- keyboard + mouse + mug -->
+          <path d="M752 660 L1104 660 L1124 712 L732 712Z" fill="#d8d0bc"/>
+          <g fill="#bdb39b"><rect x="770" y="668" width="320" height="10" rx="2"/><rect x="764" y="682" width="332" height="10" rx="2"/><rect x="758" y="696" width="344" height="10" rx="2"/></g>
+          <ellipse cx="1200" cy="690" rx="26" ry="34" fill="#d8d0bc"/>
+          <rect x="1300" y="610" width="60" height="70" rx="8" fill="#b23a3a"/><path d="M1360 626 q26 6 0 36" stroke="#b23a3a" stroke-width="9" fill="none"/>
+        </svg>
+
+        <!-- ── the monitor's screen ── -->
+        <div id="screen" class="xp">
+          <div id="desktop">
+            <svg id="wall" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="dSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f76d6"/><stop offset=".65" stop-color="#8cc1f0"/><stop offset="1" stop-color="#cfe6fa"/></linearGradient>
+                <linearGradient id="dHill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78c242"/><stop offset="1" stop-color="#2f7d1f"/></linearGradient>
+              </defs>
+              <rect width="400" height="300" fill="url(#dSky)"/>
+              <g fill="#fff" opacity=".85"><ellipse cx="90" cy="70" rx="46" ry="12"/><ellipse cx="120" cy="62" rx="30" ry="12"/><ellipse cx="300" cy="96" rx="52" ry="10"/><ellipse cx="270" cy="88" rx="26" ry="10"/></g>
+              <path d="M0 214 Q110 160 230 190 T400 176 V300 H0Z" fill="#5aa835"/>
+              <path d="M0 236 Q150 196 280 222 T400 210 V300 H0Z" fill="url(#dHill)"/>
+            </svg>
+            <div class="icons">
+              <div class="icon"><svg viewBox="0 0 40 40"><rect x="4" y="9" width="32" height="22" rx="2" fill="#fff" stroke="#6a86b8" stroke-width="2"/><path d="M5 10 L20 22 L35 10" stroke="#6a86b8" stroke-width="2" fill="none"/></svg>Inbox</div>
+              <div class="icon"><svg viewBox="0 0 40 40"><path d="M3 10 h13 l3 4 h18 v20 h-34z" fill="#f6d36b" stroke="#b89026" stroke-width="1.5"/></svg>21 in 21</div>
+              <div class="icon"><svg viewBox="0 0 40 40"><path d="M6 20 L20 7 L34 20 V35 H6Z" fill="#f2a65a" stroke="#9b5a1c" stroke-width="1.5"/><rect x="16" y="24" width="8" height="11" fill="#7a3d2c"/></svg>Décor Tycoon</div>
+              <div class="icon"><svg viewBox="0 0 40 40"><path d="M10 12 h20 l-2 24 h-16z" fill="#dfe8f2" stroke="#7d8fa6" stroke-width="1.5"/><rect x="8" y="8" width="24" height="4" fill="#b8c6d8"/></svg>Recycle Bin</div>
+            </div>
+
+            <!-- mail -->
+            <div class="win" id="wMail" style="left:16cqw;top:7cqh;width:66cqw;height:68cqh">
+              <div class="tb"><span class="t">Inbox · 1 new message</span><b></b><b></b><b class="x"></b></div>
+              <div class="wb" style="background:#fff;padding:2.4cqh 3cqh">
+                <div style="font-size:2.1cqh;color:#555;border-bottom:1px solid #ddd;padding-bottom:1.4cqh;margin-bottom:2cqh;line-height:1.6">
+                  <b style="color:#000">From:</b> Office of Undergraduate Admissions<br/>
+                  <b style="color:#000">Subject:</b> Your admission decision
+                </div>
+                <div style="font-family:Georgia,serif;font-size:2.7cqh;line-height:1.55">
+                  <p style="margin:0 0 1.6cqh">Dear Risheek,</p>
+                  <p style="margin:0 0 1.6cqh"><b>Congratulations!</b> It is my pleasure to offer you admission to the Class of 2028.</p>
+                  <p style="margin:0;color:#666;font-size:2.2cqh">A top-30 US university · Film + Computer Science</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- visa error -->
+            <div class="win" id="wErr" style="left:26cqw;top:30cqh;width:48cqw;height:27cqh;z-index:20">
+              <div class="tb"><span class="t">Visa application</span><b class="x"></b></div>
+              <div class="wb" style="padding:2.6cqh 2.6cqh;display:flex;gap:2.4cqh;align-items:flex-start">
+                <svg viewBox="0 0 40 40" style="width:7cqh;height:7cqh;flex:none"><circle cx="20" cy="20" r="18" fill="#e0402a" stroke="#9b1d0e" stroke-width="2"/><path d="M13 13 L27 27 M27 13 L13 27" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/></svg>
+                <div style="font-size:2.5cqh;line-height:1.5">Your student visa application was refused.<div style="margin-top:2.4cqh;text-align:center"><span class="btn">OK</span></div></div>
+              </div>
+            </div>
+
+            <!-- setup wizard -->
+            <div class="win" id="wSetup" style="left:15cqw;top:12cqh;width:70cqw;height:58cqh">
+              <div class="tb"><span class="t">Setup · Startup Accelerator (India)</span><b class="x"></b></div>
+              <div class="wb" style="display:flex">
+                <div style="width:30%;background:linear-gradient(#2a5bd8,#7aa6f5);display:flex;align-items:flex-end;padding:2cqh;color:#fff;font:bold 3.4cqh Tahoma,sans-serif;line-height:1.1">Builder<br/>mode</div>
+                <div style="flex:1;background:#fff;padding:3cqh 3cqh;position:relative">
+                  <div style="font-weight:bold;font-size:3cqh;margin-bottom:1.6cqh">Plan B, installing</div>
+                  <div id="setupLine" style="font-size:2.3cqh;color:#333;line-height:1.6;min-height:8cqh">Joining a startup accelerator…</div>
+                  <div style="height:3.4cqh;border:.25cqh solid #7a8ea8;margin-top:2cqh;padding:.35cqh;background:#fff"><div id="setupBar" style="height:100%;width:0;background:repeating-linear-gradient(90deg,#29b13a 0 1.6cqh,transparent 1.6cqh 2cqh)"></div></div>
+                  <div style="position:absolute;right:3cqh;bottom:2.4cqh;display:flex;gap:1.2cqh"><span class="btn" style="color:#999">&lt; Back</span><span class="btn" id="setupNext">Next &gt;</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- décor tycoon -->
+            <div class="win" id="wTyc" style="left:5cqw;top:4cqh;width:90cqw;height:84cqh">
+              <div class="tb"><span class="t">Décor Tycoon</span><b></b><b></b><b class="x"></b></div>
+              <div class="wb" style="background:#2b1d14">
+                <div style="display:flex;gap:2cqh;align-items:center;padding:1.2cqh 2cqh;background:linear-gradient(#5b3a22,#3e2716);color:#ffe7a8;font:bold 2.4cqh Tahoma,sans-serif;border-bottom:.3cqh solid #ae7b3b">
+                  <span>CASH <span id="cash" style="color:#fff;font-size:3.2cqh">$60</span></span>
+                  <span style="flex:1;display:flex;align-items:center;gap:1cqh;font-size:1.9cqh">TIME <span style="flex:1;height:1.6cqh;border:.2cqh solid #ae7b3b;border-radius:.4cqh;overflow:hidden"><i id="timebar" style="display:block;height:100%;width:0;background:#f2c14e"></i></span> 6 MONTHS</span>
+                  <span style="font-size:1.9cqh">INVESTOR INTEREST</span><span style="width:12cqw;height:1.9cqh;border:.2cqh solid #ae7b3b;border-radius:.4cqh;overflow:hidden"><i id="interest" style="display:block;height:100%;width:0;background:linear-gradient(90deg,#f2c14e,#ff6b3d)"></i></span>
+                </div>
+                <div style="position:absolute;left:0;top:7cqh;bottom:0;width:62%">
+                  <svg id="shop" viewBox="0 0 300 220" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%"></svg>
+                </div>
+                <div style="position:absolute;right:2cqh;top:9cqh;bottom:2cqh;width:34%;background:#1d130c;border:.3cqh solid #6b4a2f;border-radius:1cqh;padding:1.6cqh;color:#ffe7a8">
+                  <div style="font:bold 2cqh Tahoma,sans-serif">SALES</div>
+                  <svg id="graph" viewBox="0 0 100 70" preserveAspectRatio="none" style="width:100%;height:46%;margin-top:1cqh"><path d="M0 70 H100" stroke="#6b4a2f"/><path id="gline" d="" fill="none" stroke="#f2c14e" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+                  <div style="font-size:1.8cqh;color:#c9a97a;margin-top:1.2cqh">Started with about $60.</div>
+                  <div id="tycDone" style="font-size:2.2cqh;color:#fff;margin-top:1cqh;line-height:1.4">Close to <b style="color:#f2c14e">$16,000</b> in revenue, in under six months.</div>
+                  <div id="tycMsg" style="position:absolute;left:1.4cqh;right:1.4cqh;bottom:1.4cqh;padding:1.2cqh;background:#fff8e0;color:#3a2412;border-radius:.8cqh;font-size:1.9cqh;line-height:1.35"><b>✉ New message</b><br/>An investor would like to talk.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- pet brand -->
+            <div class="win" id="wPet" style="left:9cqw;top:8cqh;width:82cqw;height:72cqh">
+              <div class="tb"><span class="t">Pet brand · product sheet.doc</span><b></b><b></b><b class="x"></b></div>
+              <div class="wb" style="background:#fff">
+                <svg id="petSvg" viewBox="0 0 400 220" style="width:100%;height:100%">
+                  <text x="24" y="34" font-family="Georgia,serif" font-size="20" font-weight="bold">A prebiotic for dogs</text>
+                  <text x="24" y="54" font-family="Tahoma,sans-serif" font-size="10" fill="#666">Helps dogs digest their food better.</text>
+                  <g class="pd" data-a="0"><circle cx="70" cy="135" r="34" fill="#f3e3c7" stroke="#9a7a4a" stroke-width="2"/><text x="70" y="140" text-anchor="middle" font-size="11" font-family="Tahoma">food</text><path d="M44 158 h52 l-6 14 h-40z" fill="#c95a3a"/></g>
+                  <path class="pa" data-a="1" d="M112 135 h34" stroke="#333" stroke-width="2.5" marker-end="url(#ar)"/>
+                  <g class="pd" data-a="1.2"><rect x="156" y="98" width="62" height="78" rx="10" fill="#e8f4ea" stroke="#3a8a4a" stroke-width="2.5"/><rect x="156" y="98" width="62" height="18" rx="8" fill="#3a8a4a"/><text x="187" y="146" text-anchor="middle" font-size="9.5" font-family="Tahoma" font-weight="bold" fill="#225a2c">PREBIOTIC</text><text x="187" y="160" text-anchor="middle" font-size="7.5" font-family="Tahoma" fill="#4a7a52">[brand name]</text></g>
+                  <path class="pa" data-a="2.2" d="M228 135 h34" stroke="#333" stroke-width="2.5" marker-end="url(#ar)"/>
+                  <g class="pd" data-a="2.4"><path d="M290 110 q20 -12 32 6 q12 18 -8 26 q-22 8 -10 22 q12 14 34 6" fill="none" stroke="#d98a8a" stroke-width="9" stroke-linecap="round"/>
+                    <g fill="#3a8a4a"><circle cx="300" cy="112" r="3.5"/><circle cx="318" cy="126" r="3.5"/><circle cx="306" cy="146" r="3.5"/><circle cx="320" cy="164" r="3.5"/><circle cx="336" cy="170" r="3.5"/></g>
+                    <text x="318" y="198" text-anchor="middle" font-size="10" font-family="Tahoma">happier gut</text></g>
+                  <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs>
+                </svg>
+              </div>
+            </div>
+
+            <!-- feed + IM -->
+            <div class="win" id="wFeed" style="left:8cqw;top:5cqh;width:60cqw;height:82cqh">
+              <div class="tb"><span class="t">Feed · Browser</span><b></b><b></b><b class="x"></b></div>
+              <div style="background:#ece9d8;padding:.8cqh 1.4cqh;font-size:1.9cqh;display:flex;gap:1cqh;align-items:center;border-bottom:1px solid #aaa">Address <span style="flex:1;background:#fff;border:1px solid #7f9db9;padding:.3cqh 1cqh">http://www.feed.example/risheek</span></div>
+              <div class="wb" style="background:#f4f4f4">
+                <div style="position:absolute;left:0;right:0;top:0;padding:1.6cqh 2cqh;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:1.6cqh;z-index:2">
+                  <span style="width:6cqh;height:6cqh;border-radius:50%;background:#ffc857;display:grid;place-items:center;font-weight:bold;font-size:2.2cqh">RN</span>
+                  <span style="flex:1;font-weight:bold;font-size:2.4cqh">Risheek Nawka</span>
+                  <span style="font-size:2cqh;color:#555">followers <b id="followers" style="color:#0a58d0">▲</b></span>
+                </div>
+                <div id="posts" style="position:absolute;left:2cqw;right:2cqw;top:11cqh"></div>
+              </div>
+            </div>
+            <div class="win" id="wIM" style="left:58cqw;top:46cqh;width:38cqw;height:40cqh;z-index:25">
+              <div class="tb" style="background:linear-gradient(#5cb85c,#2f8a2f)"><span class="t">Chat · Accelerator team</span><b class="x"></b></div>
+              <div class="wb" style="background:#fff;padding:1.6cqh;font-size:2.1cqh;line-height:1.45">
+                <div><b style="color:#2f8a2f">team:</b> one of India's top investors is visiting the accelerator. she saw your posts.</div>
+                <div style="margin-top:1cqh"><b style="color:#2f8a2f">team:</b> want to pitch?</div>
+                <div id="imYes" style="margin-top:1cqh"><b style="color:#0a58d0">risheek:</b> yes.</div>
+              </div>
+            </div>
+
+            <!-- 21 in 21 folder -->
+            <div class="win" id="wFold" style="left:4cqw;top:4cqh;width:92cqw;height:84cqh">
+              <div class="tb"><span class="t">21 in 21</span><b></b><b></b><b class="x"></b></div>
+              <div style="background:#ece9d8;padding:.8cqh 1.4cqh;font-size:1.9cqh;display:flex;gap:1cqh;align-items:center;border-bottom:1px solid #aaa">Address <span style="flex:1;background:#fff;border:1px solid #7f9db9;padding:.3cqh 1cqh">C:\Projects\21 in 21</span></div>
+              <div class="wb" style="display:flex;background:#fff">
+                <div style="width:24%;background:linear-gradient(#7ba2e7,#6375d6);padding:2cqh 1.6cqh">
+                  <div style="background:#fff;border-radius:.8cqh;padding:1.4cqh;font-size:1.9cqh;line-height:1.45">
+                    <b style="color:#215dc6">21 projects, 21 days</b><br/>Small, free, phone-first creative tools. One ships every day, with a reel.
+                  </div>
+                </div>
+                <div id="grid" style="flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:min-content;gap:2.4cqh 1cqw;padding:2.6cqh 2cqw;align-content:start"></div>
+              </div>
+              <div style="background:#ece9d8;border-top:1px solid #aaa;padding:.6cqh 1.4cqh;font-size:1.9cqh" id="foldStatus">7 of 21 shipped</div>
+            </div>
+
+            <!-- idea tester + ad maker -->
+            <div class="win" id="wTest" style="left:5cqw;top:4cqh;width:76cqw;height:80cqh">
+              <div class="tb"><span class="t">Idea Tester</span><b></b><b></b><b class="x"></b></div>
+              <div class="wb" style="background:#fff;padding:2cqh 2.4cqh">
+                <div style="font-size:2cqh;color:#555">Test a design with AI customers before you spend on it.</div>
+                <div style="margin-top:1.2cqh;border:.25cqh solid #7f9db9;padding:1cqh 1.4cqh;font-size:2.6cqh;min-height:5.4cqh"><span id="typed"></span><span id="caret">|</span></div>
+                <div style="display:flex;gap:2cqw;margin-top:2.4cqh" id="variants"></div>
+                <div style="margin-top:1.6cqh;font-size:1.9cqh;color:#555" id="voteLbl">Synthetic customers voting…</div>
+              </div>
+            </div>
+            <div class="win" id="wAd" style="left:44cqw;top:30cqh;width:52cqw;height:52cqh;z-index:26">
+              <div class="tb"><span class="t">Ad Maker</span><b class="x"></b></div>
+              <div class="wb" style="background:#fff;padding:1.8cqh;display:flex;gap:1.6cqh;align-items:center">
+                <div style="flex:1;aspect-ratio:1;background:#e9e3d8;display:grid;place-items:center;font-size:1.8cqh;color:#777;border:1px dashed #aaa">product photo</div>
+                <div style="font-size:3cqh">→</div>
+                <div id="adOut" style="flex:1;aspect-ratio:4/5;position:relative;background:linear-gradient(160deg,#ffe2b8,#f2a65a);overflow:hidden;border-radius:.6cqh">
+                  <svg viewBox="0 0 40 50" style="position:absolute;inset:0;width:100%;height:100%"><ellipse cx="20" cy="22" rx="11" ry="7" fill="#fff"/><ellipse cx="14" cy="20" rx="6" ry="5" fill="#fff"/><rect x="18.5" y="28" width="3" height="11" fill="#7a3d2c"/><rect x="14" y="39" width="12" height="2.5" fill="#7a3d2c"/></svg>
+                  <div style="position:absolute;left:8%;right:8%;bottom:8%;font:bold 2.2cqh Georgia,serif;color:#3a1a08;line-height:1.1">Bring the sky home.</div>
+                </div>
+              </div>
+              <div style="position:absolute;left:1.8cqh;right:1.8cqh;bottom:1.4cqh;height:2.4cqh;border:.2cqh solid #7f9db9"><div id="adBar" style="height:100%;width:0;background:#29b13a"></div></div>
+            </div>
+
+            <!-- prototyping class -->
+            <div class="win" id="wClass" style="left:30cqw;top:6cqh;width:64cqw;height:76cqh">
+              <div class="tb" style="background:linear-gradient(#e8763a,#c4501b)"><span class="t">Prototyping class.ppt</span><b></b><b></b><b class="x"></b></div>
+              <div class="wb" style="background:#fffdf7;padding:2cqh 2.4cqh">
+                <div style="font:bold 3cqh Georgia,serif">A prototyping class I designed and taught</div>
+                <svg id="frame" viewBox="0 0 300 70" style="width:100%;height:18cqh;margin-top:1cqh">
+                  <g font-family="Tahoma" font-size="12" text-anchor="middle">
+                    <g class="fw" data-a="0"><rect x="6" y="14" width="74" height="40" rx="6" fill="#ffe7c2" stroke="#c4501b" stroke-width="2"/><text x="43" y="39">sketch</text></g>
+                    <g class="fw" data-a=".5"><path d="M84 34 h20" stroke="#333" stroke-width="2" marker-end="url(#ar)"/><rect x="110" y="14" width="74" height="40" rx="6" fill="#ffe7c2" stroke="#c4501b" stroke-width="2"/><text x="147" y="39">build</text></g>
+                    <g class="fw" data-a="1"><path d="M188 34 h20" stroke="#333" stroke-width="2" marker-end="url(#ar)"/><rect x="214" y="14" width="74" height="40" rx="6" fill="#ffe7c2" stroke="#c4501b" stroke-width="2"/><text x="251" y="39">test</text></g>
+                  </g>
+                </svg>
+                <div style="font-size:1.9cqh;color:#555;margin:1.4cqh 0 1cqh">Run with my accelerator. People from outside came too.</div>
+                <div id="seats" style="display:grid;grid-template-columns:repeat(8,1fr);gap:1.2cqh 1.4cqw"></div>
+              </div>
+            </div>
+
+            <!-- conference badge -->
+            <div id="badge" style="position:absolute;left:8cqw;top:-2cqh;width:20cqw;z-index:30;transform-origin:50% 0">
+              <svg viewBox="0 0 100 200" style="width:100%;overflow:visible">
+                <path d="M38 0 L46 64 M62 0 L54 64" stroke="#d6342c" stroke-width="7"/>
+                <rect x="40" y="58" width="20" height="14" rx="3" fill="#999"/>
+                <rect x="6" y="70" width="88" height="124" rx="7" fill="#fff" stroke="#ccc"/>
+                <rect x="6" y="70" width="88" height="34" rx="7" fill="#1c1c3a"/><rect x="6" y="90" width="88" height="14" fill="#1c1c3a"/>
+                <text x="50" y="85" text-anchor="middle" font-family="Tahoma" font-size="8" font-weight="bold" fill="#ffc857">PRODUCT FOLKS</text>
+                <text x="50" y="97" text-anchor="middle" font-family="Tahoma" font-size="7" fill="#fff">UNCONFERENCE 2025</text>
+                <text x="50" y="134" text-anchor="middle" font-family="Tahoma" font-size="11.5" font-weight="bold" fill="#111">RISHEEK</text>
+                <text x="50" y="148" text-anchor="middle" font-family="Tahoma" font-size="11.5" font-weight="bold" fill="#111">NAWKA</text>
+                <rect x="14" y="164" width="72" height="18" rx="9" fill="#ffc857"/>
+                <text x="50" y="176" text-anchor="middle" font-family="Tahoma" font-size="7.2" font-weight="bold" fill="#1c1c3a">YOUNGEST ATTENDEE</text>
+              </svg>
+            </div>
+
+            <div id="taskbar"><div id="start"><i></i>start</div><div id="tasks"></div><div id="tray">9:41 PM</div></div>
+          </div>
+
+          <div class="full" id="pitch">
+            <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+              <defs><radialGradient id="spot" cx="50%" cy="0%" r="100%"><stop offset="0" stop-color="#fff6d8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient></defs>
+              <rect width="400" height="300" fill="#0a0806"/>
+              <rect x="150" y="40" width="226" height="130" fill="#f6efe2"/>
+              <text x="263" y="88" text-anchor="middle" font-family="Georgia,serif" font-size="17" font-weight="bold" fill="#2a1a10">The pitch</text>
+              <rect x="185" y="104" width="156" height="6" fill="#d9c9ad"/><rect x="185" y="118" width="120" height="6" fill="#d9c9ad"/><rect x="185" y="132" width="140" height="6" fill="#d9c9ad"/>
+              <path id="spotCone" d="M70 0 L20 300 L150 300 L110 0Z" fill="url(#spot)"/>
+              <g id="presenter" fill="#120d09"><circle cx="85" cy="188" r="15"/><path d="M60 300 Q62 212 85 208 Q108 212 110 300Z"/><g fill="none" stroke="#3a3a3a" stroke-width="1.6"><circle cx="80" cy="187" r="3.6"/><circle cx="90" cy="187" r="3.6"/><path d="M83.6 187h2.8"/></g></g>
+              <ellipse cx="85" cy="296" rx="60" ry="8" fill="#fff6d8" opacity=".18"/>
+            </svg>
+          </div>
+          <div class="full" id="cont"><div class="q">CONTINUE?</div><div class="n" id="contN">9</div><div class="s" id="contS">PRESS START</div></div>
+          <div class="full" id="boot"><div class="logo">R<span>N</span></div><div class="sub">Risheek's PC</div><div class="loadbar"><i></i><i></i><i></i></div></div>
+          <div class="full" id="black" style="background:#000"><div id="powerline"></div></div>
+          <div class="crt"></div><div class="glare"></div>
+        </div>
+      </div>
+
+      <!-- ───────── chapter 5 · the city ───────── -->
+      <div class="layer" id="city">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="cSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a5aa0"/><stop offset=".38" stop-color="#d9846a"/><stop offset=".62" stop-color="#ffc77a"/><stop offset=".8" stop-color="#ffdf9e"/></linearGradient>
+            <linearGradient id="cWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e79a5c"/><stop offset="1" stop-color="#5b3a5a"/></linearGradient>
+            <radialGradient id="cSun"><stop offset="0" stop-color="#fffbe6"/><stop offset=".5" stop-color="#ffe9a8"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect width="1600" height="900" fill="url(#cSky)"/>
+          <circle id="sun" cx="1180" cy="560" r="170" fill="url(#cSun)"/>
+          <g id="cFar" fill="#b9707a" opacity=".55"><path d="M0 610 Q200 540 420 590 T860 575 T1300 590 T1600 570 V700 H0Z"/></g>
+          <g id="cBridge" stroke="#c8462c" fill="none">
+            <path d="M-20 640 Q130 560 250 548 Q330 600 420 640" stroke-width="5"/>
+            <path d="M250 548 V690 M110 590 V690" stroke-width="12"/>
+            <path d="M-20 650 H520" stroke-width="9"/>
+          </g>
+          <g id="cCity" fill="#6a3446">
+            <rect x="700" y="470" width="58" height="230"/><rect x="770" y="420" width="70" height="280"/><path d="M860 700 L860 380 L885 300 L910 380 L910 700Z"/>
+            <rect x="930" y="450" width="64" height="250"/><path d="M1010 700 V360 Q1046 320 1082 360 V700Z"/><rect x="1100" y="480" width="56" height="220"/><rect x="1170" y="510" width="80" height="190"/>
+            <rect x="1270" y="540" width="60" height="160"/><rect x="620" y="530" width="66" height="170"/><rect x="560" y="570" width="50" height="130"/><rect x="1340" y="570" width="90" height="130"/>
+          </g>
+          <g fill="#ffe2a0" opacity=".7"><rect x="780" y="440" width="6" height="8"/><rect x="800" y="470" width="6" height="8"/><rect x="944" y="480" width="6" height="8"/><rect x="1030" y="400" width="6" height="8"/><rect x="1050" y="430" width="6" height="8"/><rect x="1186" y="540" width="6" height="8"/></g>
+          <rect y="690" width="1600" height="210" fill="url(#cWater)"/>
+          <path d="M1120 700 h120 M1140 730 h80 M1160 760 h50 M1150 800 h70" stroke="#fff3c8" stroke-width="5" opacity=".7"/>
+          <g id="fog" fill="#fff4e6" opacity=".35"><ellipse cx="200" cy="640" rx="320" ry="40"/><ellipse cx="560" cy="660" rx="260" ry="30"/></g>
+        </svg>
+        <div id="adobe">
+          <div class="e">SAN FRANCISCO</div>
+          <h3>Invited to San Francisco to consult for Adobe</h3>
+          <p>Firefly go-to-market and competitive analysis for India: how people there use AI in their creative work.</p>
+        </div>
+        <div id="save">Do you want to save your progress?<div class="opts"><span id="yes">▶ YES</span><span>NO</span></div></div>
+        <div id="final">
+          <div class="big">31 ACHIEVEMENTS UNLOCKED</div>
+          <div class="ask">Next level: the Horowitz Academy founding class.</div>
+          <div class="row"><a class="p" href="#">Contact me</a><a href="#">See everything (Index)</a><a href="#">GitHub</a><a href="#">LinkedIn</a></div>
+        </div>
+      </div>
+
+      <div id="hud">CH 4 · THE BUILDER YEARS</div>
+      <div id="toast"><span class="k">★ UNLOCKED</span><span id="toastT"></span></div>
+    </div>
+    <div class="bar"><div id="barfill"></div></div>
+    <div class="hint" id="hint">scroll ↓</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="note">
+    <h3>Placeholders in this prototype</h3>
+    <ul>
+      <li>University, accelerator, décor and pet brand names, and the investor stay unnamed until you confirm them.</li>
+      <li>The tycoon counter ends at "close to $16,000" and the time bar at "under six months"; no invented monthly figures.</li>
+      <li>"Youngest attendee" on the badge and the class wording are still to confirm.</li>
+      <li>"31 achievements" is the real count of story unlocks (robotics lives in the Index only).</li>
+      <li>Silent here. The real build adds a CRT click and hum, the error ding, the arcade countdown beeps, sale "cha-ching"s, a chat ping and applause after the pitch. The Game Boy chime returns as a warm chord at SAVE.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id)
+  const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x))
+  const seg = (t, a, b) => cl((t - a) / (b - a))
+  const io = (x) => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
+  const eo = (x) => 1 - Math.pow(1 - x, 3)
+  const lerp = (a, b, u) => a + (b - a) * u
+  const DUR = 96
+
+  // ── build repeated content ──
+  const LIVE = ['Shot Planner', 'Handwriting Font', 'Doodle Alive', 'Underline', 'Look Up', 'Pocket Booth', 'Spotted a Cutie']
+  const URLS = ['', 'https://handwriting-font-converter.vercel.app', 'https://doodle-alive.vercel.app', 'https://underline-it.vercel.app', 'https://look-up-sky.vercel.app', 'https://the-pocket-booth.vercel.app', 'https://spotted-a-cutie.vercel.app']
+  const HUES = ['#5b8def', '#e86a92', '#f2a65a', '#f2d94a', '#7cc6f2', '#b48cf2', '#6fcf7f']
+  const grid = $('grid')
+  for (let i = 0; i < 21; i++) {
+    const live = i < LIVE.length
+    const a = document.createElement(live && URLS[i] ? 'a' : 'div')
+    if (live && URLS[i]) { a.href = URLS[i]; a.target = '_blank'; a.rel = 'noopener' }
+    a.className = 'proj'
+    a.style.cssText = 'text-align:center;font-size:1.7cqh;line-height:1.2;color:#000;text-decoration:none;opacity:0'
+    a.innerHTML = live
+      ? `<div style="width:6.4cqh;height:6.4cqh;margin:0 auto .6cqh;border-radius:1cqh;background:${HUES[i]};box-shadow:inset 0 -.6cqh 0 rgba(0,0,0,.18);display:grid;place-items:center;color:#fff;font-weight:bold;font-size:2.4cqh">${i + 1}</div>${LIVE[i]}`
+      : `<div style="width:6.4cqh;height:6.4cqh;margin:0 auto .6cqh;border-radius:1cqh;background:#d9d9d9;border:.2cqh dashed #aaa;display:grid;place-items:center;color:#999;font-size:2.2cqh">🔒</div><span style="color:#999">Day ${i + 1}</span>`
+    grid.appendChild(a)
+  }
+  const posts = $('posts')
+  const POSTS = ['Day 12 of building a décor brand from $60.', 'What I learned pitching my first investor.', 'Why décor should feel like fashion.', 'Prototyping is a habit, not a phase.', 'Shipped: a tool that tests ideas with AI.']
+  POSTS.forEach((txt, i) => {
+    const d = document.createElement('div')
+    d.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:.8cqh;padding:1.6cqh;margin-bottom:1.8cqh'
+    d.innerHTML = `<div style="font-size:2.2cqh;font-weight:bold;margin-bottom:1cqh">${txt}</div><div style="height:16cqh;border-radius:.6cqh;background:linear-gradient(135deg,${HUES[(i * 2) % 7]},${HUES[(i * 2 + 3) % 7]})"></div><div style="font-size:1.8cqh;color:#888;margin-top:.8cqh">♥ ${[214, 1300, 860, 2400, 3100][i]}</div>`
+    posts.appendChild(d)
+  })
+  const VARS = [['#9ec5ff', 'M10 26 q10 -14 20 0'], ['#ffffff', 'M8 24 q12 -16 24 0'], ['#ffd27a', 'M12 25 q8 -10 16 0']]
+  VARS.forEach(([c], i) => {
+    const d = document.createElement('div')
+    d.style.cssText = 'flex:1;border:.25cqh solid #ccc;border-radius:1cqh;padding:1.2cqh;position:relative'
+    d.innerHTML = `<div style="height:17cqh;background:#f2efe8;border-radius:.6cqh;display:grid;place-items:center"><svg viewBox="0 0 40 40" style="height:85%"><ellipse cx="20" cy="${14 + i * 2}" rx="${10 + i * 3}" ry="${6 + (i % 2) * 2}" fill="${c}" stroke="#8aa" stroke-width=".8"/><ellipse cx="${13 - i}" cy="${12 + i * 2}" rx="6" ry="5" fill="${c}" stroke="#8aa" stroke-width=".8"/><rect x="18.8" y="${20 + i * 2}" width="2.4" height="${12 - i * 2}" fill="#7a5a3a"/><rect x="14" y="32" width="12" height="2.4" fill="#7a5a3a"/></svg></div>
+      <div style="font-size:1.8cqh;margin:1cqh 0 .6cqh">Variant ${'ABC'[i]}</div><div style="height:2.2cqh;background:#eee;border-radius:.4cqh;overflow:hidden"><i class="vb" style="display:block;height:100%;width:0;background:${i === 1 ? '#29b13a' : '#9aa7b8'}"></i></div>
+      <div class="vp" style="font-size:1.8cqh;color:#333;margin-top:.4cqh">0%</div>${i === 1 ? '<div class="win1" style="position:absolute;right:-1cqh;top:-1.6cqh;background:#ffc857;border-radius:99px;padding:.4cqh 1.4cqh;font-size:1.8cqh;font-weight:bold">★ winner</div>' : ''}`
+    $('variants').appendChild(d)
+  })
+  const seats = $('seats')
+  for (let i = 0; i < 24; i++) { const s = document.createElement('div'); s.style.cssText = 'height:5.2cqh;display:grid;place-items:end center'; s.innerHTML = '<svg viewBox="0 0 20 22" style="height:100%"><circle cx="10" cy="7" r="5"/><path d="M1 22 q1 -10 9 -10 q8 0 9 10z"/></svg>'; seats.appendChild(s) }
+
+  // the shop floor for Décor Tycoon (pure function of time)
+  const shop = $('shop')
+  const ITEMS = [[70, 64, 'lamp'], [118, 60, 'vase'], [166, 64, 'frame'], [214, 60, 'plant'], [92, 118, 'cushion'], [150, 118, 'clock'], [208, 118, 'rug']]
+  const itemSvg = (k) => ({
+    lamp: '<path d="M-8 -4 L8 -4 L5 -16 L-5 -16Z" fill="#f2d94a"/><rect x="-1" y="-4" width="2" height="12" fill="#7a5a3a"/>',
+    vase: '<path d="M-5 8 Q-9 -2 -3 -10 L3 -10 Q9 -2 5 8Z" fill="#5b8def"/>',
+    frame: '<rect x="-8" y="-12" width="16" height="18" fill="#c9a24a"/><rect x="-5" y="-9" width="10" height="12" fill="#8fd0e8"/>',
+    plant: '<path d="M-5 8 L-4 0 L4 0 L5 8Z" fill="#c95a3a"/><circle cx="-3" cy="-4" r="5" fill="#4caf50"/><circle cx="3" cy="-6" r="5" fill="#66bb6a"/>',
+    cushion: '<rect x="-9" y="-6" width="18" height="12" rx="4" fill="#e86a92"/>',
+    clock: '<circle r="8" fill="#fff" stroke="#333" stroke-width="1.5"/><path d="M0 0 V-5 M0 0 H4" stroke="#333" stroke-width="1.5"/>',
+    rug: '<rect x="-12" y="-4" width="24" height="9" rx="2" fill="#b48cf2"/><path d="M-12 0.5 H12" stroke="#fff" stroke-width="1" stroke-dasharray="2 2"/>',
+  })[k]
+  const N_CUST = 14
+  function drawShop(t) {
+    const u = seg(t, 30, 39.5)
+    let s = '<rect x="0" y="0" width="300" height="220" fill="#f6e7cf"/>'
+    s += '<g stroke="#ead6b4" stroke-width="1">' + Array.from({ length: 15 }, (_, i) => `<path d="M${i * 22 - 40} 220 L${i * 22 + 60} 0"/>`).join('') + '</g>'
+    s += '<rect x="0" y="0" width="300" height="34" fill="#e9b97f"/><rect x="0" y="30" width="300" height="5" fill="#c98f4f"/>'
+    s += '<text x="150" y="23" text-anchor="middle" font-family="Georgia,serif" font-size="15" font-weight="bold" fill="#5a2f12">[ brand name ]</text>'
+    s += '<rect x="40" y="76" width="200" height="8" rx="2" fill="#a4774a"/><rect x="62" y="130" width="170" height="8" rx="2" fill="#a4774a"/>'
+    ITEMS.forEach(([x, y, k], i) => {
+      const a = eo(seg(u, i * .09, i * .09 + .08))
+      if (a > 0) s += `<g transform="translate(${x} ${y + 10}) scale(${a.toFixed(3)})">${itemSvg(k)}</g>`
+    })
+    s += '<rect x="246" y="168" width="46" height="26" rx="3" fill="#7a5536"/><text x="269" y="186" text-anchor="middle" font-family="Tahoma" font-size="9" fill="#ffe7a8">TILL</text>'
+    s += '<rect x="0" y="176" width="10" height="40" fill="#5a3a22"/>'
+    for (let i = 0; i < N_CUST; i++) {
+      const t0 = 30.2 + i * 0.62, d = (t - t0) / 2.2
+      if (d < 0 || d > 1.25) continue
+      const tgt = ITEMS[i % ITEMS.length]
+      let x, y
+      if (d < .45) { const k = d / .45; x = lerp(8, tgt[0], k); y = lerp(196, tgt[1] + 34, k) }
+      else if (d < .55) { x = tgt[0]; y = tgt[1] + 34 }
+      else if (d < 1) { const k = (d - .55) / .45; x = lerp(tgt[0], 238, k); y = lerp(tgt[1] + 34, 182, k) }
+      else { x = 238; y = 182 }
+      const bob = Math.abs(Math.sin(d * 28)) * 2
+      const col = HUES[(i * 3) % 7]
+      if (d <= 1.02) s += `<g transform="translate(${x.toFixed(1)} ${(y - bob).toFixed(1)})"><circle cy="-13" r="4.5" fill="#f1c9a5"/><rect x="-4.5" y="-9" width="9" height="11" rx="3" fill="${col}"/></g>`
+      if (d > 1) { const k = (d - 1) / .25; s += `<text x="252" y="${(160 - k * 26).toFixed(1)}" font-family="Tahoma" font-size="12" font-weight="bold" fill="#2e8b3a" opacity="${(1 - k).toFixed(2)}">+$</text>` }
+    }
+    shop.innerHTML = s
+  }
+
+  // ── timeline (seconds) ──
+  const TOASTS = [
+    [10.5, 'Admitted to a top-30 US university (Film + Computer Science).'],
+    [27.4, 'Joined a startup accelerator in India.'],
+    [39.6, 'Home décor brand: $60 to close to $16,000 in under six months.'],
+    [46.2, 'Pet-care brand: a prebiotic that helps dogs digest food better.'],
+    [55.4, 'My content brought a top Indian investor to the accelerator. I pitched.'],
+    [62.6, '21 creative-tech projects in 21 days: 7 shipped so far.'],
+    [69.2, 'Built a platform to test brand ideas with AI.'],
+    [71.6, 'Built end-to-end ad automation.'],
+    [73.6, 'Youngest attendee at Product Folks Unconference 2025.'],
+    [76.8, 'Designed and taught a prototyping class.'],
+    [87.6, 'Consulted for Adobe in San Francisco.'],
+  ]
+  // camera: focus point F (room %), where it lands P (stage %), scale s
+  const CAM = {
+    open: { F: [58, 44], P: [50, 47], s: 1.45 },
+    screen: { F: [58, 44], P: [50, 50], s: 2.9 },
+    wide: { F: [50, 52], P: [50, 52], s: 1.0 },
+    window: { F: [19, 30], P: [50, 50], s: 4.2 },
+  }
+  const mixCam = (a, b, u) => ({ F: [lerp(a.F[0], b.F[0], u), lerp(a.F[1], b.F[1], u)], P: [lerp(a.P[0], b.P[0], u), lerp(a.P[1], b.P[1], u)], s: a.s * Math.pow(b.s / a.s, u) })
+
+  const room = $('room'), stage = $('stage')
+  const W = (id) => $(id)
+  const openWin = (el, t, a, b, o = {}) => {
+    const pop = o.pop ?? .45, out = o.out ?? .35
+    const on = t >= a && t <= b
+    el.style.display = on ? '' : 'none'
+    if (!on) return 0
+    const i = eo(seg(t, a, a + pop)), x = seg(t, b - out, b)
+    el.style.opacity = (i * (1 - x)).toFixed(3)
+    el.style.transform = `scale(${(lerp(.82, 1, i) * lerp(1, .9, x)).toFixed(3)})`
+    return seg(t, a, b)
+  }
+  const show = (el, on) => { el.style.display = on ? '' : 'none' }
+
+  function frame(p) {
+    const t = p * DUR
+
+    // camera
+    let cam
+    if (t < 2.4) cam = CAM.open
+    else if (t < 4.6) cam = mixCam(CAM.open, CAM.screen, io(seg(t, 2.4, 4.6)))
+    else if (t < 80) cam = CAM.screen
+    else if (t < 83.4) cam = mixCam(CAM.screen, CAM.wide, io(seg(t, 80, 83.4)))
+    else if (t < 86) cam = mixCam(CAM.wide, CAM.window, io(seg(t, 84.2, 86.2)))
+    else cam = CAM.window
+    room.style.transform = `translate(${(cam.P[0] - cam.F[0] * cam.s).toFixed(3)}%, ${(cam.P[1] - cam.F[1] * cam.s).toFixed(3)}%) scale(${cam.s.toFixed(4)})`
+
+    // power on
+    const on = t > .7
+    $('led').setAttribute('fill', on ? '#5bea5b' : '#3a3a2c')
+    $('glow').setAttribute('opacity', on && t < 86 ? (.6 + .4 * seg(t, .7, 2)).toFixed(2) : 0)
+    show($('black'), t < 1.5 || (t > 16.8 && t < 18.2))
+    $('black').style.opacity = t > 16.8 ? seg(t, 16.8, 17.6) * (1 - seg(t, 17.8, 18.2)) : 1
+    show($('powerline'), t > .7 && t < 1.5)
+    $('powerline').style.transform = `translateY(-50%) scaleY(${(lerp(.004, 1, eo(seg(t, .8, 1.45)))).toFixed(3)})`
+    show($('boot'), t >= 1.4 && t < 4.4)
+    $('boot').style.opacity = 1 - seg(t, 3.9, 4.4)
+    $('boot').querySelectorAll('.loadbar i').forEach((el, i) => { el.style.left = `${((((t * 1.4) + i * .09) % 1.3) * 100 - 15).toFixed(1)}%` })
+
+    // the screen dies after the visa, then CONTINUE?
+    show($('cont'), t >= 18 && t < 23.6)
+    $('cont').style.opacity = seg(t, 18, 18.4) * (1 - seg(t, 23.2, 23.6))
+    const n = 9 - Math.floor(seg(t, 18.5, 21.5) * 6 - 1e-6)
+    const pressed = t > 21.4
+    $('contN').textContent = pressed ? '' : Math.max(4, n)
+    $('contS').textContent = pressed ? '' : 'PRESS START'
+    $('cont').querySelector('.q').textContent = pressed ? (t > 22.1 ? 'So I started building.' : 'YES') : 'CONTINUE?'
+    $('cont').querySelector('.q').style.fontSize = pressed && t > 22.1 ? '3.6cqh' : ''
+    $('cont').style.background = pressed && t < 21.8 ? '#fff' : '#000'
+
+    // windows
+    openWin(W('wMail'), t, 6.6, 17.2, { out: .2 })
+    $('wMail').style.filter = t > 13.2 ? 'grayscale(.6) brightness(.85)' : ''
+    openWin(W('wErr'), t, 13.2, 17.2, { pop: .18, out: .2 })
+    const shake = t > 13.2 && t < 13.7 ? Math.sin(t * 90) * (1 - seg(t, 13.2, 13.7)) * 1.2 : 0
+    $('desktop').style.transform = `translateX(${shake.toFixed(2)}cqw)`
+    const su = openWin(W('wSetup'), t, 23.6, 28.4)
+    $('setupBar').style.width = `${(eo(seg(t, 24.3, 27)) * 100).toFixed(1)}%`
+    $('setupLine').textContent = t < 25.4 ? 'Joining a startup accelerator…' : t < 26.6 ? 'Learning to build real businesses…' : 'Ready. Plan B is now Plan A.'
+    $('setupNext').textContent = t > 27 ? 'Finish' : 'Next >'
+
+    openWin(W('wTyc'), t, 28.4, 42, { pop: .5 })
+    if (t >= 28.4 && t <= 42) {
+      const u = seg(t, 30, 39.5)
+      const v = u < 1 ? 60 * Math.exp(Math.log(16000 / 60) * Math.pow(u, 1.15)) : 16000
+      $('cash').textContent = '$' + Math.round(u >= 1 ? 16000 : Math.min(v, 15990)).toLocaleString('en-US')
+      $('timebar').style.width = `${(u * 92).toFixed(1)}%`
+      $('interest').style.width = `${(eo(seg(t, 34, 39.8)) * 100).toFixed(1)}%`
+      const pts = Array.from({ length: 40 }, (_, i) => { const k = i / 39 * u; return `${(k * 100).toFixed(1)} ${(70 - 66 * Math.pow(k, 2.4)).toFixed(1)}` })
+      $('gline').setAttribute('d', 'M' + pts.join(' L'))
+      $('tycDone').style.opacity = seg(t, 39.4, 40)
+      $('tycMsg').style.opacity = seg(t, 39.9, 40.3)
+      $('tycMsg').style.transform = `translateY(${((1 - eo(seg(t, 39.9, 40.4))) * 3).toFixed(2)}cqh)`
+      drawShop(t)
+    }
+
+    openWin(W('wPet'), t, 42, 48)
+    $('wPet').querySelectorAll('.pd,.pa').forEach((g) => { g.style.opacity = eo(seg(t, 42.7 + +g.dataset.a, 43.4 + +g.dataset.a)) })
+
+    openWin(W('wFeed'), t, 48, 53.6, { out: .3 })
+    $('posts').style.transform = `translateY(${(-eo(seg(t, 48.6, 52.6)) * 62).toFixed(2)}cqh)`
+    $('followers').textContent = '▲ ' + Math.round(lerp(180, 4200, io(seg(t, 48.6, 52.6)))).toLocaleString('en-US')
+    openWin(W('wIM'), t, 50.8, 53.6, { pop: .25, out: .3 })
+    const nudge = t > 50.8 && t < 51.3 ? Math.sin(t * 80) * 1.4 * (1 - seg(t, 50.8, 51.3)) : 0
+    $('wIM').style.translate = `${nudge.toFixed(2)}cqw 0`
+    $('imYes').style.opacity = seg(t, 52.4, 52.6)
+    show($('pitch'), t >= 53.4 && t < 57.6)
+    $('pitch').style.opacity = seg(t, 53.4, 53.9) * (1 - seg(t, 57.2, 57.6))
+    $('spotCone').setAttribute('opacity', seg(t, 54, 54.6))
+    $('presenter').setAttribute('transform', `translate(${(lerp(-40, 0, eo(seg(t, 54.2, 55.4)))).toFixed(1)} 0)`)
+
+    openWin(W('wFold'), t, 57.4, 66)
+    $('grid').querySelectorAll('.proj').forEach((el, i) => {
+      const a = i < 7 ? 58.2 + i * .5 : 61.8 + (i - 7) * .04
+      const k = eo(seg(t, a, a + .35))
+      el.style.opacity = k; el.style.transform = `scale(${lerp(.4, 1, k).toFixed(3)})`
+    })
+    $('foldStatus').textContent = t < 61.8 ? `${Math.min(7, Math.max(0, Math.floor((t - 58.2) / .5) + 1))} of 21 shipped` : '7 of 21 shipped · 14 to go · click one to open it'
+
+    openWin(W('wTest'), t, 66, 72.4)
+    const phrase = 'A lamp shaped like a cloud'
+    $('typed').textContent = phrase.slice(0, Math.round(seg(t, 66.6, 67.9) * phrase.length))
+    $('caret').style.opacity = (t * 2.5) % 1 < .5 ? 1 : 0
+    const VOTE = [21, 62, 17]
+    $('variants').querySelectorAll(':scope > div').forEach((d, i) => {
+      d.style.opacity = eo(seg(t, 68 + i * .2, 68.4 + i * .2))
+      const k = io(seg(t, 68.8, 70))
+      d.querySelector('.vb').style.width = `${(VOTE[i] * k).toFixed(1)}%`
+      d.querySelector('.vp').textContent = `${Math.round(VOTE[i] * k)}% would buy`
+      const w = d.querySelector('.win1'); if (w) w.style.opacity = seg(t, 70.1, 70.3)
+    })
+    $('voteLbl').textContent = t < 70 ? 'Synthetic customers voting…' : 'Variant B wins. Make it.'
+    openWin(W('wAd'), t, 70.4, 72.4, { pop: .3 })
+    $('adBar').style.width = `${(seg(t, 70.6, 71.5) * 100).toFixed(1)}%`
+    $('adOut').style.opacity = seg(t, 71.3, 71.7)
+
+    // badge drops and swings, then the class
+    const bd = $('badge')
+    show(bd, t >= 72.4 && t < 78.2)
+    const drop = eo(seg(t, 72.4, 73.1))
+    const sw = t > 73 ? 9 * Math.exp(-(t - 73) * 1.2) * Math.sin((t - 73) * 6) : 0
+    bd.style.transform = `translateY(${lerp(-80, 0, drop).toFixed(2)}cqh) rotate(${sw.toFixed(2)}deg)`
+    bd.style.opacity = 1 - seg(t, 77.8, 78.2)
+    openWin(W('wClass'), t, 74.3, 78.2)
+    $('frame').querySelectorAll('.fw').forEach((g) => { g.style.opacity = eo(seg(t, 74.8 + +g.dataset.a, 75.2 + +g.dataset.a)) })
+    $('seats').querySelectorAll(':scope > div').forEach((s, i) => { const k = seg(t, 75.6 + i * .05, 75.9 + i * .05); s.style.opacity = .12 + .88 * k; s.style.color = k > .5 ? '#c4501b' : '#bbb' })
+
+    // taskbar buttons
+    const OPEN = [['Inbox', 6.6, 17.2], ['Setup', 23.6, 28.4], ['Décor Tycoon', 28.4, 42], ['product sheet.doc', 42, 48], ['Feed', 48, 53.6], ['21 in 21', 57.4, 66], ['Idea Tester', 66, 72.4], ['Prototyping class', 74.3, 78.2]]
+    const tasks = OPEN.filter(([, a, b]) => t >= a && t <= b)
+    const html = tasks.map(([n]) => `<div class="task on">${n}</div>`).join('')
+    if ($('tasks').innerHTML !== html) $('tasks').innerHTML = html
+
+    // the room becomes golden for chapter 5
+    const g = seg(t, 80.5, 83)
+    $('winGold').setAttribute('opacity', g); $('winStars').setAttribute('opacity', 1 - g)
+    $('sunlight').setAttribute('opacity', g)
+    show($('city'), t >= 85)
+    $('city').style.opacity = seg(t, 85, 86.4)
+    const crane = io(seg(t, 85, 92))
+    $('cCity').setAttribute('transform', `translate(0 ${(40 * (1 - crane)).toFixed(1)})`)
+    $('cBridge').setAttribute('transform', `translate(0 ${(26 * (1 - crane)).toFixed(1)})`)
+    $('sun').setAttribute('cy', (560 + 50 * seg(t, 85, 96)).toFixed(1))
+    $('adobe').style.opacity = seg(t, 86.6, 87.4) * (1 - seg(t, 90.8, 91.3))
+    $('adobe').style.translate = `0 ${((1 - eo(seg(t, 86.6, 87.5))) * 4).toFixed(2)}cqh`
+    show($('save'), t >= 91.2 && t < 93.6)
+    $('save').style.opacity = seg(t, 91.2, 91.6) * (1 - seg(t, 93.3, 93.6))
+    $('yes').style.visibility = t > 92.6 && (t * 6) % 1 < .5 ? 'hidden' : 'visible'
+    show($('final'), t >= 93.3)
+    $('final').style.opacity = seg(t, 93.3, 94.2)
+
+    // hud + toast
+    $('hud').textContent = t < 80 ? 'CH 4 · THE BUILDER YEARS' : 'CH 5 · SAN FRANCISCO'
+    $('hud').style.opacity = t < 1.5 ? 0 : 1
+    const cur = TOASTS.filter(([a]) => t >= a && t < a + 3.4).pop()
+    $('toast').style.display = cur ? '' : 'none'
+    if (cur) { $('toastT').textContent = cur[1]; $('toast').style.opacity = seg(t, cur[0], cur[0] + .25) * (1 - seg(t, cur[0] + 3, cur[0] + 3.4)) }
+
+    $('barfill').style.width = `${(p * 100).toFixed(1)}%`
+    $('hint').style.opacity = p > .02 ? 0 : 1
+  }
+
+  const scroller = $('scroller')
+  const qt = Number(new URLSearchParams(location.search).get('t'))
+  const prog = () => qt > 0 ? cl(qt / DUR) : cl(-scroller.getBoundingClientRect().top / (scroller.offsetHeight - innerHeight))
+  let queued = false
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; frame(prog()) }) } }, { passive: true })
+  addEventListener('resize', () => frame(prog()))
+  document.fonts.ready.then(() => { if (qt > 0) window.scrollTo(0, scroller.offsetTop + 2); frame(prog()) })
+  frame(prog())
+})()
+</script>
+</body>
+</html>

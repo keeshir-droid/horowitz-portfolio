@@ -1,0 +1,38 @@
+/*
+ * Chapter 3 diary: page styles shared by the engine and the page harness. Lead-owned (propose changes in handoffs).
+ * The engine sets --pw (page width in px) on the element with class dp-book; everything scales from it.
+ * One unit = page width / 80. One ruled row (--lh) = 4 units. 24 rows per page.
+ */
+.dp-book { --unit: calc(var(--pw, 400px) / 80); --lh: calc(var(--unit) * 4); }
+
+.dp-page { position: absolute; inset: 0; overflow: hidden; background-color: #fdfcf6; color: #161616;
+  font-family: DiaryHand, 'Gochi Hand', 'Comic Sans MS', cursive;
+  background-image: repeating-linear-gradient(180deg, transparent 0 calc(var(--lh) - 1px), rgba(118, 166, 220, 0.55) calc(var(--lh) - 1px) var(--lh)); }
+.dp-page.r { box-shadow: inset calc(var(--unit) * 2.6) 0 calc(var(--unit) * 3) calc(var(--unit) * -1.9) rgba(0, 0, 0, 0.32); }
+.dp-page.l { box-shadow: inset calc(var(--unit) * -2.6) 0 calc(var(--unit) * 3) calc(var(--unit) * -1.9) rgba(0, 0, 0, 0.32); }
+
+.dp-row { position: absolute; left: 9%; right: 8%; font-size: calc(var(--unit) * 3.18); line-height: var(--lh);
+  white-space: nowrap; transform: translateY(0.06em); }
+.dp-month { text-align: center; font-size: calc(var(--unit) * 4.04); letter-spacing: 0.08em; }
+.dp-day, .dp-day > .dp-appear { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.16em; }
+.dp-grey { color: #7a7a7a; }
+.dp-caps { text-transform: uppercase; }
+.dp-center { text-align: center; }
+.dp-small { font-size: calc(var(--unit) * 2.6); }
+.dp-needed { color: #9a9a9a; }
+.dp-u2 { border-bottom: 3px double #161616; }
+.dp-strike { text-decoration: line-through; text-decoration-thickness: 2px; }
+/* inline-block so the write-on clip works; note: a parent's text-decoration does not reach it, so put dp-day INSIDE appear(). */
+.dp-appear { display: inline-block; }
+/* Visually hidden, still read by screen readers (drawings are aria-hidden; put the facts here). */
+.dp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.dp-pno { position: absolute; bottom: 0.8%; left: 0; right: 0; text-align: center; font-size: calc(var(--unit) * 2.4); color: #555; }
+.dp-doodle { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.dp-corner { position: absolute; right: 4.5%; bottom: 5.2%; width: 25%; aspect-ratio: 1; overflow: visible; pointer-events: none; }
+/* From the "flip fast" page on, the flipbook frame is bigger so the riffle animation reads. */
+.dp-corner-big { width: 29%; bottom: 4.6%; }
+.dp-cb { width: 0.95em; height: 0.95em; vertical-align: -0.12em; margin-right: 0.35em; overflow: visible; }
+/* Interactive SVG children (e.g. a rotor hit-area). The doodle itself ignores the pointer; these opt back in. */
+.dp-hit { pointer-events: auto; cursor: grab; touch-action: none; }
+.dp-hit:active { cursor: grabbing; }

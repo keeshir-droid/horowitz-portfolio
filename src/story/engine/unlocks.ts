@@ -11,7 +11,6 @@ const TIER_A: ReadonlySet<string> = new Set([
   '21-in-21',
   'adobe',
   'motor-thesis',
-  'visa',
   'content-pitch',
 ])
 const TIER_B: ReadonlySet<string> = new Set([
@@ -19,6 +18,8 @@ const TIER_B: ReadonlySet<string> = new Set([
   'english-honor-society',
   'science-honor-society',
   'java-inventory',
+  // the visa refusal is the turning point, not a win: a quiet card, never the fanfare/applause of tier A
+  'visa',
 ])
 
 export const tierOf = (entryId: string): Tier => (TIER_A.has(entryId) ? 'A' : TIER_B.has(entryId) ? 'B' : 'C')
@@ -27,7 +28,8 @@ const byId: ReadonlyMap<string, Entry> = new Map(entries.map((e) => [e.id, e]))
 export const getEntry = (id: string): Entry | undefined => byId.get(id)
 
 /** Total number of unlockable entries, derived from src/content. */
-export const TOTAL_ENTRIES = entries.length
+/** Entries the story can actually unlock (those with a scene; robotics etc. live only in the Index). */
+export const TOTAL_ENTRIES = entries.filter((e) => e.scene).length
 
 /** A single combined toast standing for several unlocks (see unlockGroup). */
 export interface ToastGroup {
@@ -54,6 +56,8 @@ interface UnlockState {
   isUnlocked: (entryId: string) => boolean
   /** HUD calls this when a toast has finished. */
   shiftToast: () => void
+  /** Drop queued toasts that belong to chapters before `chapter` (so old cards never trail into a new chapter). */
+  dropBefore: (chapter: number) => void
   reset: () => void
 }
 
@@ -87,6 +91,15 @@ export const useUnlocks = create<UnlockState>((set, get) => ({
   },
   isUnlocked: (id) => get().unlocked.has(id),
   shiftToast: () => set((s) => ({ toastQueue: s.toastQueue.slice(1) })),
+  dropBefore: (chapter) => {
+    const chOf = (id: string): number => {
+      const first = id.startsWith(GROUP_PREFIX) ? get().groups[id]?.ids[0] : id
+      return (first && byId.get(first)?.chapter) || chapter
+    }
+    const q = get().toastQueue
+    const kept = q.filter((id) => chOf(id) >= chapter)
+    if (kept.length !== q.length) set({ toastQueue: kept })
+  },
   reset: () => set({ unlocked: new Set<string>(), toastQueue: [], groups: {} }),
 }))
 

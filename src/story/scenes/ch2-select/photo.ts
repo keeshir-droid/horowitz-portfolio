@@ -146,12 +146,14 @@ function drawPhotoFrame(g: G, L: Lay, kind: BeatKey, x: number, y: number, w: nu
     g.clip()
     standIn(g, kind, x, y, w, h, t)
     g.restore()
-    // label: this is a stand-in until the real photo arrives
-    const ls = Math.max(8 * L.k, w * 0.028)
-    const lw = ls * TXT.photoComing.length * 1.05 + 24
-    g.fillStyle = 'rgba(10,8,20,.82)'
-    g.fillRect(x + w / 2 - lw / 2, y + h - ls * 2.6, lw, ls * 2)
-    txt(g, L, TXT.photoComing, x + w / 2, y + h - ls * 1.1, { f: 'p', size: ls, align: 'center', color: '#ffd84a' })
+    // optional label on the stand-in (COPY.photoComing; '' = none, the illustration stands on its own)
+    if (TXT.photoComing) {
+      const ls = Math.max(8 * L.k, w * 0.028)
+      const lw = ls * TXT.photoComing.length * 1.05 + 24
+      g.fillStyle = 'rgba(10,8,20,.82)'
+      g.fillRect(x + w / 2 - lw / 2, y + h - ls * 2.6, lw, ls * 2)
+      txt(g, L, TXT.photoComing, x + w / 2, y + h - ls * 1.1, { f: 'p', size: ls, align: 'center', color: '#ffd84a' })
+    }
   }
   // glass sheen
   g.save()

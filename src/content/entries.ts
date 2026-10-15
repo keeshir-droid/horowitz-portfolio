@@ -120,20 +120,22 @@ export const entries: Entry[] = [
   {
     id: 'english-honor-society',
     chapter: 3,
-    title: 'Vice president, national English honor society chapter',
-    blurb: 'Vice president of the only chapter of the national English honor society in the country.',
+    title: 'Founding vice president, National English Honor Society',
+    blurb: 'Founding vice president of the only National English Honor Society (NEHS) chapter in the country.',
     category: 'Leadership',
-    scene: 'ch3-honors',
-    verify: 'Exact society name and the "only chapter in the country" wording.',
+    stat: { value: 'Only', label: 'NEHS chapter in the country' },
+    scene: 'ch3-diary',
+    verify: 'Assumed "founding vice president" refers to NEHS (Risheek, 2026-10-14); confirm it is not SNHS.',
   },
   {
     id: 'science-honor-society',
     chapter: 3,
-    title: 'Board, first Science National Honor Society chapter',
-    blurb: 'On the board of the first Science National Honor Society chapter in the country.',
+    title: 'Board, the first Science National Honor Society chapter in the country',
+    blurb: 'On the board of the first Science National Honor Society (SNHS) chapter in the country.',
     category: 'Leadership',
-    scene: 'ch3-honors',
-    verify: 'Exact society name and the "first in the country" wording.',
+    stat: { value: 'First', label: 'SNHS chapter in the country' },
+    scene: 'ch3-diary',
+    verify: 'Role on the SNHS board (board member assumed).',
   },
   {
     id: 'boarding-school',
@@ -141,7 +143,7 @@ export const entries: Entry[] = [
     title: 'Moved to boarding school',
     blurb: 'Moved away from home to boarding school.',
     category: 'Leadership',
-    scene: 'ch3-boarding',
+    scene: 'ch3-diary',
   },
   {
     id: 'carbon-neutral',
@@ -149,7 +151,7 @@ export const entries: Entry[] = [
     title: 'Head of the carbon-neutral project',
     blurb: "Led the school's flagship sustainability initiative: the carbon-neutral project.",
     category: 'Leadership',
-    scene: 'ch3-carbon',
+    scene: 'ch3-diary',
     media: 'project photos',
     verify: 'A number: tonnes offset, people involved, or what changed.',
   },
@@ -159,7 +161,7 @@ export const entries: Entry[] = [
     title: 'Co-designed lesson plans with teachers',
     blurb: 'Co-designed multiple lesson plans with my teachers.',
     category: 'Teaching',
-    scene: 'ch3-honors',
+    scene: 'ch3-diary',
   },
   {
     id: 'music',
@@ -167,7 +169,7 @@ export const entries: Entry[] = [
     title: 'Musical performances, stage fright beaten',
     blurb: 'Played in multiple musical performances, overcoming stage fright and a fear of music.',
     category: 'Performance',
-    scene: 'ch3-rhythm',
+    scene: 'ch3-diary',
     media: 'performance video',
   },
   {
@@ -176,7 +178,7 @@ export const entries: Entry[] = [
     title: 'Research paper on stand-up comedy',
     blurb: 'Wrote a research paper on stand-up comedy.',
     category: 'Research',
-    scene: 'ch3-comedy',
+    scene: 'ch3-diary',
     media: 'paper cover',
   },
   {
@@ -185,7 +187,7 @@ export const entries: Entry[] = [
     title: 'Thesis on electric motor propulsion',
     blurb: 'Wrote a thesis paper on electric motor propulsion.',
     category: 'Research',
-    scene: 'ch3-motor',
+    scene: 'ch3-diary',
     media: 'thesis / diagrams',
   },
   {
@@ -194,7 +196,7 @@ export const entries: Entry[] = [
     title: 'Best-in-subject awards',
     blurb: 'Awarded for being the best in my subjects in high school.',
     category: 'Awards',
-    scene: 'ch3-honors',
+    scene: 'ch3-diary',
     verify: 'Which subjects.',
   },
   {
@@ -206,8 +208,27 @@ export const entries: Entry[] = [
     category: 'Building',
     highlight: false,
     stat: { value: '0 AI', label: 'every line written by hand' },
-    scene: 'ch3-java',
+    scene: 'ch3-diary',
     verify: 'Business name (if shareable) and how long it was in use.',
+  },
+  {
+    id: 'esports-tournament',
+    chapter: 3,
+    title: "Hosted the school's first official esports tournament",
+    blurb: "Organised the first official esports tournament in my school, to promote esports.",
+    category: 'Leadership',
+    scene: 'ch3-diary',
+    verify: 'Confirm "hosted/organised" (dictated as "posted"); which game, how many players, year.',
+  },
+  {
+    id: 'pet-therapy',
+    chapter: 3,
+    title: 'First to try to start a pet therapy initiative at school',
+    blurb:
+      'Was the first person at my school to try to build a pet therapy initiative. It did not get approved, but the attempt was relentless and we got quite far.',
+    category: 'Leadership',
+    scene: 'ch3-diary',
+    verify: 'How far it got (what stage / who said what) and why it stopped. Wording of "did not get approved".',
   },
 
   // ───────────── Chapter 4 · The builder years ─────────────
@@ -218,7 +239,7 @@ export const entries: Entry[] = [
     blurb:
       'Wanted to study film and computer science in America. Got into a top-30 US university and could not go because of visa troubles. So I started building.',
     category: 'Awards',
-    scene: 'ch4-continue',
+    scene: 'ch4-desktop',
     verify: 'Whether to name the university.',
   },
   {
@@ -227,7 +248,7 @@ export const entries: Entry[] = [
     title: 'Joined a startup accelerator in India',
     blurb: 'Joined a startup accelerator and spent the next stretch building real businesses and products.',
     category: 'Building',
-    scene: 'ch4-continue',
+    scene: 'ch4-desktop',
     verify: 'Accelerator name.',
   },
   {
@@ -239,7 +260,7 @@ export const entries: Entry[] = [
     category: 'Building',
     highlight: true,
     stat: { value: '$60 → ~$16K', label: 'in under 6 months' },
-    scene: 'ch4-revenue',
+    scene: 'ch4-desktop',
     media: 'product + dashboard screenshots',
     verify: 'Brand name, revenue proof, and which investors.',
   },
@@ -249,7 +270,7 @@ export const entries: Entry[] = [
     title: 'Pet-care brand',
     blurb: 'Built an innovative pet-care brand with a prebiotic formulation that helps dogs digest food better.',
     category: 'Building',
-    scene: 'ch4-pet',
+    scene: 'ch4-desktop',
     media: 'product shots',
     verify: 'Brand name and whether "never existed before" can be claimed.',
   },
@@ -262,7 +283,7 @@ export const entries: Entry[] = [
     category: 'Building',
     highlight: true,
     stat: { value: 'Pitched', label: 'to a top Indian investor' },
-    scene: 'ch4-pitch',
+    scene: 'ch4-desktop',
     media: 'pitch photo / post screenshots',
     verify: 'Investor name and whether to use it. Follower numbers.',
   },
@@ -275,7 +296,7 @@ export const entries: Entry[] = [
     category: 'Building',
     highlight: true,
     stat: { value: `${projectsLive} / ${TOTAL_PROJECTS}`, label: 'projects shipped in 21 days' },
-    scene: 'ch4-pokedex',
+    scene: 'ch4-desktop',
     links: [],
   },
   {
@@ -284,7 +305,7 @@ export const entries: Entry[] = [
     title: 'Youngest at Product Folks Unconference 2025',
     blurb: 'The youngest attendee at the Product Folks Unconference 2025. They made an exception to invite me.',
     category: 'Awards',
-    scene: 'ch4-unconference',
+    scene: 'ch4-desktop',
     verify: 'Confirm "youngest" wording.',
   },
   {
@@ -294,7 +315,7 @@ export const entries: Entry[] = [
     blurb:
       'Built a platform that lets brands like mine test designs, ideas and value propositions with AI, without much capex, to see what real customers want.',
     category: 'Building',
-    scene: 'ch4-platform',
+    scene: 'ch4-desktop',
     media: 'screen recording',
     links: [],
   },
@@ -304,7 +325,7 @@ export const entries: Entry[] = [
     title: 'End-to-end ad automation',
     blurb: 'Built end-to-end automations that produce ads.',
     category: 'Building',
-    scene: 'ch4-platform',
+    scene: 'ch4-desktop',
     media: 'before/after reel',
   },
   {
@@ -314,7 +335,7 @@ export const entries: Entry[] = [
     blurb:
       'Learned prototyping and design, built a framework around it with mentors, and taught it as a class sanctioned by my accelerator. External people attended too.',
     category: 'Teaching',
-    scene: 'ch4-class',
+    scene: 'ch4-desktop',
     verify: 'Confirm it is "prototyping"; student count.',
   },
 

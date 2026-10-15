@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { audio, music, sfx } from '../../engine/audio'
+import { SAMPLE_SETS, audio, music, sfx } from '../../engine/audio'
 import type { SceneProps } from '../../engine/types'
 import { unlock } from '../../engine/unlocks'
-import { BEATS, CARD, CARDS, COPY, DUR, END, ENTRY_OF, FS, GRADES, PHOTO_AT, PHOTO_DROP, PHOTOS, POP, SEL, T, sec, type BeatKey } from './config'
-import { HIT_TIMES, KO_AT } from './fight'
+import { BEATS, CARD, CARDS, COPY, DUR, END, ENTRY_OF, FS, GRADES, PHOTO_AT, PHOTO_DROP, PHOTOS, POP, SEL, T, sceneProgress, sec, type BeatKey } from './config'
+import { KO_AT } from './fight'
+import { HITS } from './moves'
 import type { Assets, FontState } from './kit'
 import { drawFrame } from './render'
 
@@ -117,25 +118,31 @@ const CUES: Cue[] = (() => {
     at(c.win[0] * DUR + 0.01, () => sfx.whoosh(true))
     at(c.win[0] * DUR + CARD.slam, () => sfx.impact(), true)
   }
-  // fight
+  // fight (recorded hits; each falls back to a procedural voice until its file has loaded):
+  // a swoosh just before each strike lands (its peak sits ~0.12 s into the file), then the hit itself:
+  // fist = punch, foot = kick, blocked = block thud, the finisher = heavy K.O. + the crowd's "ohhh".
   const f0 = T.fight[0] * DUR
   at(f0 + 0.15 * FS, () => sfx.blip())
   at(f0 + 0.74 * FS, () => sfx.confirm(), true)
-  for (const h of HIT_TIMES) {
-    if (!h.block) at(f0 + (h.t - 0.08) * FS, () => sfx.whoosh(h.ko))
-    at(f0 + h.t * FS, h.block ? () => sfx.blip() : () => sfx.impact(), true)
+  for (const h of HITS) {
+    const foot = h.eff === 'foot1' || h.eff === 'foot2'
+    const big = foot || !!h.ko
+    at(f0 + (h.t - (big ? 0.16 : 0.12)) * FS, () => sfx.swoosh(big))
+    at(f0 + h.t * FS, h.ko ? () => sfx.ko() : h.block ? () => sfx.block() : foot ? () => sfx.kick() : () => sfx.punch(), true)
   }
-  at(f0 + (KO_AT + 0.12) * FS, () => sfx.impact(), true)
-  at(f0 + 5.36 * FS, () => sfx.footstep(), true)
+  at(f0 + (KO_AT + 0.2) * FS, () => sfx.crowdOoh())
+  // the opponent hits the floor
+  at(f0 + 5.36 * FS, () => sfx.block(), true)
   // photo frames landing
   for (const k of BEATS) at(PHOTO_AT[k] * DUR + PHOTO_DROP * 0.62, () => sfx.footstep())
-  // stage: applause at the bow, coin when the counter lands
+  // stage: the crowd cheers + applauds as the bow lands (the audience claps from u 0.22), coin when the counter lands
   const st = (T.stage[1] - T.stage[0]) * DUR
-  at(T.stage[0] * DUR + st * 0.24, () => sfx.applause(2), true)
+  at(T.stage[0] * DUR + st * 0.22, () => sfx.crowdCheer(), true)
   at(T.stage[0] * DUR + st * 0.52, () => sfx.coin(), true)
-  // council: a blip per grade badge
+  // council: a blip per grade badge, then polite applause once the last badge is lit
   const cn = (T.council[1] - T.council[0]) * DUR
   for (let i = 0; i < GRADES.length; i++) at(T.council[0] * DUR + cn * (0.1 + i * 0.08), () => sfx.blip())
+  at(T.council[0] * DUR + cn * (0.1 + GRADES.length * 0.08 + 0.04), () => sfx.applause(2), true)
   // finish: slam, a blip per result chip, whoosh for NEXT LEVEL, fanfare when the bar fills
   const e0 = T.end[0] * DUR
   at(e0 + 0.01, () => sfx.whoosh(true))
@@ -151,7 +158,7 @@ const SAFE_TOP = 84
 const safeBottom = (w: number): number => (w <= 640 ? 132 : 80)
 
 export default function Ch2Select({ progress: rawProgress, active }: SceneProps) {
-  const progress = dbg.p ?? rawProgress
+  const progress = dbg.p ?? sceneProgress(rawProgress)
   const rootRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reducedMq = useSyncExternalStore(reducedSubscribe, reducedNow, () => false)
@@ -245,6 +252,12 @@ export default function Ch2Select({ progress: rawProgress, active }: SceneProps)
       }
     }
   }, [])
+
+  // recorded fight/crowd sounds: fetch + decode while this scene is current (after the first gesture), so the
+  // first punch is not late. Cheap and idempotent.
+  useEffect(() => {
+    if (active && !reduced) audio.preload(SAMPLE_SETS.ch2)
+  }, [active, reduced])
 
   // music while this scene is current
   useEffect(() => {

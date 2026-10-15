@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 3 concept v5 — The series</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,500&family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#09090d; --bg2:#14141c; --ink:#f4efe6; --muted:#9a96a8; --line:#2a2a38; --amber:#e8a24a; --teal:#4fb3b0; --red:#d6453d; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 16px 80px; }
+  h1 { font-family:'Playfair Display',serif; font-weight:800; font-size:clamp(34px,6.5vw,64px); line-height:1; letter-spacing:-.02em; margin:12px 0; }
+  h2 { font-size:24px; margin:0 0 6px; }
+  p { margin:0 0 10px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; line-height:1.7; color:var(--amber); text-transform:uppercase; }
+  .muted { color:var(--muted); }
+  header { padding:48px 0 12px; }
+  .note { background:var(--bg2); border-left:4px solid var(--amber); padding:12px 14px; margin:16px 0; font-size:15px; }
+  section { margin-top:48px; padding-top:14px; border-top:1px solid var(--line); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:820px){ .grid2{grid-template-columns:1fr;} }
+  .cap { font-size:14px; color:var(--muted); margin:8px 0 14px; }
+  .cap b { color:var(--ink); }
+  ul { margin:6px 0 0; padding-left:20px; } li { margin-bottom:4px; }
+
+  /* 16:9 film frame with letterbox, grain and vignette */
+  .shot { position:relative; aspect-ratio:16/9; overflow:hidden; background:#000; border:1px solid var(--line); isolation:isolate; }
+  .shot::before, .shot::after { content:""; position:absolute; left:0; right:0; height:11%; background:#000; z-index:5; }
+  .shot::before { top:0; } .shot::after { bottom:0; }
+  .grain { position:absolute; inset:0; z-index:4; opacity:.22; mix-blend-mode:overlay; pointer-events:none;
+           background-image:repeating-radial-gradient(circle at 17% 32%, #fff 0 .5px, transparent .6px 3px), repeating-radial-gradient(circle at 73% 68%, #000 0 .5px, transparent .6px 2.5px); }
+  .vig { position:absolute; inset:0; z-index:3; background:radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.65) 100%); pointer-events:none; }
+  .layer { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:2; padding:14% 6%; }
+  .serif { font-family:'Playfair Display',serif; }
+  .tiny { font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#cfc8b8; }
+
+  /* 1: cold open */
+  .s1 { background:linear-gradient(180deg,#0f1a2b 0%,#27405e 55%,#c98f5a 100%); }
+  .s1 .t { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(14px,2.4vw,24px); color:#f4efe6; text-shadow:0 2px 12px #000; }
+  /* 2: credits */
+  .s2 { background:radial-gradient(ellipse at 30% 30%,#1b1b28,#08080c); }
+  .credit { display:flex; justify-content:space-between; gap:14px; width:78%; font-size:clamp(9px,1.5vw,14px); border-bottom:1px solid #2f2f3f; padding:4px 0; }
+  .credit b { color:var(--amber); font-weight:500; letter-spacing:.12em; text-transform:uppercase; font-size:.78em; }
+  /* 3: episode select */
+  .s3 { background:#0c0c11; }
+  .eps { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; width:94%; }
+  .ep { aspect-ratio:16/10; border:1px solid #33334a; padding:6px; display:flex; flex-direction:column; justify-content:flex-end; font-size:clamp(7px,1.15vw,11px); line-height:1.25; }
+  .ep i { font-style:normal; color:#cfc8b8; opacity:.8; }
+  .ep.on { outline:2px solid var(--amber); }
+  /* 4: episode title */
+  .s4 { background:linear-gradient(120deg,#08121c,#0f2a2c 60%,#1c4a46); }
+  .s4 .big { font-family:'Playfair Display',serif; font-weight:800; font-size:clamp(26px,6vw,60px); letter-spacing:-.02em; }
+  .meter { width:60%; height:8px; background:#1a2a2a; margin:14px auto 0; }
+  .meter > div { width:38%; height:100%; background:var(--teal); }
+  /* 5: finale */
+  .s5 { background:#050507; }
+  .s5 .crack { position:absolute; left:50%; top:22%; bottom:22%; width:3px; background:var(--amber); box-shadow:0 0 28px 10px rgba(232,162,74,.55); z-index:2; }
+  .nextep { position:absolute; right:5%; bottom:16%; z-index:6; border:1px solid #666; padding:6px 10px; font-size:clamp(8px,1.4vw,13px); background:rgba(0,0,0,.6); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Chapter 3 · concept v5 · a different idea</p>
+  <h1>High school is a series.</h1>
+  <p class="muted" style="max-width:68ch">Rough concept frames, <b>not</b> the build. You said v4 was the worst, with weak visuals, and you asked how to make this cinematic and tied to pop culture. So I stopped drawing a school. Boarding school, coming of age, the most-used story in film and TV: <b>Chapter 3 becomes a season of a prestige teen drama</b>, using film and streaming language everyone already knows.</p>
+</header>
+
+<section>
+  <p class="eyebrow">Part 1 · why this fits</p>
+  <h2>Games, then film</h2>
+  <ul>
+    <li><b>The portfolio's logic.</b> Chapter 1 is a Game Boy, Chapter 2 is an arcade. Each chapter is the pop culture you'd have been in at that age. At boarding school it's film and TV: the coming-of-age story.</li>
+    <li><b>Your own thread.</b> Your visa entry says you wanted to study <b>film</b> and computer science. A cinematic chapter is you showing that side, not just describing it.</li>
+    <li><b>It's easy to follow.</b> Anyone knows what a cold open, opening credits, episode select, "Skip intro" and "Next episode in 5…" mean. No explaining, and it's quick to skim.</li>
+    <li><b>The hook is built in.</b> The season ends on a cliffhanger. That's the pet therapy attempt (the one thing that didn't work), then "TO BE CONTINUED", which flows into Chapter 4's "CONTINUE? 9…8…7".</li>
+  </ul>
+</section>
+
+<section>
+  <p class="eyebrow">Part 2 · frames</p>
+  <h2>What it looks like</h2>
+  <div class="grid2">
+
+    <div>
+      <div class="shot s1"><div class="vig"></div><div class="grain"></div>
+        <div class="layer"><p class="tiny">Season 3 · Episode 1</p><p class="t">"The year I left home."</p></div></div>
+      <p class="cap"><b>1 · Cold open (1.5 s).</b> Widescreen bars, film grain, warm dusk colour grade, one line of narration. This is your boarding-school arrival, with no scene to build. On your real photo or footage later it becomes a still with the same grade, like the Chapter 2 photo frames.</p>
+    </div>
+
+    <div>
+      <div class="shot s2"><div class="vig"></div><div class="grain"></div>
+        <div class="layer" style="gap:3px">
+          <p class="tiny" style="margin-bottom:8px">Starring Risheek Nawka</p>
+          <div class="credit"><b>Vice President</b><span>English Honor Society</span></div>
+          <div class="credit"><b>Board</b><span>Science Honor Society [NAME NEEDED]</span></div>
+          <div class="credit"><b>Co-written with teachers</b><span>Lesson plans</span></div>
+          <div class="credit"><b>Best in</b><span>[SUBJECTS NEEDED]</span></div>
+        </div></div>
+      <p class="cap"><b>2 · Opening credits (~5 s).</b> This replaces the crest wall and the corridor. Your honors, lesson plans and subject awards appear as opening-credit lines, each cutting in on a beat over a moody montage. Fast, factual and cinematic, and it doesn't make the small things feel big.</p>
+    </div>
+
+    <div>
+      <div class="shot s3"><div class="vig"></div><div class="grain"></div>
+        <div class="layer" style="padding-top:15%">
+          <p class="tiny" style="margin-bottom:8px">Season 3 · High school</p>
+          <div class="eps">
+            <div class="ep on" style="background:linear-gradient(135deg,#0f2a2c,#1c4a46)">E2<i>Carbon</i></div>
+            <div class="ep" style="background:linear-gradient(135deg,#2a0f1a,#5a1f2e)">E3<i>Torque</i></div>
+            <div class="ep" style="background:linear-gradient(135deg,#2a1f12,#6a4a1e)">E4<i>Game On</i></div>
+            <div class="ep" style="background:linear-gradient(135deg,#1a1038,#3a2a6a)">E5<i>Encore</i></div>
+            <div class="ep" style="background:linear-gradient(135deg,#04100a,#0f3a22)">E6<i>Zero AI</i></div>
+            <div class="ep" style="background:linear-gradient(135deg,#1a1a1a,#3a3a3a)">E7<i>Not Yet</i></div>
+          </div>
+        </div></div>
+      <p class="cap"><b>3 · Episode select.</b> The interactive part. Scrolling plays the season in order, but anyone can click an episode to jump straight to it, which helps reviewers who skim. A "Skip intro" button is always there, and "Next episode in 5…" is the nudge forward.</p>
+    </div>
+
+    <div>
+      <div class="shot s4"><div class="vig"></div><div class="grain"></div>
+        <div class="layer"><p class="tiny">Episode 2</p><p class="big">Carbon</p>
+          <div class="meter"><div></div></div><p class="tiny" style="margin-top:8px">Head of the carbon-neutral project · [NUMBER NEEDED]</p></div></div>
+      <p class="cap"><b>4 · An episode title card.</b> Each of the big three (Carbon, Torque, Zero AI) opens with a title card like this and then turns into the thing itself: the meter you scroll, the motor you drag, the terminal that types. Same cinematic frame, a different real object inside it.</p>
+    </div>
+
+    <div>
+      <div class="shot s5"><div class="vig"></div><div class="grain"></div>
+        <div class="crack"></div>
+        <div class="layer" style="justify-content:flex-end;padding-bottom:16%"><p class="tiny">Season finale · Episode 7</p><p class="serif" style="font-style:italic;font-size:clamp(14px,2.2vw,22px)">"Not Yet."</p></div>
+        <div class="nextep">Next: Chapter 4 · CONTINUE? 9…</div></div>
+      <p class="cap"><b>5 · The cliffhanger.</b> One door left ajar in the dark, with a line of warm light. This is the pet therapy attempt: the first to try, relentless, quite far, not approved. It ends the season on "To be continued", with the streaming-style "Next" box that becomes Chapter 4's countdown.</p>
+    </div>
+
+    <div>
+      <div class="shot" style="background:#0b1a10"><div class="vig"></div><div class="grain"></div>
+        <div class="layer" style="align-items:flex-start;text-align:left;padding-left:9%">
+          <p class="tiny" style="color:#7be0a0">Episode 6 · Zero AI</p>
+          <pre style="margin:6px 0 0;font:clamp(8px,1.4vw,13px)/1.5 monospace;color:#7be0a0">public class Inventory {
+  void order(String item, int n) {
+    stock.merge(item, -n, Integer::sum);
+  }
+}
+<span style="color:#e8a24a">// 0 AI. Every line by hand.</span></pre></div></div>
+      <p class="cap"><b>6 · Same trick for Zero AI.</b> A film-style hacker terminal: grain, glow, real code typing itself. The scene is a movie moment, not a screenshot.</p>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">Part 3 · the season</p>
+  <h2>Seven episodes, about 45 seconds</h2>
+  <ul>
+    <li><b>E1 · Cold open.</b> Boarding school. 1.5 s.</li>
+    <li><b>Opening credits.</b> Honor societies, lesson plans, best-in-subject. ~5 s.</li>
+    <li><b>E2 · Carbon</b> (big). Interactive meter. ~9 s.</li>
+    <li><b>E3 · Torque</b> (big). Interactive motor. ~10 s.</li>
+    <li><b>E4 · Game On.</b> The first official esports tournament, shown like a live sports broadcast: bracket, "LIVE" tag, a lower-third. ~3 s.</li>
+    <li><b>E5 · Encore.</b> Performing: solo, music, a new field (stand-up paper). A concert-film moment: spotlight, crowd sound, one chord. ~3 s.</li>
+    <li><b>E6 · Zero AI</b> (big). Film-style terminal. ~8 s.</li>
+    <li><b>E7 · Not Yet.</b> Pet therapy, the cliffhanger. ~4 s.</li>
+  </ul>
+  <p class="cap" style="margin-top:8px">Still covers all 12 high-school entries, including esports and pet therapy. All numbers and names stay [NEEDED] until the polish pass.</p>
+  <div class="note"><b>One question to make it yours, not mine:</b> which coming-of-age shows or films do you actually love (or which boarding-school ones)? I want the editing style, music and colour to come from your taste. I'd rather borrow a real feeling than guess one.</div>
+</section>
+
+</div>
+</body>
+</html>

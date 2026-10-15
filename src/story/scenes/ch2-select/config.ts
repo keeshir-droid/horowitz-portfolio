@@ -44,6 +44,22 @@ export const T = {
   end: w(10.3, DUR),
 }
 
+/**
+ * Extra scroll-seconds spent on the select screen so it reads before the fight (Risheek, 2026-10-14: it flashed by).
+ * The scene's own timeline (T, DUR) is unchanged; `sceneProgress` stretches the first beat of scroll over it.
+ */
+export const SELECT_HOLD = 1.3
+/** Scroll-time of the whole scene (meta.duration). */
+export const SCROLL_DUR = DUR + SELECT_HOLD
+/** Scroll progress (0..1 over SCROLL_DUR) -> scene progress (0..1 over DUR), slowing only the select screen. */
+export function sceneProgress(scrollP: number): number {
+  const t = Math.min(1, Math.max(0, scrollP)) * SCROLL_DUR
+  const selEnd = T.select[1] * DUR
+  const a = selEnd + SELECT_HOLD
+  const s = t < a ? t * (selEnd / a) : t - SELECT_HOLD
+  return Math.min(1, Math.max(0, s / DUR))
+}
+
 /** Seconds inside the select beat. */
 export const SEL = { cursor: [0.28, 0.42, 0.56] as const, lock: 0.66, out: 0.8 }
 
@@ -129,7 +145,8 @@ export const TXT = {
   nextEra: chapters[3].era.toUpperCase(),
   floors: { karate: 'KARATE', stage: 'STAGE', council: 'COUNCIL' } as Record<BeatKey, string>,
   opponent: 'OPPONENT',
-  photoComing: 'PHOTO COMING',
+  // Shown on the illustrated stand-ins while PHOTOS is empty. '' = no tag (final site, 2026-10-15).
+  photoComing: '',
   allClear: 'ALL STAGES CLEAR',
   nextLevel: 'NEXT LEVEL',
 }

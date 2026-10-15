@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 3 concept v4 — One day at Kodai</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0a1424; --bg2:#10203a; --ink:#f1f6ff; --muted:#8fa6c8; --line:#1d3866; --cyan:#4cc9f0; --amber:#ffc857; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Space Grotesk',system-ui,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 16px 80px; }
+  h1 { font-size:clamp(30px,6vw,56px); line-height:1; letter-spacing:-.03em; margin:12px 0; }
+  h2 { font-size:26px; margin:0 0 4px; }
+  p { margin:0 0 10px; }
+  .eyebrow { font-family:'Press Start 2P',monospace; font-size:10px; line-height:1.7; color:var(--cyan); text-transform:uppercase; }
+  .muted { color:var(--muted); }
+  header { padding:48px 0 12px; }
+  .note { background:var(--bg2); border-left:4px solid var(--cyan); padding:12px 14px; margin:16px 0; font-size:15px; }
+  .note.ask { border-left-color:var(--amber); }
+  section { margin-top:48px; padding-top:14px; border-top:3px solid var(--cyan); }
+  .frame { border:4px solid #000; background:#000; box-shadow:0 0 0 2px var(--line); margin:12px 0; }
+  .frame svg { display:block; width:100%; height:auto; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:820px){ .grid2{grid-template-columns:1fr;} }
+  .cap { font-size:14px; color:var(--muted); margin:-4px 0 10px; }
+  .cap b { color:var(--ink); }
+  table { width:100%; border-collapse:collapse; font-size:14px; margin-top:8px; }
+  th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--muted); font-weight:400; }
+  ul { margin:6px 0 0; padding-left:20px; } li { margin-bottom:4px; }
+  code { background:var(--bg2); padding:1px 5px; }
+  .big { color:var(--amber); font-weight:700; } .small { color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Chapter 3 · concept v4 · high school · Kodaikanal International School</p>
+  <h1>One day at Kodai</h1>
+  <p class="muted" style="max-width:68ch">Rough concept frames, <b>not</b> the build. Short answers first: <b>no, it is not a house we zoom in and out of.</b> That idea was confusing and it is gone. Your point about "the unimportant things are also there" was right, so this version has a simple rule: <b>only the important things get screen time. Everything else is something you walk past.</b></p>
+</header>
+
+<section>
+  <p class="eyebrow">Part 1 · the idea in three sentences</p>
+  <h2>You walk one path, from dawn to night</h2>
+  <ol>
+    <li>The camera moves <b>forward only</b>, along one path through the Highclerc campus (the high school, grades 9 to 12) in the Palani Hills, painted in layers so hills, mist and trees slide past at different speeds.</li>
+    <li>The <b>time of day changes as you scroll</b>: blue dawn mist when you arrive, bright clear midday on the overlook, gold evening, then night with the windows lit. You can feel progress without reading anything.</li>
+    <li>Only <b>three stops</b> take over the screen and become the thing itself (the carbon meter over the real valley view, the motor you can drag, the Java terminal). Everything else is a <b>2-second walk-by</b>: a lit doorway with one line.</li>
+  </ol>
+  <div class="note">Why this is more stimulating than v3: the place does the work. A beautiful, changing, misty hill school is something people want to keep looking at, and the three big stops give you something to touch. The wide view never "zooms out"; you are always on the path.</div>
+</section>
+
+<section>
+  <p class="eyebrow">Part 2 · the mood</p>
+  <h2>Three frames from the walk</h2>
+  <div class="grid2">
+
+    <div><figure class="frame"><svg viewBox="0 0 320 180" role="img" aria-label="Dawn mist over layered hills with a stone building and a path">
+      <defs><linearGradient id="d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a3f6b"/><stop offset=".55" stop-color="#e6a8a0"/><stop offset="1" stop-color="#ffd9a8"/></linearGradient></defs>
+      <rect width="320" height="180" fill="url(#d)"/>
+      <path d="M0 96 Q50 70 100 92 T200 84 T320 90 V180 H0z" fill="#5d6f9a" opacity=".7"/>
+      <path d="M0 112 Q70 88 130 108 T250 100 T320 108 V180 H0z" fill="#3f5382" opacity=".85"/>
+      <ellipse cx="160" cy="118" rx="200" ry="12" fill="#fff" opacity=".35"/>
+      <path d="M0 132 Q90 116 170 130 T320 126 V180 H0z" fill="#26385f"/>
+      <rect x="196" y="98" width="62" height="34" fill="#cfc3a8"/><polygon points="190,98 227,76 264,98" fill="#8a4a38"/>
+      <rect x="208" y="108" width="10" height="14" fill="#ffc857"/><rect x="236" y="108" width="10" height="14" fill="#3a4a70"/>
+      <g fill="#14233f"><polygon points="40,132 48,92 56,132"/><polygon points="58,132 68,84 78,132"/><polygon points="270,132 278,100 286,132"/></g>
+      <path d="M0 178 Q100 150 200 140 L220 132 L230 134 Q130 154 60 180z" fill="#8c7a66" opacity=".9"/>
+      <g fill="#0b1220"><circle cx="96" cy="150" r="5"/><rect x="91" y="155" width="10" height="16" rx="3"/></g>
+      <text x="12" y="20" font-family="Press Start 2P" font-size="6" fill="#0b1220">DAWN · ARRIVAL · 1.5 S</text>
+    </svg></figure>
+    <p class="cap"><b>Dawn · arrival.</b> Mist between ridges, one stone building with a single lit window, you on the path. One line of text: moved to boarding school. About 1.5 s, then the walk carries on. (Illustrative colours and shapes; I'll match your real campus once I see your photos.)</p></div>
+
+    <div><figure class="frame"><svg viewBox="0 0 320 180" role="img" aria-label="Clear midday valley view with a carbon meter falling and solar panels">
+      <defs><linearGradient id="m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4aa8e0"/><stop offset="1" stop-color="#bfe6f5"/></linearGradient></defs>
+      <rect width="320" height="180" fill="url(#m)"/>
+      <path d="M0 100 Q60 74 120 96 T240 88 T320 96 V180 H0z" fill="#6aa58a"/>
+      <path d="M0 126 Q80 104 150 124 T320 118 V180 H0z" fill="#2f7a55"/>
+      <g fill="#ffffff" opacity=".8"><ellipse cx="60" cy="40" rx="30" ry="8"/><ellipse cx="240" cy="30" rx="36" ry="9"/></g>
+      <g fill="#1d3a66"><polygon points="196,134 226,128 232,138 202,144"/><polygon points="206,148 236,142 242,152 212,158"/></g>
+      <g fill="#14532d"><polygon points="40,150 48,110 56,150"/><polygon points="62,150 72,100 82,150"/></g>
+      <rect x="14" y="14" width="14" height="86" fill="#0d2040" stroke="#fff" stroke-width="1"/><rect x="16" y="56" width="10" height="42" fill="#4cc9f0"/>
+      <text x="36" y="28" font-family="Press Start 2P" font-size="6" fill="#0b1220">CARBON</text>
+      <text x="36" y="42" font-family="Space Grotesk" font-weight="700" font-size="11" fill="#0b1220">[NUMBER NEEDED]</text>
+    </svg></figure>
+    <p class="cap"><b>Midday · big stop 1, the carbon meter.</b> The widest, clearest view of the walk. The sky and air get clearer, panels turn and trees grow as you scroll while the meter falls. It's your real project, in your real valley, instead of a toy campus. Number is [NEEDED].</p></div>
+
+    <div><figure class="frame"><svg viewBox="0 0 320 180" role="img" aria-label="Night campus with lit windows and a path">
+      <defs><linearGradient id="n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050c1d"/><stop offset="1" stop-color="#14305e"/></linearGradient></defs>
+      <rect width="320" height="180" fill="url(#n)"/>
+      <g fill="#fff" opacity=".7"><circle cx="30" cy="20" r="1"/><circle cx="110" cy="34" r="1"/><circle cx="190" cy="14" r="1"/><circle cx="270" cy="28" r="1"/></g>
+      <path d="M0 120 Q80 100 160 118 T320 112 V180 H0z" fill="#0a1830"/>
+      <rect x="40" y="86" width="70" height="40" fill="#0f2142"/><rect x="50" y="96" width="12" height="14" fill="#ffc857"/><rect x="72" y="96" width="12" height="14" fill="#ffc857"/><rect x="94" y="96" width="10" height="14" fill="#1a2f5a"/>
+      <rect x="150" y="80" width="80" height="46" fill="#0f2142"/><rect x="160" y="92" width="26" height="22" fill="#04080f" stroke="#7be0a0"/><text x="173" y="106" font-family="monospace" font-size="6" fill="#7be0a0" text-anchor="middle">exit(0)</text>
+      <rect x="260" y="92" width="34" height="34" fill="#0f2142"/><polygon points="280,92 296,100 296,124 280,126" fill="#ffc857"/>
+      <path d="M0 178 Q100 150 200 144 L300 130 L304 136 Q190 154 80 180z" fill="#1a2f5a"/>
+    </svg></figure>
+    <p class="cap"><b>Night · the end of the walk.</b> The Java terminal (big stop 3) ends on <code>exit(0)</code>. Windows go dark one by one behind you. One door at the end of the path is left ajar with a warm light: the pet therapy attempt. Then black, then Chapter 4.</p></div>
+
+    <div><figure class="frame"><svg viewBox="0 0 320 180" role="img" aria-label="The day as a strip from dawn to night with the stops marked">
+      <defs><linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a3f6b"/><stop offset=".15" stop-color="#e6a8a0"/><stop offset=".4" stop-color="#7cc4ec"/><stop offset=".7" stop-color="#e8a45c"/><stop offset="1" stop-color="#050c1d"/></linearGradient></defs>
+      <rect x="10" y="60" width="300" height="34" fill="url(#s)"/>
+      <g font-family="Press Start 2P" font-size="5" fill="#f1f6ff" text-anchor="middle">
+        <text x="22" y="112">ARRIVE</text><text x="62" y="124">DOORS</text><text x="116" y="112" fill="#ffc857">CARBON</text><text x="176" y="124" fill="#ffc857">MOTOR</text><text x="228" y="112">GAMES</text><text x="256" y="124">STAGE</text><text x="286" y="112" fill="#ffc857">JAVA</text></g>
+      <text x="160" y="40" font-family="Space Grotesk" font-size="11" fill="#8fa6c8" text-anchor="middle">Amber = big stops that take over the screen. White = walk-bys.</text>
+      <text x="160" y="160" font-family="Space Grotesk" font-size="10" fill="#8fa6c8" text-anchor="middle">Pet therapy: the last door, after dark.</text>
+    </svg></figure>
+    <p class="cap"><b>The whole chapter as one strip.</b> Dawn to night is the progress bar nobody has to read. The three amber stops get ~29 s of the chapter's ~48 s; every white stop is about 2 s.</p></div>
+
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">Part 3 · what gets how much</p>
+  <h2>Big stops vs walk-bys</h2>
+  <table>
+    <tr><th>Item</th><th>Treatment</th><th>Time</th></tr>
+    <tr><td>Moved to boarding school</td><td class="small">Walk-by: dawn arrival frame</td><td>1.5 s</td></tr>
+    <tr><td>English honor society VP · Science honor society board · lesson plans · best-in-subject</td><td class="small">Walk-by: one classroom doorway; the four things appear in turn on the open door's blackboard (no crests, no separate rooms)</td><td>~5 s</td></tr>
+    <tr><td class="big">Carbon-neutral project</td><td class="big">BIG STOP: your meter over the valley</td><td>~10 s</td></tr>
+    <tr><td class="big">Electric motor thesis</td><td class="big">BIG STOP: drag the rotor, field lines respond</td><td>~11 s</td></tr>
+    <tr><td>First official esports tournament</td><td class="small">Walk-by: a lit room with a bracket drawing on a screen</td><td>~3 s</td></tr>
+    <tr><td>Music, solo, new field · comedy paper</td><td class="small">Walk-by: auditorium doors; three spotlights, three notes, one chord</td><td>~3 s</td></tr>
+    <tr><td class="big">Hand-coded Java system</td><td class="big">BIG STOP: terminal types real Java, "0 AI. Every line by hand."</td><td>~8 s</td></tr>
+    <tr><td>First attempt at pet therapy</td><td class="small">The last door, ajar, warm light, a growing stack of proposals</td><td>~4 s</td></tr>
+  </table>
+  <p class="cap" style="margin-top:10px">Total ≈ 46 s. Every high-school entry is still covered, including the two new ones.</p>
+</section>
+
+<section>
+  <p class="eyebrow">Part 4 · the honest bit</p>
+  <h2>I can't prove "stimulating" with sketches</h2>
+  <p>Flat sketches can't show motion, mist or time of day changing, and that's exactly what this idea depends on. So instead of another concept page, I suggest <b>a 10-second working slice</b>: dawn arrival, the walk, and the classroom doorway, with real parallax and mist and the sound of the place. You scroll it in your browser and tell me if it makes you want to continue. If it doesn't, we change direction after spending a small amount, not a whole chapter.</p>
+  <div class="note ask">
+    <b>What would make it feel truly like Kodai:</b> 3 to 5 of your own photos of the campus (a building, the view, the path you walked), plus the names of 2 or 3 places you'd want in it. I won't invent building names or details. All the shapes above are placeholders.
+  </div>
+</section>
+
+</div>
+</body>
+</html>

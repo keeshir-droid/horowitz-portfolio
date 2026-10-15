@@ -196,7 +196,9 @@ export default function Ch1Walk({ progress, active, freezeTime, photo }: Ch1Walk
     const apply = () => {
       const dpr = Math.min(3, window.devicePixelRatio || 1)
       const cw = root.clientWidth
-      const ch = root.clientHeight
+      // Fit above the bottom chapter dock (same safe area as Ch3) so the text box is never hidden under it; the map
+      // may run under the translucent top bar.
+      const ch = root.clientHeight - (cw <= 640 ? 132 : 80)
       if (cw < 2 || ch < 2) return
       const vw = cw * dpr
       const vh = ch * dpr

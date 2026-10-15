@@ -32,6 +32,9 @@ const isInteractive = (t: EventTarget | null): boolean => {
   return !!el && /^(BUTTON|A|SUMMARY)$/.test(el.tagName)
 }
 
+/** Short chapter names for the dock on narrow screens (the full era names do not fit beside four other segments). */
+const SEG_SHORT: Record<ChapterId, string> = { 1: 'Primary', 2: 'Middle', 3: 'High school', 4: 'Builder', 5: 'SF' }
+
 export default function StoryMode() {
   const [state, setState] = useState<{ registry?: SceneEntry[]; failed?: boolean }>({})
   useEffect(() => {
@@ -327,7 +330,8 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
                   <i style={{ transform: `scaleX(${c < chapter ? 1 : c === chapter ? fill : 0})` }} />
                   <span>
                     CH {c}
-                    <b> {chapters[c].era}</b>
+                    <b className="seg-long"> {chapters[c].era}</b>
+                    <b className="seg-short"> {SEG_SHORT[c]}</b>
                   </span>
                 </button>
               </li>
