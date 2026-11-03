@@ -1,18 +1,12 @@
 // OWNER: page agent D. Spread 4 ("pet"): the pet therapy attempt (left) and the "now flip fast" page (right).
-import { INK, appear, arrow, ink, kid, label, needed, row, svg, tick } from '../kit'
+import { INK, appear, arrow, hl, ink, kid, label, row, svg, tick } from '../kit'
 import type { DiaryPage } from '../types'
 import { settleInk } from './java'
 
 /** All narration on these two pages (draft wording; Risheek edits here). Facts come from entries.ts ('pet-therapy'). */
 const COPY = {
-  day: 'Friday',
-  l1: 'I tried to start a pet therapy initiative.',
-  l2: 'Nobody at my school had tried before.',
-  l3: 'The plan:',
-  steps: ['1. be the first to try', '2. keep trying (relentlessly)', '3. get quite far', '4. get it approved'],
-  howFar: needed('what stage it reached'),
+  steps: ['be the first to try', 'keep trying', 'get quite far', 'get it approved'],
   sign: 'PET THERAPY?',
-  end: '3 out of 4. Sadly, number 4 was the point.',
   flip: '(okay. now flip fast.)',
   watch: 'watch the corner',
 }
@@ -70,21 +64,18 @@ export const petTherapy: DiaryPage = {
   entryIds: ['pet-therapy'],
   update: settleInk,
   html: `
-    ${row(1, appear(0.04, 0.08, COPY.day), 'dp-day')}
-    ${row(2, appear(0.08, 0.16, COPY.l1))}
-    ${row(3, appear(0.16, 0.23, COPY.l2))}
-    ${row(4, appear(0.23, 0.26, COPY.l3))}
-    ${row(5, tick(0.3) + appear(0.27, 0.31, COPY.steps[0]))}
-    ${row(6, tick(0.36) + appear(0.32, 0.37, COPY.steps[1]))}
-    ${row(7, tick(0.42) + appear(0.38, 0.43, COPY.steps[2]) + ' ' + appear(0.43, 0.46, COPY.howFar))}
-    ${row(8, cross(0.52) + appear(0.46, 0.51, COPY.steps[3]))}
+    ${row(1.4, appear(0.04, 0.12, `${hl('Pet therapy', 'mint')} at school`), 'dp-big')}
+    ${row(3.4, tick(0.3) + appear(0.14, 0.2, `${hl('first', 'y')} to try`))}
+    ${row(4.8, tick(0.36) + appear(0.22, 0.28, COPY.steps[1]))}
+    ${row(6.2, tick(0.42) + appear(0.3, 0.36, COPY.steps[2]))}
+    ${row(7.6, cross(0.52) + appear(0.38, 0.44, COPY.steps[3]))}
     ${svg(`
       ${ink(0.54, 0.66, kid(20, 80, 0.64, { armR: 52, armL: 14, extra: SIGN }))}
       ${ink(0.6, 0.72, dog(52, 80))}
       ${ink(0.68, 0.74, hope(66, 44))}
       ${ink(0.62, 0.72, `<path d="M8,80.6 L72,80.6" stroke="${INK}" stroke-width=".5" fill="none"/>`)}
     `)}
-    ${row(21, appear(0.7, 0.76, COPY.end))}
+    ${row(21, appear(0.7, 0.76, `${hl('3 out of 4', 'pink')}. #4 was the point.`))}
   `,
 }
 
@@ -93,7 +84,7 @@ export const flipFast: DiaryPage = {
   side: 'r',
   update: settleInk,
   html: `
-    ${row(10, appear(0.74, 0.78, COPY.flip), 'dp-grey dp-center')}
+    ${row(10, appear(0.74, 0.78, `(okay. now ${hl('flip fast', 'y')}.)`), 'dp-center')}
     ${svg(`
       ${ink(0.76, 0.79, label(20, 58, COPY.watch, 3.4, 'start', '#7a7a7a'))}
       ${ink(0.77, 0.8, arrow(36, 60.6, 52.4, 76, -0.3))}

@@ -1,5 +1,5 @@
 // OWNER: page agent C. Spread 2: the motor thesis (left: the desk cartoon, right: FIG. 1 with a spinnable rotor).
-import { INK, appear, arrow, bubble, entry, ink, kid, label, row, svg } from '../kit'
+import { INK, appear, arrow, bubble, entry, hl, ink, kid, label, row, svg, swallowClicks } from '../kit'
 import type { DiaryPage } from '../types'
 
 // Fact source: entries.ts 'motor-thesis' ("Wrote a thesis paper on electric motor propulsion."). Throws if the id is renamed.
@@ -8,24 +8,18 @@ const THESIS = entry('motor-thesis')
 /** All wording on this spread (draft; Risheek edits here). */
 const COPY = {
   month: 'OCTOBER',
-  day: 'Thursday',
-  wrote: 'I wrote a thesis on electric motor propulsion.',
-  shortPre: 'Short version: current + magnets = ',
-  shortWord: 'spin',
-  shortPost: '.',
-  long: 'Long version: a lot more pages than this.',
   bubble: 'ALMOST DONE.',
   drafts: 'earlier drafts',
-  cta: "Don't believe me? Spin it yourself. →",
+  cta: 'Spin it yourself →',
   // FIG. 1 (right page)
   magnet: 'MAGNET',
-  magnet2: 'ALSO A MAGNET',
+  magnet2: 'MAGNET',
   coil: 'COIL',
-  spins: 'THIS PART SPINS',
+  spins: 'SPINS',
   north: 'N',
   south: 'S',
-  caption: 'FIG. 1: a motor. (drawn by me, badly.)',
-  hint: '↻ grab the middle and spin',
+  caption: 'FIG. 1: a motor.',
+  hint: '↻ spin it',
 } as const
 
 const r2 = (v: number): string => v.toFixed(2)
@@ -103,12 +97,10 @@ export const motorText: DiaryPage = {
   side: 'l',
   html: `
     ${row(1, appear(0.02, 0.05, COPY.month), 'dp-month')}
-    ${row(2, appear(0.05, 0.07, COPY.day), 'dp-day')}
-    ${row(3, appear(0.07, 0.13, COPY.wrote))}
-    ${row(4, appear(0.13, 0.18, `${COPY.shortPre}<span class="dp-u2">${COPY.shortWord}</span>${COPY.shortPost}`))}
-    ${row(5, appear(0.18, 0.22, COPY.long))}
+    ${row(2.6, appear(0.05, 0.12, `Thesis: ${hl('electric motors', 'sky')}`), 'dp-big')}
+    ${row(4.2, appear(0.12, 0.2, `current + magnets = ${hl('SPIN', 'y')}`), 'dp-big')}
     ${svg(deskCartoon())}
-    ${row(20, appear(0.41, 0.46, COPY.cta))}`,
+    ${row(20, appear(0.41, 0.46, hl(COPY.cta, 'pink')), 'dp-big')}`,
   update: inkFix,
 }
 
@@ -201,8 +193,8 @@ function figure(): string {
     ink(0.6, 0.63, `${label(76, 8.2, COPY.magnet2, 3.6, 'end')}${thinArrow(66, 10, magnet2To[0], magnet2To[1], -0.22)}`),
     ink(0.62, 0.645, `${label(6, 68.4, COPY.coil, 3.6)}${thinArrow(13.5, 65.2, coilTo[0], coilTo[1], -0.12)}`),
     ink(0.63, 0.66, `${label(38, 68.4, COPY.spins, 3.6, 'middle')}${thinArrow(44.5, 65, spinsTo[0], spinsTo[1], 0.15)}`),
-    // grab target (stays on top; transparent)
-    `<circle class="dp-hit mt-hit" cx="${CX}" cy="${CY}" r="${R_TIP + 1}" fill="transparent"/>`,
+    // touch target: the whole motor plus a margin (stays on top; transparent)
+    `<circle class="dp-hit mt-hit" cx="${CX}" cy="${CY}" r="${R_HOUSE + 3}" fill="transparent"/>`,
   ].join('')
 }
 
@@ -211,15 +203,17 @@ const SPIN_A = 0.62
 const SPIN_TURNS = 3
 
 interface RotorState {
+  /** Extra degrees from the viewer's spinning (added to the scroll-driven angle). */
   drag: number
   u: number
-  last: number | null
+  /** Spin speed in degrees per second (clockwise positive); the loop in bind() coasts it to a stop. */
+  omega: number
 }
 const states = new WeakMap<HTMLElement, RotorState>()
 const stateOf = (root: HTMLElement): RotorState => {
   let st = states.get(root)
   if (!st) {
-    st = { drag: 0, u: 0, last: null }
+    st = { drag: 0, u: 0, omega: 0 }
     states.set(root, st)
   }
   return st
@@ -230,14 +224,6 @@ const smooth = (x: number): number => x * x * (3 - 2 * x)
 
 /** Rotor angle (degrees, clockwise) at progress u plus any dragged amount. Pure. */
 const rotorAngle = (u: number, drag: number): number => SPIN_TURNS * 360 * smooth(clamp01((u - SPIN_A) / (1 - SPIN_A))) + drag
-
-/** Shortest signed difference b - a in degrees, in (-180, 180]. Keeps a drag continuous across the atan2 seam. */
-const angleDelta = (a: number, b: number): number => {
-  let d = (b - a) % 360
-  if (d > 180) d -= 360
-  if (d <= -180) d += 360
-  return d
-}
 
 /**
  * Arm k's coil is drawn bolder while it is being pulled in towards a pole: in the 30 degrees before it lines up with
@@ -264,8 +250,8 @@ export const motorDiagram: DiaryPage = {
   entryIds: [THESIS.id],
   html: `
     ${svg(figure())}
-    ${row(18, appear(0.66, 0.72, COPY.caption), 'dp-small', 'right:32%')}
-    ${row(19, appear(0.72, 0.76, COPY.hint), 'dp-grey dp-small', 'right:32%')}`,
+    ${row(17.6, appear(0.66, 0.72, COPY.caption), 'dp-small', 'right:32%')}
+    ${row(19.4, appear(0.72, 0.76, hl(COPY.hint, 'pink')), 'dp-big', 'right:32%')}`,
   update(root, u) {
     const st = stateOf(root)
     st.u = u
@@ -274,30 +260,63 @@ export const motorDiagram: DiaryPage = {
     if (f) f.style.opacity = String(clamp01((u - 0.5) / 0.06))
     render(root, st)
   },
+  /**
+   * Effortless spinning (Risheek found the old circular-drag hard): the target is the whole motor. A click or tap kicks
+   * it, HOLDING spins it up, and dragging in ANY direction (a straight swipe is enough) adds speed in proportion to how
+   * far you move. It then coasts to a stop by itself. The hit area keeps class dp-hit so none of this advances the story.
+   */
   bind(root) {
     const st = stateOf(root)
     const hit = root.querySelector<SVGCircleElement>('.mt-hit')
     if (!hit) return () => undefined
-    const angAt = (e: PointerEvent): number => {
-      const b = hit.getBoundingClientRect()
-      return (Math.atan2(e.clientY - (b.top + b.height / 2), e.clientX - (b.left + b.width / 2)) * 180) / Math.PI
+    const MAX = 1500 // deg/s
+    const HOLD_TO = 540 // holding eases towards this speed
+    let raf = 0
+    let last = 0
+    let held = false
+    let lastX = 0
+    let lastY = 0
+    const loop = (t: number): void => {
+      const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60
+      last = t
+      if (held) st.omega += (HOLD_TO - st.omega) * Math.min(1, dt * 4)
+      else st.omega *= Math.exp(-dt * 0.9)
+      st.drag += st.omega * dt
+      render(root, st)
+      if (!held && Math.abs(st.omega) < 6) {
+        st.omega = 0
+        raf = 0
+        last = 0
+        return
+      }
+      raf = requestAnimationFrame(loop)
+    }
+    const kick = (): void => {
+      if (!raf) raf = requestAnimationFrame(loop)
     }
     const down = (e: PointerEvent): void => {
-      st.last = angAt(e)
+      held = true
+      lastX = e.clientX
+      lastY = e.clientY
       hit.setPointerCapture(e.pointerId)
+      st.omega = Math.max(st.omega, 420) // a plain click already sets it spinning
+      kick()
       e.preventDefault()
       e.stopPropagation()
     }
     const move = (e: PointerEvent): void => {
-      if (st.last === null) return
-      const a = angAt(e)
-      st.drag += angleDelta(st.last, a)
-      st.last = a
-      render(root, st)
+      if (!held) return
+      const d = Math.hypot(e.clientX - lastX, e.clientY - lastY)
+      lastX = e.clientX
+      lastY = e.clientY
+      st.omega = Math.min(MAX, st.omega + d * 14)
     }
-    const up = (): void => {
-      st.last = null
+    const up = (e: PointerEvent): void => {
+      held = false
+      if (hit.hasPointerCapture(e.pointerId)) hit.releasePointerCapture(e.pointerId)
+      kick()
     }
+    const noClick = swallowClicks(hit)
     hit.addEventListener('pointerdown', down)
     hit.addEventListener('pointermove', move)
     hit.addEventListener('pointerup', up)
@@ -307,7 +326,11 @@ export const motorDiagram: DiaryPage = {
       hit.removeEventListener('pointermove', move)
       hit.removeEventListener('pointerup', up)
       hit.removeEventListener('pointercancel', up)
-      st.last = null
+      noClick()
+      held = false
+      if (raf) cancelAnimationFrame(raf)
+      raf = 0
+      st.omega = 0
     }
   },
 }

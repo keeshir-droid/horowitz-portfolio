@@ -1,9 +1,8 @@
 /* Story shell. Scoped to .story-* so it never collides with index.css or the HUD. */
-html.story-active { scroll-behavior: auto !important; }
-html.story-active body { overflow-x: hidden; }
+html.story-active, html.story-active body { scroll-behavior: auto !important; overflow: hidden; overscroll-behavior: none; height: 100%; }
+html.story-active body { touch-action: manipulation; }
 
 .story-root { position: relative; }
-.story-spacer { width: 1px; pointer-events: none; }
 .story-stage { position: fixed; inset: 0; z-index: 1; overflow: hidden; background: var(--bg); }
 .story-layer { position: absolute; inset: 0; isolation: isolate; } /* each scene is its own stacking context: z-indexes never leak between crossfading scenes */
 .story-loading { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--pixel); font-size: 12px; color: var(--ink); }
@@ -50,3 +49,31 @@ html.story-active body { overflow-x: hidden; }
   .story-chapters { order: -1; flex-basis: 100%; }
   .story-seg { padding: 0 3px; }
 }
+
+/* Click cue (shell/ClickCue.tsx): a small pill just above the dock, only while the story waits for a click. */
+.story-next-wrap { position: relative; display: flex; }
+.cue { position: fixed; left: 0; right: 0; bottom: 92px; z-index: 48; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
+.cue-card {
+  display: flex; align-items: center; gap: 18px; width: max-content; max-width: calc(100vw - 32px); padding: 16px 30px 16px 22px; border-width: 4px; border-radius: 16px;
+  background: rgba(10, 11, 24, 0.96); color: #fff; border: 2px solid var(--accent); box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+  font-family: var(--sans); opacity: 0; transform: translateY(8px);
+}
+.cue.is-on .cue-card { animation: cue-in 0.3s ease-out forwards; }
+@keyframes cue-in { to { opacity: 1; transform: none; } }
+.cue-text { display: grid; gap: 2px; }
+.cue-text strong { font-size: clamp(22px, 5.4vw, 30px); line-height: 1.2; font-weight: 700; }
+.cue-text small { font-size: clamp(14px, 3.6vw, 17px); color: #d8d6ee; }
+/* mouse with a pulsing click dot (desktop) or a fingertip tap (touch) */
+.cue-icon { position: relative; flex: 0 0 auto; width: 30px; height: 46px; border: 2px solid var(--accent); border-radius: 15px; }
+.cue-icon i { position: absolute; left: 50%; top: 9px; width: 7px; height: 12px; margin-left: -3.5px; border-radius: 2px; background: #fff; animation: cue-pulse 1.4s ease-in-out infinite; }
+.cue.is-touch .cue-icon { width: 40px; height: 40px; border-radius: 50%; }
+.cue.is-touch .cue-icon i { top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; }
+@keyframes cue-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.55; } }
+.story-root.can-advance .story-stage { cursor: pointer; }
+.story-btn:disabled { opacity: 0.35; cursor: default; }
+.story-next.is-ready { background: #ffc857; color: #0e0f1a; border-color: #ffc857; animation: next-pulse 1.6s ease-in-out infinite; }
+@keyframes next-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 200, 87, 0.55); } 50% { box-shadow: 0 0 0 7px rgba(255, 200, 87, 0); } }
+@media (prefers-reduced-motion: reduce) { .cue.is-on .cue-card { animation: none; opacity: 1; transform: none; } .cue-icon i, .story-next.is-ready { animation: none; } }
+
+/* Phones: the chapter row sits above the buttons, so lift the cue clear of it. */
+@media (max-width: 640px) { .cue { bottom: 150px; } .cue-card { padding: 14px 20px 14px 16px; gap: 14px; } }

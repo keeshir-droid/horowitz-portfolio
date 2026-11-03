@@ -1,25 +1,18 @@
 // OWNER: page agent B. Spread 1, left: the two honor societies (NEHS: the only chapter; SNHS: the first one).
 import type { DiaryPage } from '../types'
-import { GREY, INK, appear, arrow as kitArrow, entry, ink, kid, label, row, svg } from '../kit'
+import { GREY, INK, appear, arrow as kitArrow, entry, hl, ink, kid, label, labelHl, row, svg } from '../kit'
 
 /** All narration on this page. Draft wording: edit here. */
 const COPY = {
-  day: 'Wednesday',
-  l1: "Some clubs didn't exist yet.",
-  l2: 'So we started them.',
   country: 'the whole country',
-  nehs1: 'NEHS chapters in',
-  nehs2: 'the country:',
-  nehsCount: '1.',
-  nehsOurs: '(ours.)',
-  snhs1: 'SNHS: the first',
-  snhs2: 'one in the country.',
-  snhsOurs: '(also ours.)',
-  myTitle: 'My title, in the English one:',
+  nehs: 'NEHS',
+  snhs: 'SNHS',
+  nehsLine: 'the ONLY chapter',
+  snhsLine: 'the FIRST chapter',
+  inCountry: 'in the country',
+  board: '(I was on the board.)',
+  myTitle: 'My title:',
   plate: 'FOUNDING VICE PRESIDENT',
-  plateNote1: 'title: longer',
-  plateNote2: 'than me.',
-  science: '(the Science one: I was on the board.)',
 } as const
 
 // Facts this page shows (throws in dev if an id is wrong). NEHS = English, SNHS = Science, per entries.ts.
@@ -46,11 +39,10 @@ const pin = `<g stroke="${INK}" stroke-linecap="round">
   <path d="M${PIN.x},${PIN.y} L${PIN.x},${PIN.y - 4.6}" stroke-width=".45"/>
   <circle cx="${PIN.x}" cy="${PIN.y - 5.8}" r="1.5" fill="${INK}" stroke-width=".4"/>
 </g>`
-const nehsNote = `${label(49, 20, COPY.nehs1, 3)}${label(49, 24, COPY.nehs2, 3)}
-  ${label(49.4, 31, COPY.nehsCount, 6.4)}${label(55.6, 30.6, COPY.nehsOurs, 3, 'start', GREY)}
-  ${arrow(48.4, 28.6, PIN.x + 2.2, PIN.y - 5, 0.18)}`
-const snhsNote = `${label(49, 37.6, COPY.snhs1, 3)}${label(49, 41.6, COPY.snhs2, 3)}${label(49, 45.6, COPY.snhsOurs, 3, 'start', GREY)}
-  ${arrow(48.4, 39, PIN.x + 2, PIN.y - 2.6, -0.16)}`
+const nehsNote = `${label(49, 20.6, COPY.nehs, 4.6)}${labelHl(49, 25.2, 'ONLY', 3.4, 'pink')}${label(58.4, 25.2, 'chapter', 3.2)}${label(49, 28.8, COPY.inCountry, 2.8, 'start', GREY)}
+  ${arrow(48.2, 26.4, PIN.x + 2.2, PIN.y - 5, 0.18)}`
+const snhsNote = `${label(49, 37.6, COPY.snhs, 4.6)}${labelHl(49, 42.2, 'FIRST', 3.4, 'y')}${label(60.2, 42.2, 'chapter', 3.2)}${label(49, 45.8, COPY.inCountry, 2.8, 'start', GREY)}
+  ${arrow(48.2, 39.6, PIN.x + 2, PIN.y - 2.6, -0.16)}`
 
 // ── cartoon 2: me behind a desk, with a nameplate wider than I am.
 const desk = `${kid(27, 84, 0.5, { armL: 30, armR: 30 })}
@@ -58,29 +50,23 @@ const desk = `${kid(27, 84, 0.5, { armL: 30, armR: 30 })}
     <path d="M8,77 L46,77 L46,82.6 L8,82.6 Z" fill="#fff" stroke-width=".45"/>
     <path d="M10,82.6 L10,87.4 M44,82.6 L44,87.4" stroke-width=".45"/>
     <path d="M9.6,77 L11.6,71.2 L42.4,71.2 L44.4,77 Z" fill="#fff" stroke-width=".45"/>
-    ${label(27, 75.2, COPY.plate, 2.55, 'middle')}
+    ${labelHl(27, 75.4, COPY.plate, 2.55, 'y', 'middle')}
   </g>`
-const plateNote = `${label(55, 64.4, COPY.plateNote1, 2.8, 'start', GREY)}${label(55, 68, COPY.plateNote2, 2.8, 'start', GREY)}
-  ${arrow(56, 69.6, 45.2, 72.6, -0.2)}`
-
 export const honors: DiaryPage = {
   id: 'honors',
   side: 'l',
   entryIds: ['english-honor-society', 'science-honor-society'],
   css: `.dp-honors .dp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }`,
-  html: `${row(1, COPY.day, 'dp-day')}
-    ${row(2, appear(0.03, 0.07, COPY.l1))}
-    ${row(3, appear(0.07, 0.1, COPY.l2))}
+  html: `${row(1, appear(0.03, 0.1, `Two ${hl('honor societies', 'mint')}.`), 'dp-big')}
     ${svg(
       ink(0.1, 0.15, country) +
         ink(0.15, 0.17, pin) +
         ink(0.17, 0.21, nehsNote) +
         ink(0.21, 0.25, snhsNote) +
-        ink(0.28, 0.34, desk) +
-        ink(0.34, 0.37, plateNote),
+        ink(0.3, 0.38, desk),
     )}
-    ${row(12, appear(0.25, 0.28, COPY.myTitle))}
-    ${row(22, appear(0.36, 0.4, COPY.science), 'dp-grey dp-small')}
+    ${row(13, appear(0.25, 0.29, COPY.myTitle))}
+    ${row(22, appear(0.38, 0.42, COPY.board), 'dp-grey dp-small')}
     <div class="dp-sr">${FACTS.map((e) => `<p>${e.blurb}</p>`).join('')}</div>`,
   update: hideUndrawn,
 }

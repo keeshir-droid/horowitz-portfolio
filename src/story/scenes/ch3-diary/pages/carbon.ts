@@ -1,17 +1,13 @@
 // OWNER: page agent B. Spread 1, right: head of the carbon-neutral project.
 // A cartoon CO2 meter drops as you read (or as you drag its handle); the little campus responds.
 import type { DiaryPage } from '../types'
-import { GREY, INK, appear, entry, ink, label, needed, row, svg } from '../kit'
+import { GREY, INK, appear, entry, hl, ink, label, row, svg, swallowClicks } from '../kit'
 
 /** All narration on this page. Draft wording: edit here. */
 const COPY = {
-  day: 'Thursday',
-  l1: 'New job: head of the carbon-neutral project.',
-  l2: 'Translation: make the school carbon-neutral.',
   co2: 'CO<tspan font-size="2.3" dy=".7">2</tspan>',
   pull: 'pull',
-  result: 'Result:',
-  resultNeeded: 'tonnes / what changed',
+  result: "Lesson: carbon is everybody's job.",
 } as const
 
 // Fact this page shows (throws in dev if the id is wrong).
@@ -154,11 +150,10 @@ export const carbon: DiaryPage = {
   side: 'r',
   entryIds: ['carbon-neutral'],
   css: `.dp-carbon .dp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }`,
-  html: `${row(1, appear(0.37, 0.4, `<span class="dp-day">${COPY.day}</span>`))}
-    ${row(2, appear(0.4, 0.45, COPY.l1))}
-    ${row(3, appear(0.45, 0.5, COPY.l2))}
-    ${svg(ink(0.44, 0.5, campus + smoke) + ink(0.46, 0.51, meter + mercury + handle) + growers + `<rect class="dp-hit cb-hit" x="5" y="17" width="22" height="50" fill="transparent"/>`)}
-    ${row(17, appear(0.74, 0.79, `${COPY.result} ${needed(COPY.resultNeeded)}`))}
+  html: `${row(1, appear(0.38, 0.46, `${hl('Head', 'mint')} of the`), 'dp-big')}
+    ${row(2.4, appear(0.4, 0.49, `${hl('carbon-neutral', 'mint')} project`), 'dp-big')}
+    ${svg(ink(0.44, 0.5, campus + smoke) + ink(0.46, 0.51, meter + mercury + handle) + growers + `<rect class="dp-hit cb-hit" x="6" y="19" width="16" height="48" fill="transparent"/>`)}
+    ${row(17.2, appear(0.74, 0.79, COPY.result))}
     <div class="dp-sr"><p>${FACT.title}. ${FACT.blurb}</p></div>`,
   update(root, u) {
     const s = stateOf(root)
@@ -195,11 +190,13 @@ export const carbon: DiaryPage = {
       dragging = false
       if (hit.hasPointerCapture(e.pointerId)) hit.releasePointerCapture(e.pointerId)
     }
+    const noClick = swallowClicks(hit)
     hit.addEventListener('pointerdown', down)
     hit.addEventListener('pointermove', move)
     hit.addEventListener('pointerup', up)
     hit.addEventListener('pointercancel', up)
     return () => {
+      noClick()
       hit.removeEventListener('pointerdown', down)
       hit.removeEventListener('pointermove', move)
       hit.removeEventListener('pointerup', up)

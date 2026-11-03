@@ -1,20 +1,16 @@
 // OWNER: page agent D. Right page of spread 3 ("stage-java"): the hand-written Java inventory + ordering system.
-import { INK, appear, entry, ink, kid, label, needed, row, svg } from '../kit'
+import { INK, appear, entry, hl, ink, kid, label, row, svg } from '../kit'
 import type { DiaryPage } from '../types'
 
 const E = entry('java-inventory')
 
 /** All narration on this page (draft wording; Risheek edits here). Facts come from entries.ts only. */
 const COPY = {
-  day: 'Wednesday',
-  l1: 'A local business needed an inventory system,',
-  l2: 'plus a way to take morning and lunch orders.',
-  l3: 'So I built both. In Java.',
-  /** Big line, built from the entry's stat: "0 AI. Every line written by hand." */
-  big: `${E.stat?.value ?? '0 AI'}. ${cap(E.stat?.label ?? 'every line written by hand')}.`,
-  joke: '(I checked.)',
-  business: `Business: ${needed('name, if shareable')}`,
-  inUse: `In use for: ${needed('how long it ran')}`,
+  l1: 'Inventory + ordering system',
+  l2: 'for a local business. In Java.',
+  /** Big line, from the entry's stat ("0 AI"), plus its label in small type. */
+  bigValue: E.stat?.value ?? '0 AI',
+  bigLabel: cap(E.stat?.label ?? 'every line written by hand'),
   /** Plausible hand-typed Java on the screen (illustrative, not a quote from the real code). */
   code: ['class Inventory {', '  void order(Item i, int qty) {', '    i.stock -= qty;', '    orders.add(i, qty);', '  }', '}'],
   slip: { title: 'ORDERS', morning: 'MORNING', lunch: 'LUNCH' },
@@ -111,7 +107,7 @@ export function settleInk(root: HTMLElement, u: number): void {
 
 const CSS = `
 .dp-java .jv-code { font-size: calc(var(--unit) * 2.05); line-height: calc(var(--unit) * ${CODE_LH}); white-space: pre; right: auto; }
-.dp-java .jv-big { font-size: calc(var(--unit) * 4.3); }
+.dp-java .jv-big { font-size: calc(var(--unit) * 7); }
 `
 
 const codeRows = COPY.code
@@ -128,19 +124,15 @@ export const java: DiaryPage = {
   css: CSS,
   update: settleInk,
   html: `
-    ${row(1, appear(0.04, 0.08, COPY.day), 'dp-day')}
-    ${row(2, appear(0.08, 0.16, COPY.l1))}
-    ${row(3, appear(0.16, 0.24, COPY.l2))}
-    ${row(4, appear(0.24, 0.3, COPY.l3))}
+    ${row(1.4, appear(0.04, 0.14, hl(COPY.l1, 'y')), 'dp-big')}
+    ${row(2.9, appear(0.14, 0.24, COPY.l2))}
     ${svg(`
       ${ink(0.29, 0.4, laptop() + desk())}
       ${ink(0.32, 0.42, kid(9.5, 58.6, 0.52, { armR: 72, armL: 14 }))}
       ${ink(0.6, 0.68, slip())}
     `)}
     ${codeRows}
-    ${row(15, appear(0.66, 0.74, COPY.big), 'jv-big')}
-    ${row(16.25, appear(0.74, 0.76, COPY.joke), 'dp-grey dp-small')}
-    ${row(18, appear(0.76, 0.79, COPY.business), 'dp-small')}
-    ${row(19, appear(0.78, 0.8, COPY.inUse), 'dp-small')}
+    ${row(16.2, appear(0.66, 0.74, hl(COPY.bigValue, 'pink')), 'jv-big')}
+    ${row(17.9, appear(0.74, 0.79, COPY.bigLabel), 'dp-big')}
   `,
 }

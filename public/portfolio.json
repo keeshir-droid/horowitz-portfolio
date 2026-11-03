@@ -1,0 +1,467 @@
+{
+  "name": "Risheek Nawka",
+  "title": "Creative technologist",
+  "age": 19,
+  "summary": "Risheek Nawka is a 19-year-old creative technologist applying to the a16z Horowitz Academy founding class. Tagline: \"I build things where art and technology meet.\" Key facts: Founder, Summer; Consulted for Adobe; 7 creative-tech projects shipped; Gap year, building full-time.",
+  "tagline": "I build things where art and technology meet.",
+  "contact": {
+    "email": "risheeknawka@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/risheek-nawka/",
+    "github": "https://github.com/keeshir-droid",
+    "instagram": "https://instagram.com/keeshir"
+  },
+  "highlights": [
+    {
+      "id": "martial-arts",
+      "title": "International karate champion (Seisenkei Shitoryu)",
+      "stat": {
+        "value": "Gold",
+        "label": "4th International Karate Championship, 2018"
+      },
+      "description": "Won gold at the 4th International Karate Championship in 2018, competing in Seisenkei Shitoryu."
+    },
+    {
+      "id": "decor-brand",
+      "title": "Founded Summer, a home décor brand",
+      "stat": {
+        "value": "$60 → ~$16K",
+        "label": "Summer · revenue in under 6 months"
+      },
+      "description": "Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Close to $16,000 in revenue in under six months from roughly $60 of initial investment. Drew investor attention."
+    },
+    {
+      "id": "content-pitch",
+      "title": "Content that got me a pitch to a top Indian investor",
+      "stat": {
+        "value": "Pitched",
+        "label": "to a top Indian investor"
+      },
+      "description": "Started creating content on Instagram and LinkedIn. It brought one of India’s biggest investors (a \"Shark\") to the accelerator, and I pitched to her."
+    },
+    {
+      "id": "21-in-21",
+      "title": "7 creative-tech projects shipped",
+      "stat": {
+        "value": "7",
+        "label": "creative-tech projects shipped"
+      },
+      "description": "Small, free, phone-first creative projects (software and hardware), each shipped publicly with a short reel. New ones are added as they ship."
+    },
+    {
+      "id": "adobe",
+      "title": "Consulted for Adobe in San Francisco",
+      "stat": {
+        "value": "Adobe",
+        "label": "Firefly go-to-market, India"
+      },
+      "description": "Invited to San Francisco for a one-time consulting project for Adobe: go-to-market and competitive analysis for Firefly, and how consumers in India use AI in creative workflows."
+    }
+  ],
+  "achievements": [
+    {
+      "id": "decor-brand",
+      "section": "What I built",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "Founded Summer, a home décor brand",
+      "description": "Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Close to $16,000 in revenue in under six months from roughly $60 of initial investment. Drew investor attention.",
+      "stat": {
+        "value": "$60 → ~$16K",
+        "label": "Summer · revenue in under 6 months"
+      },
+      "links": [
+        {
+          "label": "summerdecor.in",
+          "href": "https://summerdecor.in"
+        },
+        {
+          "label": "Instagram",
+          "href": "https://www.instagram.com/summerdecor.in/"
+        }
+      ]
+    },
+    {
+      "id": "21-in-21",
+      "section": "What I built",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "7 creative-tech projects shipped",
+      "description": "Small, free, phone-first creative projects (software and hardware), each shipped publicly with a short reel. New ones are added as they ship.",
+      "stat": {
+        "value": "7",
+        "label": "creative-tech projects shipped"
+      },
+      "links": []
+    },
+    {
+      "id": "idea-testing-platform",
+      "section": "What I built",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "Platform to test brand ideas with AI",
+      "description": "Built a platform that lets brands like mine test designs, ideas and value propositions with AI, without much capex, to see what real customers want.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "ad-automation",
+      "section": "What I built",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "End-to-end ad automation",
+      "description": "Built end-to-end automations that produce ads.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "pet-brand",
+      "section": "What I built",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "Pet-care brand",
+      "description": "Built an innovative pet-care brand with a prebiotic formulation that helps dogs digest food better.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "java-inventory",
+      "section": "What I built",
+      "period": "High school",
+      "category": "Building",
+      "title": "Hand-coded Java inventory & meal-ordering system",
+      "description": "Built, by hand in Java and without AI, an inventory management system and a morning/lunch ordering system for a local business.",
+      "stat": {
+        "value": "0 AI",
+        "label": "every line written by hand"
+      },
+      "links": []
+    },
+    {
+      "id": "adobe",
+      "section": "Work and recognition",
+      "period": "San Francisco",
+      "category": "Consulting",
+      "title": "Consulted for Adobe in San Francisco",
+      "description": "Invited to San Francisco for a one-time consulting project for Adobe: go-to-market and competitive analysis for Firefly, and how consumers in India use AI in creative workflows.",
+      "stat": {
+        "value": "Adobe",
+        "label": "Firefly go-to-market, India"
+      },
+      "links": []
+    },
+    {
+      "id": "content-pitch",
+      "section": "Work and recognition",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "Content that got me a pitch to a top Indian investor",
+      "description": "Started creating content on Instagram and LinkedIn. It brought one of India’s biggest investors (a \"Shark\") to the accelerator, and I pitched to her.",
+      "stat": {
+        "value": "Pitched",
+        "label": "to a top Indian investor"
+      },
+      "links": []
+    },
+    {
+      "id": "berkeley-summer",
+      "section": "Work and recognition",
+      "period": "San Francisco",
+      "category": "Education",
+      "title": "UC Berkeley summer session: film and business",
+      "description": "Spent a couple of months in the Bay Area for the UC Berkeley summer session, studying film and business. While there I joined build sessions and consulted for Adobe.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "accelerator",
+      "section": "Work and recognition",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "Joined a startup accelerator in India",
+      "description": "Joined a startup accelerator and spent the next stretch building real businesses and products.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "prototyping-class",
+      "section": "Work and recognition",
+      "period": "The builder years",
+      "category": "Teaching",
+      "title": "Designed and taught a prototyping class",
+      "description": "Learned prototyping and design, built a framework around it with mentors, and taught it as a class sanctioned by my accelerator. External people attended too.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "unconference",
+      "section": "Work and recognition",
+      "period": "The builder years",
+      "category": "Awards",
+      "title": "Youngest at Product Folks Unconference 2025",
+      "description": "The youngest attendee at the Product Folks Unconference 2025. They made an exception to invite me.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "visa",
+      "section": "Work and recognition",
+      "period": "The builder years",
+      "category": "Awards",
+      "title": "Admitted to a top-30 US university. Visa said no.",
+      "description": "Wanted to study film and computer science in America. Got into a top-30 US university and could not go because of visa troubles. So I started building.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "english-honor-society",
+      "section": "High school",
+      "period": "High school",
+      "category": "Leadership",
+      "title": "Founding vice president, National English Honor Society",
+      "description": "Founding vice president of the National English Honor Society (NEHS) chapter at my school, the only one in the country.",
+      "stat": {
+        "value": "Only",
+        "label": "NEHS chapter in the country"
+      },
+      "links": []
+    },
+    {
+      "id": "science-honor-society",
+      "section": "High school",
+      "period": "High school",
+      "category": "Leadership",
+      "title": "Board, Science National Honor Society (first chapter in the country)",
+      "description": "On the board of the Science National Honor Society (SNHS) chapter at my school, the first one in the country. An honor society, not a club.",
+      "stat": {
+        "value": "First",
+        "label": "SNHS chapter in the country"
+      },
+      "links": []
+    },
+    {
+      "id": "carbon-neutral",
+      "section": "High school",
+      "period": "High school",
+      "category": "Leadership",
+      "title": "Head of the carbon-neutral project",
+      "description": "Led the school's flagship sustainability initiative: the carbon-neutral project.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "motor-thesis",
+      "section": "High school",
+      "period": "High school",
+      "category": "Research",
+      "title": "Thesis on electric motor propulsion",
+      "description": "Wrote a thesis paper on electric motor propulsion.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "esports-tournament",
+      "section": "High school",
+      "period": "High school",
+      "category": "Leadership",
+      "title": "Hosted the school's first official esports tournament",
+      "description": "Organised the first official esports tournament in my school, to promote esports.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "standup-paper",
+      "section": "High school",
+      "period": "High school",
+      "category": "Research",
+      "title": "Research paper on stand-up comedy",
+      "description": "Wrote a research paper on stand-up comedy.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "subject-awards",
+      "section": "High school",
+      "period": "High school",
+      "category": "Awards",
+      "title": "Best-in-subject awards",
+      "description": "Awarded for being the best in my subjects in high school.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "lesson-plans",
+      "section": "High school",
+      "period": "High school",
+      "category": "Teaching",
+      "title": "Co-designed lesson plans with teachers",
+      "description": "Co-designed multiple lesson plans with my teachers.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "pet-therapy",
+      "section": "High school",
+      "period": "High school",
+      "category": "Leadership",
+      "title": "First to try to start a pet therapy initiative at school",
+      "description": "Was the first person at my school to try to build a pet therapy initiative. It did not get approved, but the attempt was relentless and we got quite far.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "music",
+      "section": "High school",
+      "period": "High school",
+      "category": "Performance",
+      "title": "Musical performances, stage fright beaten",
+      "description": "Played in multiple musical performances, overcoming stage fright and a fear of music.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "martial-arts",
+      "section": "Earlier",
+      "period": "Middle school",
+      "category": "Awards",
+      "title": "International karate champion (Seisenkei Shitoryu)",
+      "description": "Won gold at the 4th International Karate Championship in 2018, competing in Seisenkei Shitoryu.",
+      "stat": {
+        "value": "Gold",
+        "label": "4th International Karate Championship, 2018"
+      },
+      "links": []
+    },
+    {
+      "id": "performing-arts",
+      "section": "Earlier",
+      "period": "Middle school",
+      "category": "Performance",
+      "title": "Performed in front of 2,000 people",
+      "description": "Performed on stage in front of an audience of 2,000, across theater, dance and performing arts.",
+      "stat": {
+        "value": "2,000",
+        "label": "people in the audience"
+      },
+      "links": []
+    },
+    {
+      "id": "student-council",
+      "section": "Earlier",
+      "period": "Middle school",
+      "category": "Leadership",
+      "title": "Student council, grade 5 to grade 10",
+      "description": "A member of student council from fifth grade until I left the school in tenth grade, winning elections and being nominated every year.",
+      "stat": {
+        "value": "Grade 5 → 10",
+        "label": "elected and nominated every year"
+      },
+      "links": []
+    },
+    {
+      "id": "robotics",
+      "section": "Earlier",
+      "period": "Middle school",
+      "category": "Building",
+      "title": "Robotics: Arduino and microcontroller projects, coded by hand",
+      "description": "Built many Arduino and microcontroller projects and coded them by hand, without AI, and represented my school in competitions.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "science-talent",
+      "section": "Earlier",
+      "period": "Primary school",
+      "category": "Awards",
+      "title": "National science talent search: top position",
+      "description": "Placed among the top positions in the national science talent search examination.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "olympiads",
+      "section": "Earlier",
+      "period": "Primary school",
+      "category": "Awards",
+      "title": "Academic Olympiads",
+      "description": "Won a long list of academic Olympiads.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "chess",
+      "section": "Earlier",
+      "period": "Primary school",
+      "category": "Awards",
+      "title": "Best chess player in the school",
+      "description": "Awarded the best chess player in the entire school trophy in fifth grade.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "national-art",
+      "section": "Earlier",
+      "period": "Primary school",
+      "category": "Art",
+      "title": "National art competition winner",
+      "description": "Won a national art competition.",
+      "stat": null,
+      "links": []
+    },
+    {
+      "id": "every-year",
+      "section": "Earlier",
+      "period": "Primary school",
+      "category": "Awards",
+      "title": "Called to the stage, every year",
+      "description": "From first grade until COVID, invited to every award ceremony and given an award, because I achieved something each year.",
+      "stat": {
+        "value": "Grade 1 →",
+        "label": "an award every year"
+      },
+      "links": []
+    }
+  ],
+  "projects": [
+    {
+      "title": "Shot Planner",
+      "description": "A Claude skill that turns a reel script into a shot list.",
+      "url": null
+    },
+    {
+      "title": "Handwriting Font",
+      "description": "Write a list on paper, take one photo, then type in your own handwriting.",
+      "url": "https://handwriting-font-converter.vercel.app"
+    },
+    {
+      "title": "Doodle Alive",
+      "description": "Snap a notebook doodle and the ink lifts off the page and wobbles in a 6-second story.",
+      "url": "https://doodle-alive.vercel.app"
+    },
+    {
+      "title": "Underline",
+      "description": "Photograph a book page and swipe a line. A real-looking highlighter marks it.",
+      "url": "https://underline-it.vercel.app"
+    },
+    {
+      "title": "Look Up",
+      "description": "Photograph the sky, trace the shape you see in a cloud, send it as a postcard.",
+      "url": "https://look-up-sky.vercel.app"
+    },
+    {
+      "title": "Pocket Booth",
+      "description": "A 4-shot photo-booth strip from your camera. Share it or print at true size.",
+      "url": "https://the-pocket-booth.vercel.app"
+    },
+    {
+      "title": "Spotted a Cutie",
+      "description": "Snap a street animal and get a goofy collectible card made for one friend.",
+      "url": "https://spotted-a-cutie.vercel.app"
+    }
+  ],
+  "projectsNote": "Free, phone-first websites for young, expressive people. You do something real with your hands, your phone captures it, the site turns it into something delightful, you send it to someone, and they discover the site.",
+  "howToRead": {
+    "index": "https://horowitz-portfolio.vercel.app/#/index",
+    "story": "https://horowitz-portfolio.vercel.app/#/story",
+    "note": "The story is a click-through animation with little readable text. The Index page and this file have every fact as text."
+  }
+}

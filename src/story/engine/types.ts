@@ -16,6 +16,21 @@ export interface SceneMeta {
    * one's camera move, e.g. Ch4's push through the window into Ch5's city).
    */
   softEntry?: boolean
+  /**
+   * Click-to-advance: scene-local seconds (same unit as `duration`) where the story rests and waits for a click.
+   * A click plays on to the next stop at the designed pace, across scene and chapter boundaries. The last stop of the
+   * whole story is its end. No stops = the scene plays straight through to its end in one click.
+   */
+  stops?: readonly number[]
+  /** Optional cue text per stop (same order as `stops`; undefined = the default "Click to go forward"). */
+  stopCues?: readonly (string | undefined)[]
+  /**
+   * Scene-local second ranges [from, to] where the viewer scrolls (wheel / swipe) instead of clicking, e.g. the
+   * flipbook. The range's start and end are rests; a click inside a zone plays it through at normal pace.
+   */
+  scrollZones?: readonly (readonly [number, number])[]
+  /** What the cue says in this scene's scroll zones ("flip the pages"). */
+  scrollHint?: string
 }
 
 /** Props every scene component receives. Scenes are pure of global state. */

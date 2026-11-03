@@ -48,7 +48,7 @@ export const T = {
  * Extra scroll-seconds spent on the select screen so it reads before the fight (Risheek, 2026-10-14: it flashed by).
  * The scene's own timeline (T, DUR) is unchanged; `sceneProgress` stretches the first beat of scroll over it.
  */
-export const SELECT_HOLD = 1.3
+export const SELECT_HOLD = 0.4
 /** Scroll-time of the whole scene (meta.duration). */
 export const SCROLL_DUR = DUR + SELECT_HOLD
 /** Scroll progress (0..1 over SCROLL_DUR) -> scene progress (0..1 over DUR), slowing only the select screen. */
@@ -59,6 +59,20 @@ export function sceneProgress(scrollP: number): number {
   const s = t < a ? t * (selEnd / a) : t - SELECT_HOLD
   return Math.min(1, Math.max(0, s / DUR))
 }
+
+/** Scene seconds (0..DUR, before the select stretch) -> scroll seconds (0..SCROLL_DUR). Inverse of `sceneProgress`. */
+export function scrollAt(sceneSec: number): number {
+  const selEnd = T.select[1] * DUR
+  return sceneSec < selEnd ? sceneSec * ((selEnd + SELECT_HOLD) / selEnd) : sceneSec + SELECT_HOLD
+}
+/**
+ * Click-to-advance rests (scene seconds): the fighter is picked (click = lock in, STAGE 1, the fight, the K.O. and the
+ * karate pop-up), then one click per stage (bow, council speech), then ALL STAGES CLEAR; the last click plays NEXT LEVEL.
+ */
+export const STOPS: readonly number[] = [0.62, T.fight[1] * DUR, T.stage[1] * DUR, T.council[1] * DUR, 10.3 + 0.9].map(scrollAt)
+
+/** Cue text on each stop (same order as STOPS): the first click starts the fight, the rest carry on. */
+export const STOP_CUES: readonly (string | undefined)[] = ['Click to start']
 
 /** Seconds inside the select beat. */
 export const SEL = { cursor: [0.28, 0.42, 0.56] as const, lock: 0.66, out: 0.8 }

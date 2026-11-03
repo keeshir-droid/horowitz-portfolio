@@ -5,6 +5,7 @@ import Gate from './gate/Gate'
 import IndexMode from './index-mode/IndexMode'
 import AppBoundary from './AppBoundary'
 import { clearReloadGuard } from './chunkGuard'
+import MachineText from './components/MachineText'
 
 // Story mode pulls in the heavy scene code; keep it out of the Index bundle.
 const StoryMode = lazy(() => import('./story/StoryMode'))
@@ -47,6 +48,7 @@ export default function App() {
   if (mode === 'index') return <IndexMode />
   return (
     <AppBoundary resetKey={mode}>
+      <MachineText />
       {mode === 'story' ? (
         <Suspense fallback={<div className="boot-fallback">LOADING…</div>}>
           <StoryMode />

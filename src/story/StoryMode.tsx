@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import Lenis from 'lenis'
 import { chapters } from '../content/entries'
 import type { ChapterId } from '../content/types'
 import { prefersReducedMotion, useApp } from '../store'
@@ -7,15 +6,18 @@ import { audio, music } from './engine/audio'
 import Hud from './engine/Hud'
 import { locate } from './engine/timeline'
 import PixelateTransition from './engine/transitions/pixelate'
-import { buildPlan, CHAPTER_IDS, PX_PER_SECOND, slideIndexFor, viewAt, type Plan } from './shell/plan'
+import { buildPlan, CHAPTER_IDS, nextStop, prevStop, rateAt, slideIndexFor, viewAt, type Plan } from './shell/plan'
 import { SlideView } from './shell/parts'
+import ClickCue from './shell/ClickCue'
 import { loadRegistry, type SceneEntry } from './shell/registry'
 import './shell/shell.css'
 
 /**
- * Story shell: hosts scenes from the auto-registry (see shell/registry.ts) on one scroll timeline.
- * Scroll (Lenis, or native with reduced motion) -> total progress 0..1 -> active scene + local progress.
- * Conventions: shell/registry.ts (how to add a scene) and shell/plan.ts (missing chapters, weights, transitions).
+ * Story shell: hosts scenes from the auto-registry (see shell/registry.ts) on one timeline.
+ * Risheek (2026-11-03): scrolling was too fast / too slow to feel meaningful, so the story is CLICK-driven. The playhead
+ * (total progress 0..1) rests at each scene's `meta.stops`; a click plays to the next one at the designed pace.
+ * Only declared `meta.scrollZones` (the flipbook) are scrolled. Progress -> active scene + local progress as before.
+ * Conventions: shell/registry.ts (how to add a scene) and shell/plan.ts (stops, zones, weights, transitions).
  */
 const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n)
 const HASH_RE = /^#\/story\/([^/?#]+)/
@@ -31,6 +33,26 @@ const isInteractive = (t: EventTarget | null): boolean => {
   const el = t instanceof HTMLElement ? t : null
   return !!el && /^(BUTTON|A|SUMMARY)$/.test(el.tagName)
 }
+
+/** Playhead state (a ref: it changes every frame; React state `p` only mirrors what is on screen). */
+interface Head {
+  p: number
+  /** idle = resting; play = running to `target`; scroll = following the wheel / swipe inside a scroll zone. */
+  mode: 'idle' | 'play' | 'scroll'
+  target: number
+  speed: number
+  scrollTo: number | null
+  lastClick: number
+}
+
+/**
+ * Scroll zones only: input may not run more than MAX_LEAD scene-seconds ahead of the screen, the screen never plays
+ * faster than MAX_SPEED x the designed pace, one wheel event is at most one ordinary notch, and 100 px = 0.8 s.
+ */
+const MAX_SPEED = 3
+const MAX_LEAD = 2.5
+const WHEEL_STEP = 100
+const SEC_PER_PX = 0.008
 
 /** Short chapter names for the dock on narrow screens (the full era names do not fit beside four other segments). */
 const SEG_SHORT: Record<ChapterId, string> = { 1: 'Primary', 2: 'Middle', 3: 'High school', 4: 'Builder', 5: 'SF' }
@@ -71,110 +93,205 @@ export default function StoryMode() {
 function Shell({ registry }: { registry: SceneEntry[] }) {
   const plan: Plan = useMemo(() => buildPlan(registry), [registry])
   const reduced = useMemo(() => prefersReducedMotion(), [])
-  const [vh, setVh] = useState(() => window.innerHeight)
   // Start position (Index 'focus' link, then #/story/<id> deep link, else the top) is resolved before the first
   // render so the URL-sync effect never overwrites a deep link with the first scene.
-  const [initialY] = useState(() => {
-    const px = Math.max(plan.scrollSeconds * PX_PER_SECOND, window.innerHeight * 3)
+  const [initialP] = useState(() => {
     let i = slideIndexFor(plan, useApp.getState().focus)
     if (i < 0) i = slideIndexFor(plan, sceneIdFromHash())
-    return i >= 0 ? plan.slideEntry[i] * px : 0
+    return i >= 0 ? plan.slideEntry[i] : 0
   })
-  const [y, setY] = useState(initialY)
+  /** What is on screen (total progress 0..1). Everything else about the playhead lives in `head`. */
+  const [p, setP] = useState(initialP)
+  const [resting, setResting] = useState(false)
   const [audioReady, setAudioReady] = useState(false)
-  const lenisRef = useRef<Lenis | null>(null)
-  const scrollPx = Math.max(plan.scrollSeconds * PX_PER_SECOND, vh * 3)
-  const scrollPxRef = useRef(scrollPx)
   const planRef = useRef(plan)
   const displayRef = useRef(0)
+  const audioReadyRef = useRef(false)
+  const head = useRef<Head>({ p: initialP, mode: 'idle', target: initialP, speed: 1, scrollTo: null, lastClick: 0 })
 
   useLayoutEffect(() => {
-    scrollPxRef.current = scrollPx
     planRef.current = plan
   })
 
-  const jump = useCallback((progress: number) => {
-    const target = clamp01(progress)
-    const px = target * scrollPxRef.current
-    const l = lenisRef.current
-    if (l) l.scrollTo(px, { immediate: true, force: true })
-    else window.scrollTo({ top: px, behavior: 'instant' })
-    setY(px)
-  }, [])
+  /** Put the playhead on `to` (no animation) and, with `play`, carry on to the next rest. */
+  const place = useCallback(
+    (to: number, play: boolean) => {
+      const h = head.current
+      const pl = planRef.current
+      h.p = clamp01(to)
+      h.scrollTo = null
+      h.speed = 1
+      const nxt = nextStop(pl, h.p)
+      if (play && nxt !== undefined) {
+        if (reduced) {
+          h.p = nxt
+          h.mode = 'idle'
+        } else {
+          h.target = nxt
+          h.mode = 'play'
+        }
+      } else h.mode = 'idle'
+      setP(h.p)
+      setResting(h.mode === 'idle')
+    },
+    [reduced],
+  )
 
-  // ── lifecycle: scroll engine, listeners, audio loops. Everything is undone on unmount. ──
+  /** One click / tap / key: play on to the next rest (a second, later click while playing fast-forwards). */
+  const advance = useCallback(() => {
+    const h = head.current
+    if (!audioReadyRef.current) return
+    const now = performance.now()
+    if (h.mode === 'play') {
+      if (now - h.lastClick > 500) h.speed = 3
+      h.lastClick = now
+      return
+    }
+    if (nextStop(planRef.current, h.p) === undefined) return
+    h.lastClick = now
+    place(h.p, true)
+  }, [place])
+
+  const back = useCallback(() => {
+    place(prevStop(planRef.current, head.current.p), false)
+  }, [place])
+
+  const jump = useCallback((progress: number) => place(progress, true), [place])
+
+  // ── lifecycle: playhead loop, input, listeners. Everything is undone on unmount. ──
   useLayoutEffect(() => {
     document.documentElement.classList.add('story-active')
-    const prevRestoration = history.scrollRestoration
-    history.scrollRestoration = 'manual'
-
-    // Initial position: Index 'see it in the story' focus wins, then the #/story/<id> deep link, else the top.
     if (useApp.getState().focus) useApp.setState({ focus: undefined })
-    window.scrollTo({ top: initialY, behavior: 'instant' })
-    setY(window.scrollY)
 
-    let lenis: Lenis | null = null
     let raf = 0
-    if (!reduced) {
-      lenis = new Lenis({ lerp: 0.09, smoothWheel: true })
-      lenisRef.current = lenis
-      const loop = (t: number) => {
-        lenis?.raf(t)
-        raf = requestAnimationFrame(loop)
+    let last = 0
+    const loop = (t: number) => {
+      const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60
+      last = t
+      const h = head.current
+      const pl = planRef.current
+      if (audioReadyRef.current && h.mode !== 'idle') {
+        const rate = rateAt(pl, h.p, locate(pl.timeline, h.p).sceneIndex)
+        let next = h.p
+        if (h.mode === 'play') {
+          next = Math.min(h.target, h.p + rate * h.speed * dt)
+          if (next >= h.target - 1e-9) {
+            next = h.target
+            h.mode = 'idle'
+            h.speed = 1
+          }
+        } else if (h.mode === 'scroll' && h.scrollTo !== null) {
+          const step = rate * MAX_SPEED * dt
+          const d = h.scrollTo - h.p
+          next = Math.abs(d) <= step ? h.scrollTo : h.p + Math.sign(d) * step
+          if (next === h.scrollTo) {
+            h.mode = 'idle'
+            h.scrollTo = null
+          }
+        }
+        if (next !== h.p) {
+          h.p = next
+          setP(next)
+        }
+        if (h.mode === 'idle') setResting(true)
       }
       raf = requestAnimationFrame(loop)
     }
+    raf = requestAnimationFrame(loop)
 
-    const onScroll = () => setY(window.scrollY)
-    const onResize = () => setVh(window.innerHeight)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onResize)
+    // Scroll zones (the flipbook): wheel / swipe / arrows move the playhead directly, at most MAX_LEAD seconds ahead
+    // of the screen and never faster than MAX_SPEED x the designed pace. Anywhere else, scrolling does nothing.
+    const zoneAt = (x: number) => planRef.current.scrollZones.find((z) => x >= z.a - 1e-6 && x <= z.b + 1e-6)
+    const scrollBySeconds = (sec: number): boolean => {
+      const h = head.current
+      const pl = planRef.current
+      if (!audioReadyRef.current || h.mode === 'play') return false
+      const z = zoneAt(h.p)
+      if (!z) return false
+      const rate = rateAt(pl, h.p, locate(pl.timeline, Math.min(h.p, z.b - 1e-6)).sceneIndex)
+      const base = h.scrollTo ?? h.p
+      const lead = MAX_LEAD * rate
+      const want = Math.max(z.a, Math.min(z.b, base + sec * rate))
+      h.scrollTo = Math.max(h.p - lead, Math.min(h.p + lead, want))
+      h.mode = 'scroll'
+      setResting(false)
+      return true
+    }
+    const onWheel = (e: WheelEvent) => {
+      if (isEditable(e.target)) return
+      const unit = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 600 : 1
+      const dy = Math.max(-WHEEL_STEP, Math.min(WHEEL_STEP, e.deltaY * unit))
+      if (scrollBySeconds(dy * SEC_PER_PX)) e.preventDefault()
+    }
+    let touchY: number | null = null
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches.length === 1 ? e.touches[0].clientY : null
+    }
+    const onTouchMove = (e: TouchEvent) => {
+      if (touchY === null || e.touches.length !== 1) return
+      const y = e.touches[0].clientY
+      const moved = scrollBySeconds((touchY - y) * SEC_PER_PX * 1.4)
+      touchY = y
+      if (moved) e.preventDefault()
+    }
+    const onTouchEnd = () => {
+      touchY = null
+    }
 
-    const scrollBy = (dy: number) => {
-      const l = lenisRef.current
-      if (l) l.scrollTo(l.targetScroll + dy, { duration: 0.9 })
-      else window.scrollBy({ top: dy, behavior: 'auto' })
+    // A click or tap anywhere on the story (not on a button, link or on-page control) = continue.
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0) return
+      const el = e.target instanceof Element ? e.target : null
+      if (!el || !el.closest('.story-root')) return
+      if (el.closest('a, button, input, textarea, select, summary, label, [role="button"], .dp-hit, [data-no-advance], .story-dock, .hud')) return
+      advance()
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey || isEditable(e.target)) return
-      const page = window.innerHeight * 0.85
-      let dy: number | null = null
       switch (e.key) {
-        case 'ArrowDown':
-          dy = 160
-          break
-        case 'ArrowUp':
-          dy = -160
-          break
-        case 'PageDown':
-          dy = page
-          break
-        case 'PageUp':
-          dy = -page
-          break
+        case 'ArrowRight':
+        case 'Enter':
         case ' ':
-          if (isInteractive(e.target)) return // Space activates focused buttons/links
-          dy = e.shiftKey ? -page : page
-          break
+        case 'PageDown':
+          if (isInteractive(e.target) && (e.key === 'Enter' || e.key === ' ')) return // they activate the focused control
+          e.preventDefault()
+          advance()
+          return
+        case 'ArrowDown':
+          e.preventDefault()
+          if (!scrollBySeconds(1.2)) advance()
+          return
+        case 'ArrowUp':
+          e.preventDefault()
+          if (!scrollBySeconds(-1.2)) back()
+          return
+        case 'ArrowLeft':
+        case 'PageUp':
+        case 'Backspace':
+          e.preventDefault()
+          back()
+          return
         case 'Home':
           e.preventDefault()
-          jump(0)
+          place(0, true)
           return
         case 'End':
           e.preventDefault()
-          jump(1)
+          place(1, false)
           return
       }
-      if (dy === null) return
-      e.preventDefault()
-      scrollBy(dy)
     }
+    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    window.addEventListener('click', onClick)
     window.addEventListener('keydown', onKey)
 
     // Back/forward or a manually edited hash: follow #/story/<id>.
     const onHash = () => {
       const i = slideIndexFor(planRef.current, sceneIdFromHash())
-      if (i >= 0 && i !== displayRef.current) jump(planRef.current.slideEntry[i])
+      if (i >= 0 && i !== displayRef.current) place(planRef.current.slideEntry[i], true)
     }
     window.addEventListener('hashchange', onHash)
 
@@ -183,7 +300,7 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
       if (!s.focus) return
       const i = slideIndexFor(planRef.current, s.focus)
       useApp.setState({ focus: undefined })
-      if (i >= 0) jump(planRef.current.slideEntry[i])
+      if (i >= 0) place(planRef.current.slideEntry[i], true)
     })
 
     // Deep-link entries never went through the menu click: unlock audio on the first gesture (one-shot).
@@ -197,27 +314,35 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
 
     return () => {
       cancelAnimationFrame(raf)
-      lenis?.destroy()
-      lenisRef.current = null
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onResize)
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
+      window.removeEventListener('click', onClick)
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('hashchange', onHash)
       window.removeEventListener('pointerdown', arm, true)
       window.removeEventListener('keydown', arm, true)
       unsub()
       music.stop(0.15)
-      history.scrollRestoration = prevRestoration
       document.documentElement.classList.remove('story-active')
       window.scrollTo({ top: 0, behavior: 'instant' })
     }
-  }, [plan, reduced, jump, initialY])
+  }, [advance, back, place])
 
   // Scenes mount only after the menu click's resume() has settled (or 600 ms), so their first sounds are not dropped.
+  // The story then starts itself: the first beat plays without a click (the viewer just clicked START).
   useEffect(() => {
     let dead = false
+    let started = false
     const done = () => {
-      if (!dead) setAudioReady(true)
+      if (dead || started) return
+      started = true
+      audioReadyRef.current = true
+      setAudioReady(true)
+      window.setTimeout(() => {
+        if (!dead && head.current.mode === 'idle') place(head.current.p, true)
+      }, 350)
     }
     const t = window.setTimeout(done, 600)
     void audio.whenRunning().then(done)
@@ -225,9 +350,8 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
       dead = true
       window.clearTimeout(t)
     }
-  }, [])
+  }, [place])
 
-  const p = clamp01(y / scrollPx)
 
   const loc = locate(plan.timeline, p)
   const view = viewAt(plan, p, reduced, loc.sceneIndex)
@@ -257,6 +381,11 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
     if (chapter < 5) goChapter((chapter + 1) as ChapterId)
     else useApp.getState().setMode('index')
   }
+  const hasNext = nextStop(plan, p) !== undefined
+  const zone = plan.scrollZones.find((z) => p >= z.a - 1e-6 && p <= z.b + 1e-6)
+  const canGoBack = p > 0.002
+  const stopAt = plan.stops.findIndex((s) => Math.abs(s - p) < 1e-5)
+  const cueLabel = stopAt >= 0 ? plan.stopCues[stopAt] : undefined
 
   // Per-scene opt-in: `export const transitionColors = [...]` on a scene module (read once its module has loaded).
   const [sceneColors, setSceneColors] = useState<Record<string, readonly string[]>>({})
@@ -283,8 +412,7 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
   )
 
   return (
-    <div className="story-root">
-      <div className="story-spacer" style={{ height: scrollPx + vh }} aria-hidden="true" />
+    <div className={`story-root${resting && hasNext ? ' can-advance' : ''}`}>
       <main className="story-stage" aria-label={`Story: chapter ${chapter}, ${chapters[chapter].era}`}>
         {audioReady ? (
           view.mounted.map((m) => {
@@ -338,8 +466,32 @@ function Shell({ registry }: { registry: SceneEntry[] }) {
             )
           })}
         </ol>
-        <button type="button" className="story-btn" onClick={skipChapter}>
-          {chapter < 5 ? 'SKIP CHAPTER ▶▶' : 'OPEN INDEX ▶▶'}
+        <button type="button" className="story-btn" onClick={back} disabled={!canGoBack} aria-label="Back one step">
+          ◀ BACK
+        </button>
+        <span className="story-next-wrap">
+          {audioReady && (
+            <ClickCue
+              rest={resting && hasNext ? Math.round(p * 1e5) : null}
+              chapter={chapter}
+              label={cueLabel}
+              accent={chapters[chapter].accent}
+              scrollHint={zone && p < zone.b - 1e-6 ? zone.hint : null}
+              hidden={view.pixelate !== null && view.pixelate > 0.03 && view.pixelate < 0.97}
+            />
+          )}
+          <button
+            type="button"
+            className={`story-btn story-next${resting && hasNext ? ' is-ready' : ''}`}
+            onClick={advance}
+            disabled={!hasNext}
+            aria-label="Continue"
+          >
+            NEXT ▶
+          </button>
+        </span>
+        <button type="button" className="story-btn story-skip" onClick={skipChapter}>
+          {chapter < 5 ? 'SKIP ▶▶' : 'INDEX ▶▶'}
         </button>
       </nav>
     </div>

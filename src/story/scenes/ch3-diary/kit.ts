@@ -115,6 +115,20 @@ export const panel = (x: number, y: number, w: number, h: number): string =>
 export const label = (x: number, y: number, str: string, size = 3.6, anchor: 'start' | 'middle' | 'end' = 'start', fill = INK): string =>
   `<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="${FONT}" font-size="${size}" fill="${fill}" stroke="none">${str}</text>`
 
+/** Marker colours for highlights (Risheek, 2026-11-03: the key words, roles and numbers are what people read). */
+export const HL = { y: '#ffe14d', pink: '#ff9ec7', mint: '#7be3b0', sky: '#8fd3ff' } as const
+export type HlColor = keyof typeof HL
+
+/** Highlighter swipe behind inline text (HTML rows). Put it INSIDE appear() so it writes on with the words. */
+export const hl = (text: string, color: HlColor = 'y'): string => `<mark class="dp-hl dp-hl-${color}">${text}</mark>`
+
+/** Highlighted SVG label: a marker swipe (rotated a hair) behind the text, then the text. Width is estimated from length. */
+export function labelHl(x: number, y: number, str: string, size = 3.6, color: HlColor = 'y', anchor: 'start' | 'middle' | 'end' = 'start'): string {
+  const w = str.length * size * 0.5 + 1.6
+  const x0 = anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x - 0.6
+  return `<rect x="${x0.toFixed(2)}" y="${(y - size * 0.92).toFixed(2)}" width="${w.toFixed(2)}" height="${(size * 1.2).toFixed(2)}" rx=".7" fill="${HL[color]}" fill-opacity=".85" stroke="none" transform="rotate(-1.2 ${x0.toFixed(2)} ${y})"/>${label(x, y, str, size, anchor)}`
+}
+
 /** A hand-drawn arrow from (x1,y1) curving to (x2,y2) with a head at the end. */
 export function arrow(x1: number, y1: number, x2: number, y2: number, bend = 0.25, width = 0.7): string {
   const mx = (x1 + x2) / 2 + (y2 - y1) * bend
@@ -268,6 +282,37 @@ export function applyInk(root: HTMLElement, u: number): void {
     const pr = seg(u, Number(el.dataset.a), Number(el.dataset.b))
     el.style.clipPath = pr >= 1 ? 'none' : `inset(-20% ${((1 - pr) * 100).toFixed(1)}% -20% 0)`
   })
+}
+
+/**
+ * Keeps a drag/tap on an interactive doodle from also counting as "click to continue". The browser may deliver the
+ * click to a different element than the one pressed (drag ended off the target), so the shell's `.dp-hit` check can
+ * miss it. This eats any click from the press until 350 ms after the release. Returns the cleanup.
+ */
+export function swallowClicks(hit: Element): () => void {
+  let until = 0
+  const down = (): void => {
+    until = Infinity
+  }
+  const up = (): void => {
+    until = performance.now() + 350
+  }
+  const eat = (e: MouseEvent): void => {
+    if (performance.now() < until) {
+      e.stopImmediatePropagation()
+      e.preventDefault()
+    }
+  }
+  hit.addEventListener('pointerdown', down)
+  hit.addEventListener('pointerup', up)
+  hit.addEventListener('pointercancel', up)
+  window.addEventListener('click', eat, true)
+  return () => {
+    hit.removeEventListener('pointerdown', down)
+    hit.removeEventListener('pointerup', up)
+    hit.removeEventListener('pointercancel', up)
+    window.removeEventListener('click', eat, true)
+  }
 }
 
 /** Loads the self-hosted diary font once (resolves even on failure; CSS falls back to a cursive face). */

@@ -36,3 +36,12 @@
 /* Interactive SVG children (e.g. a rotor hit-area). The doodle itself ignores the pointer; these opt back in. */
 .dp-hit { pointer-events: auto; cursor: grab; touch-action: none; }
 .dp-hit:active { cursor: grabbing; }
+
+/* Highlighter marker: key words, roles and numbers. Soft ends, a slight tilt, ruled lines still faintly visible. */
+.dp-hl { background-color: transparent; color: inherit; padding: 0 0.16em; margin: 0 -0.04em; border-radius: 0.25em 0.6em 0.3em 0.55em; display: inline-block;
+  transform: rotate(-1.3deg); background-repeat: no-repeat; background-position: 0 62%; background-size: 100% 78%; }
+.dp-hl-y { background-image: linear-gradient(100deg, rgba(255, 225, 77, 0) 0, #ffe14dd9 3%, #ffe14dd9 96%, rgba(255, 225, 77, 0) 100%); }
+.dp-hl-pink { background-image: linear-gradient(100deg, rgba(255, 158, 199, 0) 0, #ff9ec7d9 3%, #ff9ec7d9 96%, rgba(255, 158, 199, 0) 100%); }
+.dp-hl-mint { background-image: linear-gradient(100deg, rgba(123, 227, 176, 0) 0, #7be3b0d9 3%, #7be3b0d9 96%, rgba(123, 227, 176, 0) 100%); }
+.dp-hl-sky { background-image: linear-gradient(100deg, rgba(143, 211, 255, 0) 0, #8fd3ffd9 3%, #8fd3ffd9 96%, rgba(143, 211, 255, 0) 100%); }
+.dp-big { font-size: calc(var(--unit) * 4.6); }

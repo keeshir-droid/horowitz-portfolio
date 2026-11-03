@@ -1,11 +1,13 @@
-import type { Chapter, ChapterId, Entry } from './types'
-import { projectsLive, TOTAL_PROJECTS } from './projects'
+import type { Category, Chapter, ChapterId, Entry } from './types'
+import { projectsLive } from './projects'
 
 export const person = {
   name: 'Risheek Nawka',
   title: 'Creative technologist',
   age: 19,
   tagline: 'I build things where art and technology meet.',
+  /** One-line facts under the name in Index mode (for reviewers who read nothing else). */
+  facts: ['Founder, Summer', 'Consulted for Adobe', `${projectsLive} creative-tech projects shipped`, 'Gap year, building full-time'],
   contact: {
     email: 'risheeknawka@gmail.com',
     linkedin: 'https://www.linkedin.com/in/risheek-nawka/',
@@ -121,7 +123,7 @@ export const entries: Entry[] = [
     id: 'english-honor-society',
     chapter: 3,
     title: 'Founding vice president, National English Honor Society',
-    blurb: 'Founding vice president of the only National English Honor Society (NEHS) chapter in the country.',
+    blurb: 'Founding vice president of the National English Honor Society (NEHS) chapter at my school, the only one in the country.',
     category: 'Leadership',
     stat: { value: 'Only', label: 'NEHS chapter in the country' },
     scene: 'ch3-diary',
@@ -130,8 +132,8 @@ export const entries: Entry[] = [
   {
     id: 'science-honor-society',
     chapter: 3,
-    title: 'Board, the first Science National Honor Society chapter in the country',
-    blurb: 'On the board of the first Science National Honor Society (SNHS) chapter in the country.',
+    title: 'Board, Science National Honor Society (first chapter in the country)',
+    blurb: 'On the board of the Science National Honor Society (SNHS) chapter at my school, the first one in the country. An honor society, not a club.',
     category: 'Leadership',
     stat: { value: 'First', label: 'SNHS chapter in the country' },
     scene: 'ch3-diary',
@@ -254,15 +256,19 @@ export const entries: Entry[] = [
   {
     id: 'decor-brand',
     chapter: 4,
-    title: 'Home décor brand',
+    title: 'Founded Summer, a home décor brand',
     blurb:
-      'Built a home décor brand to test whether people would buy décor like fashion, with strong brand pull. Close to $16,000 in revenue in under six months from roughly $60 of initial investment. Drew investor attention.',
+      'Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Close to $16,000 in revenue in under six months from roughly $60 of initial investment. Drew investor attention.',
     category: 'Building',
     highlight: true,
-    stat: { value: '$60 → ~$16K', label: 'in under 6 months' },
+    stat: { value: '$60 → ~$16K', label: 'Summer · revenue in under 6 months' },
+    links: [
+      { label: 'summerdecor.in', href: 'https://summerdecor.in' },
+      { label: 'Instagram', href: 'https://www.instagram.com/summerdecor.in/' },
+    ],
     scene: 'ch4-desktop',
     media: 'product + dashboard screenshots',
-    verify: 'Brand name, revenue proof, and which investors.',
+    verify: 'Revenue proof and which investors.',
   },
   {
     id: 'pet-brand',
@@ -290,12 +296,12 @@ export const entries: Entry[] = [
   {
     id: '21-in-21',
     chapter: 4,
-    title: '21 creative-tech projects in 21 days',
+    title: `${projectsLive} creative-tech projects shipped`,
     blurb:
-      'Building 21 small, phone-first, free creative projects (software and hardware) in 21 days, each shipped publicly with a short reel.',
+      'Small, free, phone-first creative projects (software and hardware), each shipped publicly with a short reel. New ones are added as they ship.',
     category: 'Building',
     highlight: true,
-    stat: { value: `${projectsLive} / ${TOTAL_PROJECTS}`, label: 'projects shipped in 21 days' },
+    stat: { value: `${projectsLive}`, label: 'creative-tech projects shipped' },
     scene: 'ch4-desktop',
     links: [],
   },
@@ -363,5 +369,62 @@ export const entries: Entry[] = [
   },
 ]
 
-export const highlights = entries.filter((e) => e.highlight)
-export const categories = Array.from(new Set(entries.map((e) => e.category)))
+const byId = (id: string): Entry => {
+  const e = entries.find((x) => x.id === id)
+  if (!e) throw new Error(`entries.ts: unknown entry id "${id}"`)
+  return e
+}
+
+/** Highlights strip, most valuable to an a16z reviewer first (only entries with `highlight: true`). */
+const HIGHLIGHT_ORDER = ['decor-brand', 'adobe', '21-in-21', 'content-pitch', 'martial-arts']
+export const highlights = HIGHLIGHT_ORDER.map(byId).filter((e) => e.highlight)
+
+/** Filter chips, builder categories first. */
+const CATEGORY_ORDER: Category[] = [
+  'Building', 'Consulting', 'Leadership', 'Research', 'Teaching', 'Education', 'Performance', 'Awards', 'Art',
+]
+export const categories = CATEGORY_ORDER.filter((c) => entries.some((e) => e.category === c))
+
+/**
+ * Index mode "Everything", ranked for the audience (a16z funds builders): what I built, then who trusted me with
+ * work, then high school, then the earlier years as one compact list. Order within a section = order shown.
+ * Entries not listed here appear only in Story mode (e.g. 'boarding-school', which is context, not an achievement).
+ */
+export interface IndexSection {
+  id: string
+  title: string
+  note?: string
+  /** One-line rows instead of cards. */
+  compact?: boolean
+  entries: Entry[]
+}
+export const indexSections: IndexSection[] = [
+  {
+    id: 'built',
+    title: 'What I built',
+    entries: ['decor-brand', '21-in-21', 'idea-testing-platform', 'ad-automation', 'pet-brand', 'java-inventory'].map(byId),
+  },
+  {
+    id: 'work',
+    title: 'Work and recognition',
+    entries: ['adobe', 'content-pitch', 'berkeley-summer', 'accelerator', 'prototyping-class', 'unconference', 'visa'].map(byId),
+  },
+  {
+    id: 'high-school',
+    title: 'High school',
+    entries: [
+      'english-honor-society', 'science-honor-society', 'carbon-neutral', 'motor-thesis', 'esports-tournament',
+      'standup-paper', 'subject-awards', 'lesson-plans', 'pet-therapy', 'music',
+    ].map(byId),
+  },
+  {
+    id: 'earlier',
+    title: 'Earlier',
+    note: 'Middle and primary school.',
+    compact: true,
+    entries: [
+      'martial-arts', 'performing-arts', 'student-council', 'robotics', 'science-talent', 'olympiads', 'chess',
+      'national-art', 'every-year',
+    ].map(byId),
+  },
+]

@@ -1,5 +1,5 @@
 import type { SceneMeta } from '../../engine/types'
-import { DUR, ENTRY_IDS, SCENE_ID } from './config'
+import { DUR, ENTRY_IDS, SCENE_ID, STOPS } from './config'
 
 /** Tiny and eager: the shell reads this without loading the scene. */
 export const meta: SceneMeta = {
@@ -9,4 +9,5 @@ export const meta: SceneMeta = {
   entryIds: [...ENTRY_IDS],
   // Chapter 4 ends with its camera pushed through the window into this sky: crossfade, don't pixelate.
   softEntry: true,
+  stops: STOPS,
 }

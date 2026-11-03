@@ -1,6 +1,6 @@
 // OWNER: page agent B. Spread 0: the inside front cover (left) and the first diary page (right).
 import type { DiaryPage } from '../types'
-import { INK, appear, bubble, entry, ink, kid, label, needed, row, svg, tick } from '../kit'
+import { INK, appear, bubble, entry, hl, ink, kid, label, row, svg, tick } from '../kit'
 
 /** All narration on these two pages. Draft wording: edit here. */
 const COPY = {
@@ -8,21 +8,13 @@ const COPY = {
   name: 'Risheek',
   ifFound: 'if found: do NOT read.',
   month: 'SEPTEMBER',
-  monday: 'Monday',
-  moved: 'So I moved to a boarding school.',
-  suitcase: 'Home is now one suitcase.',
   ok: '...OK.',
-  tuesday: 'Tuesday',
-  signUp1: 'Turns out if you sign up for everything,',
-  signUp2: 'they let you.',
-  lessonPlans: 'Lesson plans, co-written with teachers',
-  bestIn: 'Best in',
-  bestInNeeded: 'which subjects',
-  esports1: "Ran the school's first official esports",
-  esports2: 'tournament.',
-  sheetTitle: 'SIGN-UP SHEET',
+  lessonPlans: 'Lesson plans, with teachers',
+  bestIn: 'Best-in-subject awards',
+  esports: "School's esports tournament",
+  sheetTitle: 'SIGN UP FOR EVERYTHING',
   sheetName: 'Risheek',
-  teaser: '(also: two honor societies. turn the page.)',
+  teaser: '(+ two honor societies. next page.)',
 } as const
 
 // Facts this page shows (throws in dev if an id is wrong).
@@ -57,10 +49,10 @@ export const endpaper: DiaryPage = {
 // ───────────────────────── first diary page ─────────────────────────
 // Kid with suitcase (small, quick beat), feet at (64, 31).
 const suitcase = `<rect x="8" y="-15" width="12" height="9" rx="1.4" fill="#fff"/><path d="M12,-15 Q14,-18 16,-15" fill="none"/><path d="M14,-12.6 L14,-8.4" fill="none" stroke-width=".8"/>`
-const movingKid = `${kid(63, 31, 0.4, { armR: 12, extra: suitcase })}<path d="M54,31.4 L74,31.4" stroke="${INK}" stroke-width=".45"/>`
+const movingKid = `${kid(68, 31, 0.4, { armR: 12, extra: suitcase })}<path d="M60,31.4 L79,31.4" stroke="${INK}" stroke-width=".45"/>`
 
 // The sign-up sheet: every line is the same name.
-const SHEET = { x: 9, y: 61, w: 34, h: 20.4 }
+const SHEET = { x: 9, y: 58, w: 38, h: 20.4 }
 const sheet = (() => {
   const { x, y, w, h } = SHEET
   const lines = [0, 1, 2, 3]
@@ -83,18 +75,12 @@ export const september: DiaryPage = {
   css: `.dp-september .dp-ind { padding-left: 1.3em; }
     .dp-september .dp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }`,
   html: `${row(1, COPY.month, 'dp-month')}
-    ${row(2, COPY.monday, 'dp-day')}
-    ${row(3, appear(0.03, 0.09, COPY.moved))}
-    ${row(4, appear(0.09, 0.14, COPY.suitcase))}
-    ${svg(ink(0.12, 0.2, movingKid) + ink(0.19, 0.23, bubble(63, 6.4, COPY.ok, 62.4, 10.4, 3)))}
-    ${row(8, appear(0.22, 0.25, `<span class="dp-day">${COPY.tuesday}</span>`))}
-    ${row(9, appear(0.25, 0.32, COPY.signUp1))}
-    ${row(10, appear(0.32, 0.36, COPY.signUp2))}
-    ${row(11, appear(0.38, 0.43, tick(0.44) + COPY.lessonPlans))}
-    ${row(12, appear(0.47, 0.5, `${tick(0.51)}${COPY.bestIn} ${needed(COPY.bestInNeeded)}`))}
-    ${row(13, appear(0.54, 0.59, tick(0.62) + COPY.esports1))}
-    ${row(14, appear(0.59, 0.61, COPY.esports2), 'dp-ind')}
-    ${svg(ink(0.64, 0.72, sheet))}
+    ${row(3, appear(0.03, 0.1, `Moved to ${hl('boarding school', 'y')}.`), 'dp-big')}
+    ${svg(ink(0.12, 0.2, movingKid) + ink(0.19, 0.23, bubble(68, 6.4, COPY.ok, 67.4, 10.4, 3)))}
+    ${row(10, appear(0.26, 0.31, tick(0.32) + COPY.lessonPlans))}
+    ${row(11.4, appear(0.36, 0.41, tick(0.42) + COPY.bestIn))}
+    ${row(12.8, appear(0.46, 0.51, tick(0.52) + `${hl('First', 'pink')} esports tournament`))}
+    ${svg(ink(0.56, 0.7, sheet))}
     ${row(21, appear(0.72, 0.78, COPY.teaser), 'dp-grey dp-small')}
     ${srOnly(FACTS, 'dp-sr')}`,
   update: hideUndrawn,

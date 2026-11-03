@@ -81,6 +81,13 @@ export const T = {
   sky: [71.4, 72.5] as Span,
 } as const
 
+/**
+ * Click-to-advance rests (seconds): the visa mail, "So I started building.", the accelerator install, the pet-care
+ * sheet, Décor Tycoon, the pitch, the 21-in-21 folder, the idea tester + ad maker, the badge and class. The last click
+ * plays the pull-back and the push through the window into Chapter 5.
+ */
+export const STOPS: readonly number[] = [11.8, 18.3, 22.6, 28.0, 38.8, 47.6, 54.8, 60.8, 65.9]
+
 export const COUNT_STEP = 0.6
 export const COUNT_NUMBERS = [9, 8, 7, 6, 5] as const
 export const ICON_STEP = 0.45

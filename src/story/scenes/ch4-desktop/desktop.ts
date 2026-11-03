@@ -5,7 +5,7 @@
  * screen height. Window texts are illustrative UI; the achievement claims themselves come from src/content (unlock
  * cards) and the numbers from config.ts (DECOR mirrors entries.ts).
  */
-import { projects, projectsLive, TOTAL_PROJECTS } from '../../../content/projects'
+import { projects, projectsLive } from '../../../content/projects'
 import { CUSTOMERS } from './config'
 
 const esc = (s: string): string => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
@@ -37,7 +37,7 @@ const ICON_SVG = {
 
 const ICONS = `<div class="c4-icons">
 <div class="c4-icon" data-k="iconInbox">${ICON_SVG.inbox}<span>Inbox</span><em data-k="mailBadge">1</em></div>
-<div class="c4-icon">${ICON_SVG.folder}<span>21 in 21</span></div>
+<div class="c4-icon">${ICON_SVG.folder}<span>Projects</span></div>
 <div class="c4-icon">${ICON_SVG.shop}<span>Décor Tycoon</span></div>
 <div class="c4-icon">${ICON_SVG.test}<span>Idea Tester</span></div></div>`
 
@@ -69,13 +69,13 @@ const SETUP = win(
 
 const PET = win(
   'w-pet',
-  '[brand name] · product sheet.doc',
+  'pet care · product sheet.doc',
   `<div class="pet-h" data-step="0">A prebiotic for dogs</div>
 <div class="pet-sub" data-step="0">Helps dogs digest their food better.</div>
 <div class="pet-flow">
   <div class="pet-step" data-step="1"><svg viewBox="0 0 80 64" aria-hidden="true"><ellipse cx="40" cy="30" rx="30" ry="9" fill="#9a6a3a"/><circle cx="28" cy="27" r="5" fill="#7a4a22"/><circle cx="40" cy="24" r="5" fill="#8a5a2a"/><circle cx="52" cy="27" r="5" fill="#7a4a22"/><path d="M8 32 h64 l-8 20 h-48z" fill="#c95a3a"/><path d="M14 40 h52" stroke="#a8432a" stroke-width="3"/></svg><b>Food</b></div>
   <div class="pet-arrow" data-step="2">→</div>
-  <div class="pet-step" data-step="2"><svg viewBox="0 0 80 64" aria-hidden="true"><rect x="22" y="4" width="36" height="9" rx="3" fill="#2f7a3c"/><rect x="18" y="12" width="44" height="50" rx="8" fill="#e8f4ea" stroke="#2f7a3c" stroke-width="3"/><rect x="18" y="28" width="44" height="16" fill="#2f7a3c"/><circle cx="32" cy="52" r="3" fill="#7bbf86"/><circle cx="44" cy="55" r="3" fill="#7bbf86"/><circle cx="50" cy="50" r="2.5" fill="#7bbf86"/></svg><b>Prebiotic</b><span>[brand name]</span></div>
+  <div class="pet-step" data-step="2"><svg viewBox="0 0 80 64" aria-hidden="true"><rect x="22" y="4" width="36" height="9" rx="3" fill="#2f7a3c"/><rect x="18" y="12" width="44" height="50" rx="8" fill="#e8f4ea" stroke="#2f7a3c" stroke-width="3"/><rect x="18" y="28" width="44" height="16" fill="#2f7a3c"/><circle cx="32" cy="52" r="3" fill="#7bbf86"/><circle cx="44" cy="55" r="3" fill="#7bbf86"/><circle cx="50" cy="50" r="2.5" fill="#7bbf86"/></svg><b>Prebiotic</b><span>for dogs</span></div>
   <div class="pet-arrow" data-step="3">→</div>
   <div class="pet-step" data-step="3"><svg viewBox="0 0 80 64" aria-hidden="true"><path d="M18 14 q-12 4 -10 26 q8 2 14 -10z" fill="#8a5a2a"/><path d="M62 14 q12 4 10 26 q-8 2 -14 -10z" fill="#8a5a2a"/><ellipse cx="40" cy="34" rx="24" ry="24" fill="#d9a066"/><ellipse cx="40" cy="44" rx="13" ry="10" fill="#f1d3ad"/><circle cx="31" cy="28" r="3.4" fill="#222"/><circle cx="49" cy="28" r="3.4" fill="#222"/><ellipse cx="40" cy="38" rx="5" ry="3.6" fill="#222"/><path d="M33 46 q7 6 14 0" stroke="#222" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M40 50 q0 8 5 8 q4 0 4 -7" fill="#e86a7a"/></svg><b>Digests better</b></div>
 </div>
@@ -104,7 +104,7 @@ const SHOP = `<svg class="tyc-shop" viewBox="0 0 240 200" preserveAspectRatio="x
 <rect width="240" height="200" fill="#f6e7cf"/>
 <g stroke="#ead6b4" stroke-width="1">${Array.from({ length: 13 }, (_, i) => `<path d="M${i * 22 - 40} 200 L${i * 22 + 60} 0"/>`).join('')}</g>
 <rect width="240" height="34" fill="#e9b97f"/><rect y="30" width="240" height="5" fill="#c98f4f"/>
-<text x="120" y="24" text-anchor="middle" font-family="Georgia,serif" font-size="17" font-weight="bold" fill="#4a240c">[ brand name ]</text>
+<text x="120" y="24" text-anchor="middle" font-family="Georgia,serif" font-size="17" font-weight="bold" fill="#4a240c">SUMMER</text>
 <rect x="16" y="80" width="146" height="8" rx="2" fill="#8a5a30"/><rect x="16" y="142" width="146" height="8" rx="2" fill="#8a5a30"/>
 ${SHOP_ITEMS.map(([x, y, k], i) => `<g data-item="${i}" transform="translate(${x} ${y})">${ITEM_SVG[k]}</g>`).join('')}
 <rect x="178" y="150" width="56" height="34" rx="3" fill="#6a4526"/><text x="206" y="172" text-anchor="middle" font-family="Tahoma,Verdana,sans-serif" font-size="12" font-weight="bold" fill="#ffe7a8">TILL</text>
@@ -196,15 +196,13 @@ export const SHIPPED_COUNT = shippedIdx.length
 
 const FOLD = win(
   'w-fold',
-  `${TOTAL_PROJECTS} in ${TOTAL_PROJECTS}`,
-  `<div class="fold-intro"><b>${TOTAL_PROJECTS} projects in ${TOTAL_PROJECTS} days.</b><span class="fold-more"> Small, free, phone-first creative tools, each shipped with a reel.</span></div>
+  'Projects',
+  `<div class="fold-intro"><b>${projectsLive} projects shipped.</b><span class="fold-more"> Small, free, phone-first creative tools, each shipped with a reel.</span></div>
 <div class="fold-lbl">SHIPPED</div>
 <div class="fold-grid">${shippedIdx.map(tile).join('')}</div>
-<div class="fold-lbl fold-next">COMING NEXT</div>
-<div class="fold-locks">${lockedIdx.map(tile).join('')}</div>
 <div class="fold-detail" data-k="foldDetail"><b></b> <span></span></div>
-<div class="fold-status" data-k="foldStatus">${projectsLive} of ${TOTAL_PROJECTS} shipped · click one to open it</div>`,
-  { pre: addr(`C:\\Projects\\${TOTAL_PROJECTS} in ${TOTAL_PROJECTS}`) },
+<div class="fold-status" data-k="foldStatus">${projectsLive} shipped · click one to open it</div>`,
+  { pre: addr('C:\\Projects') },
 )
 
 const LAMP = (c: string, i: number): string =>

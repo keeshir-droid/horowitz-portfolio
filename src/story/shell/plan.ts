@@ -18,7 +18,7 @@ const ZONE_HALF = 0.02
  * ...and never longer than this many scroll-seconds per side, so a transition doesn't grow as chapters are added
  * (Risheek, 2026-10-14: the Ch1->Ch2 pixelate swallowed Ch2's whole select screen).
  */
-const ZONE_SECONDS = 0.9
+const ZONE_SECONDS = 0.6
 
 export interface Slide {
   meta: SceneMeta
@@ -48,6 +48,12 @@ export interface Plan {
    * full view instead of losing them under the pixelate.
    */
   windows: readonly { a: number; b: number }[]
+  /** Click-to-advance rests, ascending, in total progress (always ends with 1). Built from each scene's `meta.stops`. */
+  stops: readonly number[]
+  /** Cue label per stop (parallel to `stops`; undefined = default). */
+  stopCues: readonly (string | undefined)[]
+  /** Scroll-driven stretches in total progress (from `meta.scrollZones`). Their ends are also in `stops`. */
+  scrollZones: readonly { a: number; b: number; hint: string }[]
 }
 
 export const soonId = (ch: ChapterId): string => `coming-soon-ch${ch}`
@@ -108,7 +114,54 @@ export function buildPlan(registry: readonly SceneEntry[]): Plan {
     const b = slots[i].end - (i < zones.length ? zones[i].half : 0)
     return b > a ? { a, b } : { a: slots[i].start, b: slots[i].end }
   })
-  return { slides, timeline, zones, scrollSeconds, chapterStart, slideEntry, windows }
+
+  // Click-to-advance rests: a scene's own `stops` (seconds -> total progress inside its window); a scene without any
+  // rests at the end of its window. The story always ends on a rest at 1.
+  const toP = (i: number, sec: number): number => {
+    const { a, b } = windows[i]
+    return a + clamp01(sec / Math.max(1e-6, slides[i].meta.duration)) * (b - a)
+  }
+  const rests: { p: number; cue?: string }[] = []
+  const scrollZones: { a: number; b: number; hint: string }[] = []
+  slides.forEach((sl, i) => {
+    const m = sl.meta
+    if (m.stops?.length) m.stops.forEach((s, k) => rests.push({ p: toP(i, s), cue: m.stopCues?.[k] }))
+    else rests.push({ p: windows[i].b })
+    for (const [x, y] of m.scrollZones ?? []) {
+      const a = toP(i, x)
+      const b = toP(i, y)
+      rests.push({ p: a }, { p: b })
+      scrollZones.push({ a, b, hint: m.scrollHint ?? 'Scroll' })
+    }
+  })
+  rests.push({ p: 1 })
+  const stops: number[] = []
+  const stopCues: (string | undefined)[] = []
+  for (const r of rests.sort((x, y) => x.p - y.p)) {
+    if (!stops.length || r.p - stops[stops.length - 1] > 1e-6) {
+      stops.push(r.p)
+      stopCues.push(r.cue)
+    } else if (r.cue && !stopCues[stopCues.length - 1]) stopCues[stopCues.length - 1] = r.cue
+  }
+  return { slides, timeline, zones, scrollSeconds, chapterStart, slideEntry, windows, stops, stopCues, scrollZones }
+}
+
+/** Total-progress units per real second at p, so a beat plays at its designed length (scene seconds = real seconds). */
+export function rateAt(plan: Plan, p: number, sceneIndex: number): number {
+  const { a, b } = plan.windows[sceneIndex]
+  const dur = Math.max(1e-6, plan.slides[sceneIndex].meta.duration)
+  return p >= a && p <= b && b > a ? (b - a) / dur : 1 / Math.max(1, plan.scrollSeconds)
+}
+
+/** First rest strictly after p (undefined at the end of the story). */
+export function nextStop(plan: Plan, p: number): number | undefined {
+  return plan.stops.find((s) => s > p + 1e-6)
+}
+/** Last rest strictly before p (0 if none). */
+export function prevStop(plan: Plan, p: number): number {
+  let r = 0
+  for (const s of plan.stops) if (s < p - 1e-4) r = s
+  return r
 }
 
 /** Resolve a deep-link / Index-focus id to a slide index: exact scene id, else the first scene of the entry's chapter. */

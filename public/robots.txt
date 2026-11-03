@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# AI-readable summary: https://horowitz-portfolio.vercel.app/llms.txt

@@ -139,5 +139,20 @@ export function buildBookTimeline(list: readonly SpreadPace[]): BookTimeline {
   return { spreads, close, fade, total: fade + FADE }
 }
 
+const BOOK = buildBookTimeline(PLAN)
 /** Seconds of scroll-time for the whole chapter (≈ 63 s). */
-export const DUR: number = buildBookTimeline(PLAN).total
+export const DUR: number = BOOK.total
+
+/**
+ * Click-to-advance rests: the closed cover (click to open it), the end of each reading spread, the last reading spread
+ * (where the flipbook begins), the end of the flipbook, and the final page. The flipbook itself is scrolled.
+ */
+// A hair BEFORE b: at exactly b the page turn has already started and the finished page is hidden by the leaf.
+const readEnds = BOOK.spreads.filter((s) => s.kind === 'read').map((s) => s.b - 0.03)
+const riffles = BOOK.spreads.filter((s) => s.kind === 'riffle')
+const finalSpread = BOOK.spreads[BOOK.spreads.length - 1]
+export const STOPS: readonly number[] = [OPEN.cover[0], ...readEnds, finalSpread.a, finalSpread.b - 0.03]
+/** The flipbook: from the end of the last reading spread to the final page. Viewers scroll through it. */
+export const SCROLL_ZONES: readonly (readonly [number, number])[] = riffles.length
+  ? [[riffles[0].a - TURN.riffle - 0.03, finalSpread.a]]
+  : []

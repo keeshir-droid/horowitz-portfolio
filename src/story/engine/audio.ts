@@ -2,7 +2,7 @@
  * Web Audio engine: procedural voices plus a few recorded files (public/audio, credits in CREDITS.md). Rules:
  *  - nothing is created until `audio.unlock()` is called from a user gesture (click/keypress);
  *  - every public call is a safe no-op when audio is unavailable, locked or muted;
- *  - mute is global and persisted (localStorage, try/catch).
+ *  - mute is global and lasts for this visit only (sessionStorage, try/catch): every new visitor starts with sound on.
  */
 
 const MUTE_KEY = 'rn-portfolio-muted'
@@ -41,7 +41,7 @@ const listeners = new Set<() => void>()
 
 function readMuted(): boolean {
   try {
-    return window.localStorage.getItem(MUTE_KEY) === '1'
+    return window.sessionStorage.getItem(MUTE_KEY) === '1'
   } catch {
     return false
   }
@@ -1049,7 +1049,7 @@ export const audio = {
   setMuted(next: boolean): void {
     muted = next
     try {
-      window.localStorage.setItem(MUTE_KEY, next ? '1' : '0')
+      window.sessionStorage.setItem(MUTE_KEY, next ? '1' : '0')
     } catch {
       /* storage blocked: mute still holds for this session */
     }

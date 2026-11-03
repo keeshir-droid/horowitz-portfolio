@@ -1,5 +1,5 @@
 // OWNER: page agent C. Spread 3 (left): the stage, as a three-panel strip: solo, music, a brand-new field.
-import { GREY, INK, appear, bubble, entry, ink, kid, label, panel, row, svg } from '../kit'
+import { GREY, INK, appear, bubble, entry, hl, ink, kid, label, panel, row, svg } from '../kit'
 import type { DiaryPage } from '../types'
 
 // Fact sources (entries.ts). Throw if an id is renamed.
@@ -10,18 +10,15 @@ const STANDUP = entry('standup-paper')
 
 /** All wording on this page (draft; Risheek edits here). */
 const COPY = {
-  day: 'Saturday',
-  heading: 'Things I had never done before:',
+  heading: 'First times:',
   tag1: '1. SOLO',
-  cap1: ['Just me.', 'Nothing to hide behind.'],
+  cap1: ['Just me.'],
   tag2: '2. MUSIC',
-  cap2: ['Was scared of music.', 'Did it anyway.'],
+  cap2: ['Scared. Did it anyway.'],
   tag3: '3. A NEW FIELD',
   ahem: 'AHEM.',
   paper: ['RESEARCH PAPER:', 'STAND-UP COMEDY'],
-  field: 'New field: stand-up comedy.',
-  paperLine: 'So naturally, I wrote a research paper on it.',
-  aside: '(stage fright tagged along. I let it watch.)',
+
 } as const
 
 const r2 = (v: number): string => v.toFixed(2)
@@ -147,11 +144,9 @@ export const stage: DiaryPage = {
   side: 'l',
   entryIds: [MUSIC.id, STANDUP.id],
   html: `
-    ${row(1, appear(0.02, 0.04, COPY.day), 'dp-day')}
-    ${row(2, appear(0.04, 0.09, COPY.heading))}
+    ${row(1.6, appear(0.02, 0.09, hl(COPY.heading, 'y')), 'dp-big')}
     ${svg(DARK_DEFS + panelSolo() + panelMusic() + panelStandup())}
-    ${row(19, appear(0.41, 0.45, COPY.field))}
-    ${row(20, appear(0.45, 0.5, COPY.paperLine))}
-    ${row(21, appear(0.5, 0.54, COPY.aside), 'dp-grey dp-small')}`,
+    ${row(19.4, appear(0.41, 0.5, `A ${hl('research paper', 'pink')} on`), 'dp-big')}
+    ${row(20.8, appear(0.44, 0.52, 'stand-up comedy.'), 'dp-big')}`,
   update: inkFix,
 }

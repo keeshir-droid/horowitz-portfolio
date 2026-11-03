@@ -22,7 +22,7 @@ import {
   type Rect,
 } from './config'
 import { SCREEN_HTML, SHIPPED_COUNT, SHOP_ITEMS, TILE_ORDER, VOTES } from './desktop'
-import { projects, projectsLive, TOTAL_PROJECTS } from '../../../content/projects'
+import { projects, projectsLive } from '../../../content/projects'
 import { ROOM_SVG, SKY_HTML } from './room'
 
 export interface StageLayout {
@@ -117,7 +117,7 @@ const TASKS: readonly (readonly [string, number, number])[] = [
   ['Décor Tycoon', T.tyc[0], T.tyc[1]],
   ['Feed', T.feed[0], T.feed[1]],
   ['Chat', T.chat[0], T.chat[1]],
-  ['21 in 21', T.fold[0], T.fold[1]],
+  ['Projects', T.fold[0], T.fold[1]],
   ['Idea Tester', T.test[0], T.test[1]],
   ['Ad Maker', T.ad[0], T.ad[1]],
   ['Prototyping class', T.cls[0], 999],
@@ -444,7 +444,7 @@ export class DeskStage {
       const hot = TILE_ORDER[HOT_TILE.idx]
       E.tiles[hot]?.classList.toggle('hot', !L.phone && t >= HOT_TILE.t[0] && t < HOT_TILE.t[1])
       this.paintDetail(t)
-      this.txt(E.foldStatus, t < T.locked0 ? `${shown} of ${TOTAL_PROJECTS} shipped` : `${projectsLive} of ${TOTAL_PROJECTS} shipped · click one to open it`)
+      this.txt(E.foldStatus, t < T.locked0 ? `${shown} shipped` : `${projectsLive} shipped · click one to open it`)
     }
 
     // idea tester + ad maker

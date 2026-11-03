@@ -21,6 +21,9 @@ export const ACHIEVEMENT_COUNT: number = entries.filter((e) => !!e.scene).length
 /** Seconds of scroll-time for the whole chapter (weight 7 vs Ch3's 38 at ~63 s, plus a generous final hold). */
 export const DUR = 12.5
 
+/** Click-to-advance rests (seconds): the Bay Area card is up, then the "save your progress?" dialog (click = YES). */
+export const STOPS: readonly number[] = [6.5, 7.6]
+
 export const T = {
   /** Camera crane (ease in-out). */
   crane: [0.15, 7.2] as const,

@@ -1,7 +1,7 @@
 import type { Project } from './types'
 
 /**
- * The 21-in-21 "Pokédex". Slots without a `url` render as locked silhouettes.
+ * Projects shipped so far (a challenge to build small creative-tech projects fast). Only shipped ones are listed.
  * Add a project here and it appears in both Index and Story mode.
  */
 const built: Project[] = [
@@ -50,14 +50,10 @@ const built: Project[] = [
   },
 ]
 
-export const TOTAL_PROJECTS = 21
+/** Only what has actually shipped. Add a project above and every count and list updates (no fixed total, no "of 21"). */
+export const projects: Project[] = built
 
-export const projects: Project[] = Array.from({ length: TOTAL_PROJECTS }, (_, i) => {
-  const day = i + 1
-  return built.find((p) => p.day === day) ?? { day, title: '???', blurb: 'Not shipped yet.' }
-})
-
-export const projectsLive = projects.filter((p) => p.url || p.kind === 'skill').length
+export const projectsLive = projects.length
 
 export const projectsThesis =
   'Free, phone-first websites for young, expressive people. You do something real with your hands, ' +
