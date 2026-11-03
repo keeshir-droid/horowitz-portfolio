@@ -9,7 +9,7 @@
 import { createServer } from 'vite'
 import { readFileSync, writeFileSync } from 'node:fs'
 
-const SITE = process.env.SITE_URL || 'https://horowitz-portfolio.vercel.app'
+const SITE = process.env.SITE_URL || 'https://risheeknawka.com'
 const vite = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
 const { person, chapters, entries, indexSections } = await vite.ssrLoadModule('/src/content/entries.ts')
 const { projects, projectsThesis } = await vite.ssrLoadModule('/src/content/projects.ts')

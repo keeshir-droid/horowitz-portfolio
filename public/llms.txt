@@ -5,9 +5,9 @@
 This site is an interactive portfolio. The click-through "story" is animated and has little readable text; every fact is also available as plain text below.
 
 ## Read this
-- [Full portfolio as Markdown](https://horowitz-portfolio.vercel.app/portfolio.md): every achievement in order, with the key number for each
-- [Structured data (JSON)](https://horowitz-portfolio.vercel.app/portfolio.json): the same facts, machine-readable
-- [Index page](https://horowitz-portfolio.vercel.app/#/index): the fast, readable overview in the browser
+- [Full portfolio as Markdown](https://risheeknawka.com/portfolio.md): every achievement in order, with the key number for each
+- [Structured data (JSON)](https://risheeknawka.com/portfolio.json): the same facts, machine-readable
+- [Index page](https://risheeknawka.com/#/index): the fast, readable overview in the browser
 
 ## Contact
 - Email: risheeknawka@gmail.com
