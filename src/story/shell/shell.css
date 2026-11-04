@@ -52,9 +52,9 @@ html.story-active body { touch-action: manipulation; }
 
 /* Click cue (shell/ClickCue.tsx): a small pill just above the dock, only while the story waits for a click. */
 .story-next-wrap { position: relative; display: flex; }
-.cue { position: fixed; left: 0; right: 0; bottom: 92px; z-index: 48; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
+.cue { position: fixed; left: 0; right: 0; bottom: 12px; z-index: 51; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
 .cue-card {
-  display: flex; align-items: center; gap: 18px; width: max-content; max-width: calc(100vw - 32px); padding: 16px 30px 16px 22px; border-width: 4px; border-radius: 16px;
+  display: flex; align-items: center; gap: 18px; width: max-content; max-width: calc(100vw - 32px); padding: 8px 28px 8px 18px; border-width: 4px; border-radius: 16px;
   background: rgba(10, 11, 24, 0.96); color: #fff; border: 2px solid var(--accent); box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
   font-family: var(--sans); opacity: 0; transform: translateY(8px);
 }
@@ -62,9 +62,10 @@ html.story-active body { touch-action: manipulation; }
 @keyframes cue-in { to { opacity: 1; transform: none; } }
 .cue-text { display: grid; gap: 2px; }
 .cue-text strong { font-size: clamp(22px, 5.4vw, 30px); line-height: 1.2; font-weight: 700; }
+.cue:not(.has-hint) .cue-text small { display: none; }
 .cue-text small { font-size: clamp(14px, 3.6vw, 17px); color: #d8d6ee; }
 /* mouse with a pulsing click dot (desktop) or a fingertip tap (touch) */
-.cue-icon { position: relative; flex: 0 0 auto; width: 30px; height: 46px; border: 2px solid var(--accent); border-radius: 15px; }
+.cue-icon { position: relative; flex: 0 0 auto; width: 24px; height: 38px; border: 2px solid var(--accent); border-radius: 15px; }
 .cue-icon i { position: absolute; left: 50%; top: 9px; width: 7px; height: 12px; margin-left: -3.5px; border-radius: 2px; background: #fff; animation: cue-pulse 1.4s ease-in-out infinite; }
 .cue.is-touch .cue-icon { width: 40px; height: 40px; border-radius: 50%; }
 .cue.is-touch .cue-icon i { top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; }
@@ -76,4 +77,4 @@ html.story-active body { touch-action: manipulation; }
 @media (prefers-reduced-motion: reduce) { .cue.is-on .cue-card { animation: none; opacity: 1; transform: none; } .cue-icon i, .story-next.is-ready { animation: none; } }
 
 /* Phones: the chapter row sits above the buttons, so lift the cue clear of it. */
-@media (max-width: 640px) { .cue { bottom: 150px; } .cue-card { padding: 14px 20px 14px 16px; gap: 14px; } }
+@media (max-width: 640px) { .cue { bottom: 66px; } .cue-card { padding: 8px 20px 8px 14px; gap: 12px; } }

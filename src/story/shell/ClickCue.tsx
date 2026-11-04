@@ -40,7 +40,7 @@ export default function ClickCue(props: {
   }, [rest, hidden, scrollHint, chapter])
 
   return (
-    <div className={`cue${on ? ' is-on' : ''}${touch ? ' is-touch' : ''}`} role="status" aria-live="polite">
+    <div className={`cue${on ? ' is-on' : ''}${touch ? ' is-touch' : ''}${scrollHint ? ' has-hint' : ''}`} role="status" aria-live="polite">
       {on && (
         <div className="cue-card" style={{ ['--accent' as string]: accent }}>
           <span className="cue-icon" aria-hidden="true">

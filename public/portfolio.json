@@ -13,12 +13,12 @@
   "highlights": [
     {
       "id": "martial-arts",
-      "title": "International karate champion (Seisenkei Shitoryu)",
+      "title": "International karate champion (Seisenkai Shitoryu)",
       "stat": {
         "value": "Gold",
         "label": "4th International Karate Championship, 2018"
       },
-      "description": "Won gold at the 4th International Karate Championship in 2018, competing in Seisenkei Shitoryu."
+      "description": "Won gold at the 4th International Karate Championship in 2018, competing in Seisenkai Shitoryu."
     },
     {
       "id": "decor-brand",
@@ -31,12 +31,12 @@
     },
     {
       "id": "content-pitch",
-      "title": "Content that got me a pitch to a top Indian investor",
+      "title": "Pitched at Elevation Capital; a reel caught Ghazal Alagh’s attention",
       "stat": {
         "value": "Pitched",
-        "label": "to a top Indian investor"
+        "label": "at Elevation Capital"
       },
-      "description": "Started creating content on Instagram and LinkedIn. It brought one of India’s biggest investors (a \"Shark\") to the accelerator, and I pitched to her."
+      "description": "Started creating content on Instagram (@keeshir) and LinkedIn. A reel caught the attention of Ghazal Alagh, an investor on Shark Tank India, and I pitched at Elevation Capital."
     },
     {
       "id": "21-in-21",
@@ -118,8 +118,8 @@
       "section": "What I built",
       "period": "The builder years",
       "category": "Building",
-      "title": "Pet-care brand",
-      "description": "Built an innovative pet-care brand with a prebiotic formulation that helps dogs digest food better.",
+      "title": "Chewchew, a pet-care brand",
+      "description": "Built Chewchew, a pet-care brand separate from Summer, to see whether a new kind of dog and pet-care brand could be created. The focus was gut health: a prebiotic formulation that helps dogs digest food better.",
       "stat": null,
       "links": []
     },
@@ -129,7 +129,7 @@
       "period": "High school",
       "category": "Building",
       "title": "Hand-coded Java inventory & meal-ordering system",
-      "description": "Built, by hand in Java and without AI, an inventory management system and a morning/lunch ordering system for a local business.",
+      "description": "Built, by hand in Java and without AI, an inventory management system and a morning/lunch ordering system for a local business. It ran from March 2025 to January 2026, until a newer AI-built system replaced it.",
       "stat": {
         "value": "0 AI",
         "label": "every line written by hand"
@@ -154,13 +154,18 @@
       "section": "Work and recognition",
       "period": "The builder years",
       "category": "Building",
-      "title": "Content that got me a pitch to a top Indian investor",
-      "description": "Started creating content on Instagram and LinkedIn. It brought one of India’s biggest investors (a \"Shark\") to the accelerator, and I pitched to her.",
+      "title": "Pitched at Elevation Capital; a reel caught Ghazal Alagh’s attention",
+      "description": "Started creating content on Instagram (@keeshir) and LinkedIn. A reel caught the attention of Ghazal Alagh, an investor on Shark Tank India, and I pitched at Elevation Capital.",
       "stat": {
         "value": "Pitched",
-        "label": "to a top Indian investor"
+        "label": "at Elevation Capital"
       },
-      "links": []
+      "links": [
+        {
+          "label": "Instagram @keeshir",
+          "href": "https://instagram.com/keeshir"
+        }
+      ]
     },
     {
       "id": "berkeley-summer",
@@ -177,8 +182,8 @@
       "section": "Work and recognition",
       "period": "The builder years",
       "category": "Building",
-      "title": "Joined a startup accelerator in India",
-      "description": "Joined a startup accelerator and spent the next stretch building real businesses and products.",
+      "title": "Joined the Mesa School of Business accelerator",
+      "description": "Joined the Mesa School of Business, a startup accelerator in India, and spent the next stretch building real businesses and products.",
       "stat": null,
       "links": []
     },
@@ -188,8 +193,11 @@
       "period": "The builder years",
       "category": "Teaching",
       "title": "Designed and taught a prototyping class",
-      "description": "Learned prototyping and design, built a framework around it with mentors, and taught it as a class sanctioned by my accelerator. External people attended too.",
-      "stat": null,
+      "description": "Learned prototyping and design, built a framework around it with mentors, and taught it as a class sanctioned by my accelerator. About 65 people signed up (full capacity), from inside and outside the accelerator.",
+      "stat": {
+        "value": "~65",
+        "label": "sign-ups, at full capacity"
+      },
       "links": []
     },
     {
@@ -198,7 +206,7 @@
       "period": "The builder years",
       "category": "Awards",
       "title": "Youngest at Product Folks Unconference 2025",
-      "description": "The youngest attendee at the Product Folks Unconference 2025. They made an exception to invite me.",
+      "description": "The youngest attendee at the Product Folks Unconference 2025, a conference for senior leaders. I was one of the only young people invited.",
       "stat": null,
       "links": []
     },
@@ -244,8 +252,11 @@
       "period": "High school",
       "category": "Leadership",
       "title": "Head of the carbon-neutral project",
-      "description": "Led the school's flagship sustainability initiative: the carbon-neutral project.",
-      "stat": null,
+      "description": "Led the school's flagship sustainability initiative. Water wastage fell by around 30%, close to 1,100 trees were planted, and other efforts cut the overall carbon footprint by 15% (more as the saplings grow). The work continues towards a carbon-neutral school by 2030.",
+      "stat": {
+        "value": "~1,100 trees",
+        "label": "planted; water waste down ~30%, carbon footprint down 15%"
+      },
       "links": []
     },
     {
@@ -263,8 +274,8 @@
       "section": "High school",
       "period": "High school",
       "category": "Leadership",
-      "title": "Hosted the school's first official esports tournament",
-      "description": "Organised the first official esports tournament in my school, to promote esports.",
+      "title": "Organised and hosted the school's first formal esports tournament",
+      "description": "Organised and hosted the first formal esports tournament at my school, with a good number of teams and cash prizes.",
       "stat": null,
       "links": []
     },
@@ -283,8 +294,8 @@
       "section": "High school",
       "period": "High school",
       "category": "Awards",
-      "title": "Best-in-subject awards",
-      "description": "Awarded for being the best in my subjects in high school.",
+      "title": "Perfect predicted scores, and the Language and Culture award",
+      "description": "Perfect predicted scores in most of my subjects, and the subject award in Language and Culture.",
       "stat": null,
       "links": []
     },
@@ -303,8 +314,8 @@
       "section": "High school",
       "period": "High school",
       "category": "Leadership",
-      "title": "First to try to start a pet therapy initiative at school",
-      "description": "Was the first person at my school to try to build a pet therapy initiative. It did not get approved, but the attempt was relentless and we got quite far.",
+      "title": "Proposed a pet therapy initiative at school",
+      "description": "The first person at my school to build a pet therapy proposal. It got approvals, I found a location on a very cramped campus, and worked out where to get the pets and how to get them vaccinated. It stalled on budget: the annual board meeting fell about 8 days before the proposal was final, and a CSR sponsor was hard to find in my senior year.",
       "stat": null,
       "links": []
     },
@@ -323,8 +334,8 @@
       "section": "Earlier",
       "period": "Middle school",
       "category": "Awards",
-      "title": "International karate champion (Seisenkei Shitoryu)",
-      "description": "Won gold at the 4th International Karate Championship in 2018, competing in Seisenkei Shitoryu.",
+      "title": "International karate champion (Seisenkai Shitoryu)",
+      "description": "Won gold at the 4th International Karate Championship in 2018, competing in Seisenkai Shitoryu.",
       "stat": {
         "value": "Gold",
         "label": "4th International Karate Championship, 2018"
@@ -337,7 +348,7 @@
       "period": "Middle school",
       "category": "Performance",
       "title": "Performed in front of 2,000 people",
-      "description": "Performed on stage in front of an audience of 2,000, across theater, dance and performing arts.",
+      "description": "Performed on stage in front of an audience of 2,000, across theater, dance and performing arts, over several years from 2014 to 2018.",
       "stat": {
         "value": "2,000",
         "label": "people in the audience"
@@ -350,10 +361,10 @@
       "period": "Middle school",
       "category": "Leadership",
       "title": "Student council, grade 5 to grade 10",
-      "description": "A member of student council from fifth grade until I left the school in tenth grade, winning elections and being nominated every year.",
+      "description": "A member of student council from fifth grade until I left the school in tenth grade, serving as Vice President and Prefect, winning elections and being nominated every year.",
       "stat": {
         "value": "Grade 5 → 10",
-        "label": "elected and nominated every year"
+        "label": "Vice President and Prefect"
       },
       "links": []
     },
@@ -372,8 +383,8 @@
       "section": "Earlier",
       "period": "Primary school",
       "category": "Awards",
-      "title": "National science talent search: top position",
-      "description": "Placed among the top positions in the national science talent search examination.",
+      "title": "Top positions in national science exams (NSTSE, NSO, IMO)",
+      "description": "Placed among the top positions in the National Level Science Talent Search Examination (NSTSE), the National Science Olympiad (NSO) and the International Mathematics Olympiad (IMO).",
       "stat": null,
       "links": []
     },

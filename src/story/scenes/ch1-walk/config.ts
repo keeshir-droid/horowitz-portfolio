@@ -62,7 +62,7 @@ export const TYPE_FRAC = 0.25
 export const BOXES: readonly BoxDef[] = [
   { id: 'art', text: 'Won a national art\ncompetition.', at: [0.075, 0.15], entries: ['national-art'] },
   { id: 'chess', text: 'School chess champion,\nGrade 5!', at: [0.215, 0.29], entries: ['chess'] },
-  { id: 'science', text: 'Top positions in a national\nscience talent search.', at: [0.355, 0.45], entries: ['science-talent'] },
+  { id: 'science', text: 'Top positions: NSTSE, NSO,\nIMO.', at: [0.355, 0.45], entries: ['science-talent'] },
   { id: 'robot', text: 'BEEP BOOP.', at: [0.515, 0.56] },
   { id: 'olympiads', text: 'Won academic Olympiads, plus\na small award most years.', at: [0.65, 0.78], entries: ['olympiads', 'every-year'] },
 ]

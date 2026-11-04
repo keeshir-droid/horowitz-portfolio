@@ -14,6 +14,7 @@ const COPY = {
   /** Plausible hand-typed Java on the screen (illustrative, not a quote from the real code). */
   code: ['class Inventory {', '  void order(Item i, int qty) {', '    i.stock -= qty;', '    orders.add(i, qty);', '  }', '}'],
   slip: { title: 'ORDERS', morning: 'MORNING', lunch: 'LUNCH' },
+  used: 'In use Mar 2025 to Jan 2026, then replaced.',
 }
 
 function cap(s: string): string {
@@ -134,5 +135,6 @@ export const java: DiaryPage = {
     ${codeRows}
     ${row(16.2, appear(0.66, 0.74, hl(COPY.bigValue, 'pink')), 'jv-big')}
     ${row(17.9, appear(0.74, 0.79, COPY.bigLabel), 'dp-big')}
+    ${row(20.4, appear(0.78, 0.83, COPY.used), 'dp-grey dp-small')}
   `,
 }

@@ -7,7 +7,10 @@ import { GREY, INK, appear, entry, hl, ink, label, row, svg, swallowClicks } fro
 const COPY = {
   co2: 'CO<tspan font-size="2.3" dy=".7">2</tspan>',
   pull: 'pull',
-  result: "Lesson: carbon is everybody's job.",
+  water: 'less water wasted',
+  trees: 'trees planted',
+  footprint: 'smaller footprint',
+  target: 'target: net neutral by 2030',
 } as const
 
 // Fact this page shows (throws in dev if the id is wrong).
@@ -153,7 +156,10 @@ export const carbon: DiaryPage = {
   html: `${row(1, appear(0.38, 0.46, `${hl('Head', 'mint')} of the`), 'dp-big')}
     ${row(2.4, appear(0.4, 0.49, `${hl('carbon-neutral', 'mint')} project`), 'dp-big')}
     ${svg(ink(0.44, 0.5, campus + smoke) + ink(0.46, 0.51, meter + mercury + handle) + growers + `<rect class="dp-hit cb-hit" x="6" y="19" width="16" height="48" fill="transparent"/>`)}
-    ${row(17.2, appear(0.74, 0.79, COPY.result))}
+    ${row(16.2, appear(0.56, 0.6, `${hl('~30%', 'sky')} ${COPY.water}`), '', 'left:31%')}
+    ${row(17.7, appear(0.62, 0.66, `${hl('~1,100', 'mint')} ${COPY.trees}`), '', 'left:31%')}
+    ${row(19.2, appear(0.68, 0.72, `${hl('15%', 'y')} ${COPY.footprint}`), '', 'left:31%')}
+    ${row(20.9, appear(0.76, 0.8, COPY.target), 'dp-grey dp-small', 'left:31%')}
     <div class="dp-sr"><p>${FACT.title}. ${FACT.blurb}</p></div>`,
   update(root, u) {
     const s = stateOf(root)

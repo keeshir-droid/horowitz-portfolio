@@ -10,8 +10,9 @@ const COPY = {
   month: 'SEPTEMBER',
   ok: '...OK.',
   lessonPlans: 'Lesson plans, with teachers',
-  bestIn: 'Best-in-subject awards',
-  esports: "School's esports tournament",
+  scores: 'Perfect predicted scores',
+  award: 'Language and Culture award',
+  esports: 'esports tournament, hosted',
   sheetTitle: 'SIGN UP FOR EVERYTHING',
   sheetName: 'Risheek',
   teaser: '(+ two honor societies. next page.)',
@@ -52,7 +53,7 @@ const suitcase = `<rect x="8" y="-15" width="12" height="9" rx="1.4" fill="#fff"
 const movingKid = `${kid(68, 31, 0.4, { armR: 12, extra: suitcase })}<path d="M60,31.4 L79,31.4" stroke="${INK}" stroke-width=".45"/>`
 
 // The sign-up sheet: every line is the same name.
-const SHEET = { x: 9, y: 58, w: 38, h: 20.4 }
+const SHEET = { x: 9, y: 63, w: 38, h: 20.4 }
 const sheet = (() => {
   const { x, y, w, h } = SHEET
   const lines = [0, 1, 2, 3]
@@ -78,9 +79,10 @@ export const september: DiaryPage = {
     ${row(3, appear(0.03, 0.1, `Moved to ${hl('boarding school', 'y')}.`), 'dp-big')}
     ${svg(ink(0.12, 0.2, movingKid) + ink(0.19, 0.23, bubble(68, 6.4, COPY.ok, 67.4, 10.4, 3)))}
     ${row(10, appear(0.26, 0.31, tick(0.32) + COPY.lessonPlans))}
-    ${row(11.4, appear(0.36, 0.41, tick(0.42) + COPY.bestIn))}
-    ${row(12.8, appear(0.46, 0.51, tick(0.52) + `${hl('First', 'pink')} esports tournament`))}
-    ${svg(ink(0.56, 0.7, sheet))}
+    ${row(11.4, appear(0.34, 0.39, tick(0.4) + `${hl('Perfect', 'y')} predicted scores`))}
+    ${row(12.8, appear(0.42, 0.47, tick(0.48) + `${hl('Language and Culture', 'mint')} award`))}
+    ${row(14.2, appear(0.5, 0.55, tick(0.56) + `${hl('First', 'pink')} ${COPY.esports}`))}
+    ${svg(ink(0.58, 0.7, sheet))}
     ${row(21, appear(0.72, 0.78, COPY.teaser), 'dp-grey dp-small')}
     ${srOnly(FACTS, 'dp-sr')}`,
   update: hideUndrawn,

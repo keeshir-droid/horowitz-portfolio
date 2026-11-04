@@ -146,7 +146,7 @@ const CURSOR_ON: readonly (readonly [number, number])[] = [
 const HOT_TILE = { idx: 2, t: [52.4, T.fold[1]] as const }
 
 const SETUP_LINES: readonly (readonly [number, string])[] = [
-  [0, 'Joining a startup accelerator in India…'],
+  [0, 'Joining Mesa School of Business…'],
   [20.0, 'Learning to build real businesses…'],
   [T.setupDone, 'Done. Plan B is now Plan A.'],
 ]

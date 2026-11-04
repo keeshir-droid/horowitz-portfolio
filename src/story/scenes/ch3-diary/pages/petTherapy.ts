@@ -5,7 +5,7 @@ import { settleInk } from './java'
 
 /** All narration on these two pages (draft wording; Risheek edits here). Facts come from entries.ts ('pet-therapy'). */
 const COPY = {
-  steps: ['be the first to try', 'keep trying', 'get quite far', 'get it approved'],
+  note: 'the board met 8 days before my proposal.',
   sign: 'PET THERAPY?',
   flip: '(okay. now flip fast.)',
   watch: 'watch the corner',
@@ -65,10 +65,10 @@ export const petTherapy: DiaryPage = {
   update: settleInk,
   html: `
     ${row(1.4, appear(0.04, 0.12, `${hl('Pet therapy', 'mint')} at school`), 'dp-big')}
-    ${row(3.4, tick(0.3) + appear(0.14, 0.2, `${hl('first', 'y')} to try`))}
-    ${row(4.8, tick(0.36) + appear(0.22, 0.28, COPY.steps[1]))}
-    ${row(6.2, tick(0.42) + appear(0.3, 0.36, COPY.steps[2]))}
-    ${row(7.6, cross(0.52) + appear(0.38, 0.44, COPY.steps[3]))}
+    ${row(3.4, tick(0.3) + appear(0.14, 0.2, `Found a ${hl('location', 'y')} (tiny campus)`))}
+    ${row(4.8, tick(0.36) + appear(0.22, 0.28, `${hl('Pets + vaccines', 'y')}: sorted`))}
+    ${row(6.2, tick(0.42) + appear(0.3, 0.36, `${hl('Approvals', 'mint')}: got them`))}
+    ${row(7.6, cross(0.52) + appear(0.38, 0.44, `${hl('Budget', 'pink')}: no`))}
     ${svg(`
       ${ink(0.54, 0.66, kid(20, 80, 0.64, { armR: 52, armL: 14, extra: SIGN }))}
       ${ink(0.6, 0.72, dog(52, 80))}
@@ -76,6 +76,7 @@ export const petTherapy: DiaryPage = {
       ${ink(0.62, 0.72, `<path d="M8,80.6 L72,80.6" stroke="${INK}" stroke-width=".5" fill="none"/>`)}
     `)}
     ${row(21, appear(0.7, 0.76, `${hl('3 out of 4', 'pink')}. #4 was the point.`))}
+    ${row(22.2, appear(0.74, 0.8, COPY.note), 'dp-grey dp-small')}
   `,
 }
 

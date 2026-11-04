@@ -58,10 +58,10 @@ const ERR = win(
 
 const SETUP = win(
   'w-setup',
-  'Setup · Startup accelerator (India)',
+  'Setup · Mesa School of Business',
   `<div class="setup-side">Builder<br/>mode</div>
 <div class="setup-main"><div class="setup-h">Plan B, installing</div>
-<div class="setup-line" data-k="setupLine">Joining a startup accelerator in India…</div>
+<div class="setup-line" data-k="setupLine">Joining Mesa School of Business…</div>
 <div class="setup-bar"><i data-k="setupBar"></i></div>
 <div class="setup-btns"><span class="c4-btn dim">&lt; Back</span><span class="c4-btn" data-k="setupNext">Next &gt;</span></div></div>`,
   { n: 1 },
@@ -69,8 +69,8 @@ const SETUP = win(
 
 const PET = win(
   'w-pet',
-  'pet care · product sheet.doc',
-  `<div class="pet-h" data-step="0">A prebiotic for dogs</div>
+  'Chewchew · product sheet.doc',
+  `<div class="pet-h" data-step="0">Chewchew: gut health for dogs</div>
 <div class="pet-sub" data-step="0">Helps dogs digest their food better.</div>
 <div class="pet-flow">
   <div class="pet-step" data-step="1"><svg viewBox="0 0 80 64" aria-hidden="true"><ellipse cx="40" cy="30" rx="30" ry="9" fill="#9a6a3a"/><circle cx="28" cy="27" r="5" fill="#7a4a22"/><circle cx="40" cy="24" r="5" fill="#8a5a2a"/><circle cx="52" cy="27" r="5" fill="#7a4a22"/><path d="M8 32 h64 l-8 20 h-48z" fill="#c95a3a"/><path d="M14 40 h52" stroke="#a8432a" stroke-width="3"/></svg><b>Food</b></div>
@@ -79,7 +79,7 @@ const PET = win(
   <div class="pet-arrow" data-step="3">→</div>
   <div class="pet-step" data-step="3"><svg viewBox="0 0 80 64" aria-hidden="true"><path d="M18 14 q-12 4 -10 26 q8 2 14 -10z" fill="#8a5a2a"/><path d="M62 14 q12 4 10 26 q-8 2 -14 -10z" fill="#8a5a2a"/><ellipse cx="40" cy="34" rx="24" ry="24" fill="#d9a066"/><ellipse cx="40" cy="44" rx="13" ry="10" fill="#f1d3ad"/><circle cx="31" cy="28" r="3.4" fill="#222"/><circle cx="49" cy="28" r="3.4" fill="#222"/><ellipse cx="40" cy="38" rx="5" ry="3.6" fill="#222"/><path d="M33 46 q7 6 14 0" stroke="#222" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M40 50 q0 8 5 8 q4 0 4 -7" fill="#e86a7a"/></svg><b>Digests better</b></div>
 </div>
-<div class="pet-note" data-step="4">Prebiotic formulation · for dogs</div>`,
+<div class="pet-note" data-step="4">A new pet-care brand · prebiotic formulation</div>`,
 )
 
 /** Shop shelves: item positions (shop SVG units) and kinds. */
@@ -155,9 +155,9 @@ const FEED = win(
 
 const CHAT = win(
   'w-chat',
-  'Chat · Accelerator team',
-  `<div class="chat-l"><b class="tm">team:</b> one of India's biggest investors is visiting. She saw your posts.</div>
-<div class="chat-l" data-k="chat2"><b class="tm">team:</b> want to pitch?</div>
+  'Chat · Mesa School of Business',
+  `<div class="chat-l"><b class="tm">team:</b> Ghazal Alagh of Shark Tank India saw your reel.</div>
+<div class="chat-l" data-k="chat2"><b class="tm">team:</b> want to pitch at Elevation Capital?</div>
 <div class="chat-typing" data-k="chatTyping">Risheek is typing…</div>
 <div class="chat-l" data-k="chatYes"><b class="me">risheek:</b> yes.</div>`,
   { tb: 'tb-green', n: 1 },
@@ -175,7 +175,7 @@ const PITCH = `<div class="c4-full c4-pitch" data-k="pitch">
 <ellipse cx="85" cy="296" rx="60" ry="8" fill="#fff6d8" opacity=".18"/>
 <g fill="#000"><circle cx="210" cy="292" r="14"/><circle cx="250" cy="296" r="14"/><circle cx="290" cy="292" r="14"/><circle cx="330" cy="296" r="14"/><circle cx="370" cy="292" r="14"/></g>
 </svg>
-<div class="pitch-cap" data-k="pitchCap">Pitching to one of India's biggest investors</div>
+<div class="pitch-cap" data-k="pitchCap">Pitching at Elevation Capital</div>
 </div>`
 
 function tile(i: number): string {
@@ -241,7 +241,7 @@ const CLASS = win(
   'Prototyping class.ppt',
   `<div class="cls-h">A prototyping class I designed and taught</div>
 <div class="cls-flow"><span data-fw="0">Sketch</span><i data-fw="1">→</i><span data-fw="1">Build</span><i data-fw="2">→</i><span data-fw="2">Test</span></div>
-<div class="cls-sub">Run with my accelerator. People from outside came too.</div>
+<div class="cls-sub">Around 65 sign-ups: full capacity. Outsiders came too.</div>
 <div class="cls-seats">${Array.from({ length: 16 }, () => '<svg viewBox="0 0 20 22" aria-hidden="true"><circle cx="10" cy="7" r="5"/><path d="M1 22 q1 -10 9 -10 q8 0 9 10z"/></svg>').join('')}</div>`,
   { tb: 'tb-orange' },
 )
