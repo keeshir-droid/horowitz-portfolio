@@ -291,15 +291,15 @@ export const entries: Entry[] = [
   {
     id: 'content-pitch',
     chapter: 4,
-    title: 'A reel caught Ghazal Alagh’s attention. I pitched to her at Elevation Capital.',
+    title: 'A reel caught Ghazal Alagh’s attention. I pitched at Elevation Capital, then to her the next day.',
     blurb:
-      'Started creating content on Instagram (@keeshir) and LinkedIn. A reel caught the attention of Ghazal Alagh, an investor on Shark Tank India. I then pitched to her, at Elevation Capital.',
+      'Started creating content on Instagram (@keeshir) and LinkedIn. A reel caught the attention of Ghazal Alagh. I pitched at Elevation Capital, and the next day I pitched to Ghazal Alagh as well.',
     category: 'Building',
     image: '/media/pitch.jpg',
     imageAlt: 'Presenting products at a showcase event',
     imagePos: '50% 85%',
     highlight: true,
-    stat: { value: 'Pitched', label: 'to Ghazal Alagh, at Elevation Capital' },
+    stat: { value: 'Pitched', label: 'at Elevation Capital, then to Ghazal Alagh the next day' },
     links: [{ label: 'Instagram @keeshir', href: 'https://instagram.com/keeshir' }],
     scene: 'ch4-desktop',
     media: 'pitch photo / post screenshots',
