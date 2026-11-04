@@ -69,6 +69,12 @@ function panelSolo(): string {
   ].join('')
 }
 
+/** A taped real photo (the high-school solo), sitting on the page like a print. */
+const photo = (x: number, y: number, w: number, h: number, href: string, rot: number): string =>
+  `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fffdf6" stroke="${INK}" stroke-width=".5"/>` +
+  `<image href="${href}" x="${x + 0.9}" y="${y + 0.9}" width="${w - 1.8}" height="${h - 4.2}" preserveAspectRatio="xMidYMid slice"/>` +
+  `<rect x="${x + w / 2 - 3.2}" y="${y - 1.2}" width="6.4" height="2.4" fill="#ecdea6" opacity=".85" transform="rotate(-4 ${x + w / 2} ${y})"/></g>`
+
 // ───────────────────────── panel 2: MUSIC (notes, a music stand; no specific instrument) ─────────────────────────
 function panelMusic(): string {
   const [x, y, w, h] = [41.5, 13, 31.5, 25.5]
@@ -81,8 +87,8 @@ function panelMusic(): string {
       <path d="M${sx - 5.6},${fy - 10.4} L${sx + 5.6},${fy - 10.4} L${sx + 4.6},${fy - 16.6} L${sx - 4.6},${fy - 16.6} Z" fill="#fff" stroke-width=".6"/>
       <path d="M${sx - 4},${fy - 14.6} L${sx + 3.7},${fy - 14.6} M${sx - 4.2},${fy - 13.4} L${sx + 3.9},${fy - 13.4} M${sx - 4.4},${fy - 12.2} L${sx + 4.1},${fy - 12.2}" stroke-width=".22"/>
       <rect x="${x}" y="${y}" width="${w}" height="${h}" stroke-width="1.1"/></g>`),
-    ink(0.21, 0.25, kid(52.4, fy + 0.5, 0.38, { armL: 24, armR: 46, legL: 6, legR: 9 })),
-    ink(0.24, 0.27, `${note(45.6, 25.6)}${notes2(58.6, 19.4)}${note(70.2, 17.8)}`),
+    ink(0.21, 0.25, photo(44.5, 15.2, 15.4, 20.2, '/media/performance-solo.jpg', -3)),
+    ink(0.24, 0.27, `${notes2(61.6, 21.4)}${note(69.2, 18.6)}`),
     ink(0.25, 0.27, tag(x, y, COPY.tag2)),
     ink(0.26, 0.29, caption(x + w / 2, COPY.cap2)),
   ].join('')
