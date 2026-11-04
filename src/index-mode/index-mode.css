@@ -206,7 +206,10 @@ a.ix-dex-cell:hover { transform: translateY(-4px) rotate(1deg); box-shadow: 5px 
 .ix-dex-cell.is-locked { opacity: 0.6; border: 2px dashed var(--ink); background: transparent; box-shadow: none; }
 
 /* ── contact + footer ── */
-.ix-contact { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+.ix-contact { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: 32px; align-items: center; }
+.ix-working { margin: 0; justify-self: center; max-width: 300px; padding: 10px 10px 14px; background: #fffdf7; border: 2px solid var(--ink); box-shadow: 5px 6px 0 rgba(0,0,0,.14); transform: rotate(2deg); }
+.ix-working img { display: block; width: 100%; height: auto; max-height: 380px; object-fit: cover; object-position: 60% 40%; }
+.ix-working figcaption { margin-top: 8px; font: 400 20px/1 'IxHand', cursive; text-align: center; }
 .ix-mail { justify-self: start; font-size: clamp(18px, 3vw, 26px); padding: 14px 24px; }
 .ix-contact > div:first-child { display: grid; gap: 14px; }
 .ix-socials { display: grid; gap: 2px; margin-top: 10px; }

@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 # AI-readable summary: https://risheeknawka.com/llms.txt
+Sitemap: https://risheeknawka.com/sitemap.xml

@@ -6,11 +6,11 @@ Contact: risheeknawka@gmail.com · https://github.com/keeshir-droid · https://w
 
 ## What I built
 
-- **Founded Summer, a home décor brand** (The builder years, Building). Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Close to $16,000 in revenue in under six months from roughly $60 of initial investment. Drew investor attention. Key fact: $60 → ~$16K, Summer · revenue in under 6 months. summerdecor.in: https://summerdecor.in Instagram: https://www.instagram.com/summerdecor.in/
+- **Founded Summer, a home décor brand** (The builder years, Building). Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Over ₹16 lakh (roughly $16,000) in sales in under six months from about $60 of initial investment. Drew investor attention. Key fact: $60 → ~$16K, Summer · revenue in under 6 months. summerdecor.in: https://summerdecor.in Instagram: https://www.instagram.com/summerdecor.in/
 - **7 creative-tech projects shipped** (The builder years, Building). Small, free, phone-first creative projects (software and hardware), each shipped publicly with a short reel. New ones are added as they ship. Key fact: 7, creative-tech projects shipped.
 - **Platform to test brand ideas with AI** (The builder years, Building). Built a platform that lets brands like mine test designs, ideas and value propositions with AI, without much capex, to see what real customers want.
 - **End-to-end ad automation** (The builder years, Building). Built end-to-end automations that produce ads.
-- **Chewchew, a pet-care brand** (The builder years, Building). Built Chewchew, a pet-care brand separate from Summer, to see whether a new kind of dog and pet-care brand could be created. The focus was gut health: a prebiotic formulation that helps dogs digest food better.
+- **Chewcheer, a pet-care brand** (The builder years, Building). Built Chewcheer, a pet-care brand separate from Summer, to see whether a new kind of dog and pet-care brand could be created. The focus was gut health: a prebiotic formulation that helps dogs digest food better.
 - **Hand-coded Java inventory & meal-ordering system** (High school, Building). Built, by hand in Java and without AI, an inventory management system and a morning/lunch ordering system for a local business. It ran from March 2025 to January 2026, until a newer AI-built system replaced it. Key fact: 0 AI, every line written by hand.
 
 ## Work and recognition

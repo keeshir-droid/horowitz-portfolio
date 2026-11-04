@@ -10,7 +10,7 @@ Start here, then read `HANDOFF.md` (full status, decisions, architecture) and `A
 
 ## Still open (updated 2026-11-04)
 
-Answered 2026-11-04 and applied: Chewchew (pet brand, separate from Summer), Mesa School of Business (accelerator), pitch at Elevation
+Answered 2026-11-04 and applied: Chewcheer (pet brand, separate from Summer), Mesa School of Business (accelerator), pitch at Elevation
 Capital + Ghazal Alagh's attention (named), Adobe/Firefly OK, UC Davis stays unnamed, carbon numbers (30% water, ~1,100 trees, 15%,
 2030 target), Language and Culture award, Java dates (Mar 2025 to Jan 2026), pet therapy story, esports, NEHS/SNHS roles, ~65 class
 sign-ups, Unconference, karate 2018, performances 2014-2018, council VP + Prefect, NSTSE/NSO/IMO.

@@ -38,6 +38,8 @@ export interface Entry {
   image?: string
   /** Alt text for `image`. */
   imageAlt?: string
+  /** More photos for the Index card (shown under the main one). */
+  extraImages?: { src: string; alt: string }[]
   /** Story-mode scene that tells this entry (so Index can link into Story). */
   scene?: string
   /** Wording to confirm with Risheek before this ships. */

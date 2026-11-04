@@ -69,8 +69,8 @@ const SETUP = win(
 
 const PET = win(
   'w-pet',
-  'Chewchew · product sheet.doc',
-  `<div class="pet-h" data-step="0">Chewchew: gut health for dogs</div>
+  'Chewcheer · product sheet.doc',
+  `<div class="pet-h" data-step="0">Chewcheer: gut health for dogs</div>
 <div class="pet-sub" data-step="0">Helps dogs digest their food better.</div>
 <div class="pet-flow">
   <div class="pet-step" data-step="1"><svg viewBox="0 0 80 64" aria-hidden="true"><ellipse cx="40" cy="30" rx="30" ry="9" fill="#9a6a3a"/><circle cx="28" cy="27" r="5" fill="#7a4a22"/><circle cx="40" cy="24" r="5" fill="#8a5a2a"/><circle cx="52" cy="27" r="5" fill="#7a4a22"/><path d="M8 32 h64 l-8 20 h-48z" fill="#c95a3a"/><path d="M14 40 h52" stroke="#a8432a" stroke-width="3"/></svg><b>Food</b></div>

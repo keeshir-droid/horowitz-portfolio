@@ -92,7 +92,7 @@ This site is an interactive portfolio. The click-through "story" is animated and
 - Instagram: ${person.contact.instagram}
 `
 writeFileSync('public/llms.txt', llms)
-writeFileSync('public/robots.txt', `User-agent: *\nAllow: /\n\n# AI-readable summary: ${SITE}/llms.txt\n`)
+writeFileSync('public/robots.txt', `User-agent: *\nAllow: /\n\n# AI-readable summary: ${SITE}/llms.txt\nSitemap: ${SITE}/sitemap.xml\n`)
 
 // index.html: JSON-LD + static summary (React replaces the summary once JS runs)
 const ld = {

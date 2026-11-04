@@ -56,6 +56,9 @@ function Card({ e }: { e: Entry }) {
     <article className="ix-card" style={{ ['--c' as string]: ch.accent }} id={e.id}>
       <span className="ix-tape" aria-hidden="true" />
       {img && <img className="ix-card-img" src={img.src} alt={img.alt} loading="lazy" />}
+      {e.extraImages?.map((x) => (
+        <img key={x.src} className="ix-card-img" src={x.src} alt={x.alt} loading="lazy" />
+      ))}
       <p className="ix-tag">
         {ch.era} · {e.category}
       </p>
@@ -443,6 +446,10 @@ export default function IndexMode() {
                 ))}
             </ul>
           </div>
+          <figure className="ix-working">
+            <img src="/media/working.jpg" alt="Risheek, seen from behind, working on code on a laptop at a workspace" loading="lazy" />
+            <figcaption>mid-build, as usual</figcaption>
+          </figure>
         </section>
       </main>
 

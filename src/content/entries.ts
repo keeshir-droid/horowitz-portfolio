@@ -69,6 +69,8 @@ export const entries: Entry[] = [
     title: 'Best chess player in the school',
     blurb: 'Awarded the best chess player in the entire school trophy in fifth grade.',
     category: 'Awards',
+    image: '/media/chess.jpg',
+    imageAlt: 'Receiving the best chess player trophy on stage at school',
     scene: 'ch1-walk',
     media: 'trophy photo',
   },
@@ -80,6 +82,9 @@ export const entries: Entry[] = [
     title: 'International karate champion (Seisenkai Shitoryu)',
     blurb: 'Won gold at the 4th International Karate Championship in 2018, competing in Seisenkai Shitoryu.',
     category: 'Awards',
+    image: '/media/karate-medals.jpg',
+    imageAlt: 'Me (right, yellow belt) biting my gold medal with a fellow competitor at the karate championship in 2018',
+    extraImages: [{ src: '/media/karate-arena.jpg', alt: 'The championship arena packed with competitors and spectators, seen from the stands' }],
     highlight: true,
     stat: { value: 'Gold', label: '4th International Karate Championship, 2018' },
     scene: 'ch2-select',
@@ -91,6 +96,8 @@ export const entries: Entry[] = [
     title: 'Performed in front of 2,000 people',
     blurb: 'Performed on stage in front of an audience of 2,000, across theater, dance and performing arts, over several years from 2014 to 2018.',
     category: 'Performance',
+    image: '/media/performance.jpg',
+    imageAlt: 'Solo performance on stage with a ukulele, high school',
     stat: { value: '2,000', label: 'people in the audience' },
     scene: 'ch2-select',
   },
@@ -100,6 +107,8 @@ export const entries: Entry[] = [
     title: 'Student council, grade 5 to grade 10',
     blurb: 'A member of student council from fifth grade until I left the school in tenth grade, serving as Vice President and Prefect, winning elections and being nominated every year.',
     category: 'Leadership',
+    image: '/media/council.jpg',
+    imageAlt: 'Student council ceremony on stage at school',
     stat: { value: 'Grade 5 → 10', label: 'Vice President and Prefect' },
     scene: 'ch2-select',
   },
@@ -111,7 +120,6 @@ export const entries: Entry[] = [
     category: 'Building',
     // Dropped from the Chapter 2 scene (2026-10-12); Index mode only until it gets a scene.
     media: 'robot / project photos',
-    verify: 'Competition names/levels, and 1-2 specific projects worth naming.',
   },
 
   // ───────────── Chapter 3 · High school ─────────────
@@ -247,8 +255,10 @@ export const entries: Entry[] = [
     chapter: 4,
     title: 'Founded Summer, a home décor brand',
     blurb:
-      'Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Close to $16,000 in revenue in under six months from roughly $60 of initial investment. Drew investor attention.',
+      'Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Over ₹16 lakh (roughly $16,000) in sales in under six months from about $60 of initial investment. Drew investor attention.',
     category: 'Building',
+    image: '/media/summer.jpg',
+    imageAlt: 'Summer home décor moodboard: striped bedsheets in cobalt, ochre, crimson and emerald',
     highlight: true,
     stat: { value: '$60 → ~$16K', label: 'Summer · revenue in under 6 months' },
     links: [
@@ -257,15 +267,17 @@ export const entries: Entry[] = [
     ],
     scene: 'ch4-desktop',
     media: 'product + dashboard screenshots',
-    verify: 'Revenue proof (screenshot). Investors stay unnamed.',
+    // Revenue proof screenshot: public/media/photos/04-summer-revenue-proof (₹16,23,996.87 total sales). Investors stay unnamed.
   },
   {
     id: 'pet-brand',
     chapter: 4,
-    title: 'Chewchew, a pet-care brand',
+    title: 'Chewcheer, a pet-care brand',
     blurb:
-      'Built Chewchew, a pet-care brand separate from Summer, to see whether a new kind of dog and pet-care brand could be created. The focus was gut health: a prebiotic formulation that helps dogs digest food better.',
+      'Built Chewcheer, a pet-care brand separate from Summer, to see whether a new kind of dog and pet-care brand could be created. The focus was gut health: a prebiotic formulation that helps dogs digest food better.',
     category: 'Building',
+    image: '/media/chewcheer.jpg',
+    imageAlt: 'Chewcheer logo: a cocker spaniel holding a chew',
     scene: 'ch4-desktop',
     media: 'product shots',
   },
@@ -276,6 +288,8 @@ export const entries: Entry[] = [
     blurb:
       'Started creating content on Instagram (@keeshir) and LinkedIn. A reel caught the attention of Ghazal Alagh, an investor on Shark Tank India. I then pitched to her, at Elevation Capital.',
     category: 'Building',
+    image: '/media/pitch.jpg',
+    imageAlt: 'Presenting products at a showcase event',
     highlight: true,
     stat: { value: 'Pitched', label: 'to Ghazal Alagh, at Elevation Capital' },
     links: [{ label: 'Instagram @keeshir', href: 'https://instagram.com/keeshir' }],
@@ -329,6 +343,8 @@ export const entries: Entry[] = [
     blurb:
       'Learned prototyping and design, built a framework around it with mentors, and taught it as a class sanctioned by my accelerator. About 65 people signed up (full capacity), from inside and outside the accelerator.',
     category: 'Teaching',
+    image: '/media/prototyping-class.jpg',
+    imageAlt: 'Teaching the prototyping class at the accelerator',
     stat: { value: '~65', label: 'sign-ups, at full capacity' },
     scene: 'ch4-desktop',
   },
