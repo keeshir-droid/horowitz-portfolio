@@ -4,7 +4,6 @@ import { categories, chapters, entries, indexSections, person } from '../content
 import { projects, projectsLive, projectsThesis } from '../content/projects'
 import type { Category, Entry } from '../content/types'
 import { useApp } from '../store'
-import ContactForm from '../components/ContactForm'
 import Doodle from './Doodle'
 import { imageOf, path, stats, tiles } from './glance'
 import './index-mode.css'
@@ -425,10 +424,10 @@ export default function IndexMode() {
               Say <span className="hl">hello</span>
             </h2>
             <p className="ix-sub">Founding-class question, collaboration, or just hi. I read everything.</p>
+            <a className="ix-btn is-solid ix-mail" href={`mailto:${person.contact.email}`}>
+              {person.contact.email}
+            </a>
             <ul className="ix-socials">
-              <li>
-                <a href={`mailto:${person.contact.email}`}>{person.contact.email}</a>
-              </li>
               {[
                 ['GitHub', person.contact.github],
                 ['LinkedIn', person.contact.linkedin],
@@ -443,9 +442,6 @@ export default function IndexMode() {
                   </li>
                 ))}
             </ul>
-          </div>
-          <div className="ix-sheet">
-            <ContactForm />
           </div>
         </section>
       </main>

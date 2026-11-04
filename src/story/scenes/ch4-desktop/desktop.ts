@@ -157,7 +157,7 @@ const CHAT = win(
   'w-chat',
   'Chat · Mesa School of Business',
   `<div class="chat-l"><b class="tm">team:</b> Ghazal Alagh of Shark Tank India saw your reel.</div>
-<div class="chat-l" data-k="chat2"><b class="tm">team:</b> want to pitch at Elevation Capital?</div>
+<div class="chat-l" data-k="chat2"><b class="tm">team:</b> want to pitch to her at Elevation Capital?</div>
 <div class="chat-typing" data-k="chatTyping">Risheek is typing…</div>
 <div class="chat-l" data-k="chatYes"><b class="me">risheek:</b> yes.</div>`,
   { tb: 'tb-green', n: 1 },
@@ -175,7 +175,7 @@ const PITCH = `<div class="c4-full c4-pitch" data-k="pitch">
 <ellipse cx="85" cy="296" rx="60" ry="8" fill="#fff6d8" opacity=".18"/>
 <g fill="#000"><circle cx="210" cy="292" r="14"/><circle cx="250" cy="296" r="14"/><circle cx="290" cy="292" r="14"/><circle cx="330" cy="296" r="14"/><circle cx="370" cy="292" r="14"/></g>
 </svg>
-<div class="pitch-cap" data-k="pitchCap">Pitching at Elevation Capital</div>
+<div class="pitch-cap" data-k="pitchCap">Pitching to Ghazal Alagh at Elevation Capital</div>
 </div>`
 
 function tile(i: number): string {

@@ -206,7 +206,8 @@ a.ix-dex-cell:hover { transform: translateY(-4px) rotate(1deg); box-shadow: 5px 
 .ix-dex-cell.is-locked { opacity: 0.6; border: 2px dashed var(--ink); background: transparent; box-shadow: none; }
 
 /* ── contact + footer ── */
-.ix-contact { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+.ix-contact { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+.ix-mail { justify-self: start; font-size: clamp(18px, 3vw, 26px); padding: 14px 24px; }
 .ix-contact > div:first-child { display: grid; gap: 14px; }
 .ix-socials { display: grid; gap: 2px; margin-top: 10px; }
 .ix-socials a { display: inline-block; padding: 10px 0; font: 700 19px var(--body); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 5px; text-decoration-color: var(--sky); word-break: break-all; }

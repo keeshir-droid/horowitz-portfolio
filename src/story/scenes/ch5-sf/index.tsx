@@ -59,32 +59,6 @@ function loadPixelFont(): Promise<void> {
   return pixelFont
 }
 
-/** Index mode, then its contact section (heading focused for keyboard / screen-reader users). */
-function goContact(): void {
-  useApp.getState().setMode('index')
-  const t0 = performance.now()
-  const tick = (): void => {
-    const sec = document.getElementById('contact')
-    if (sec) {
-      // let Story's unmount and Index's mount (both scroll to the top) settle first
-      window.setTimeout(() => {
-        const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        sec.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' })
-        const head = document.getElementById('contact-title') ?? sec
-        if (!head.hasAttribute('tabindex')) head.setAttribute('tabindex', '-1')
-        head.focus({ preventScroll: true })
-      }, 90)
-      return
-    }
-    if (performance.now() - t0 < 3000) requestAnimationFrame(tick)
-  }
-  requestAnimationFrame(tick)
-}
-const onContact = (e: MouseEvent<HTMLAnchorElement>): void => {
-  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-  e.preventDefault()
-  goContact()
-}
 const onIndex = (e: MouseEvent<HTMLAnchorElement>): void => {
   if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
   e.preventDefault()
@@ -309,8 +283,8 @@ export default function Ch5City({ progress: rawProgress, active }: SceneProps) {
             </h2>
             <p className="c5-ask">{COPY.ask}</p>
             <nav className="c5-links" aria-label="Get in touch">
-              <a className="c5-btn is-primary" href="#/index" onClick={onContact}>
-                Contact me
+              <a className="c5-btn is-primary" href={`mailto:${person.contact.email}`} title={person.contact.email}>
+                Email me <span className="c5-sr">{person.contact.email}</span>
               </a>
               <a className="c5-btn is-wide" href="#/index" onClick={onIndex}>
                 See everything <small>(Index)</small>
@@ -326,9 +300,6 @@ export default function Ch5City({ progress: rawProgress, active }: SceneProps) {
               <a className="c5-btn" href={person.contact.instagram} target="_blank" rel="noopener noreferrer">
                 Instagram <i aria-hidden="true">↗</i>
                 <span className="c5-sr"> (opens in a new tab)</span>
-              </a>
-              <a className="c5-btn" href={`mailto:${person.contact.email}`} title={person.contact.email}>
-                Email <span className="c5-sr">{person.contact.email}</span>
               </a>
             </nav>
           </section>
