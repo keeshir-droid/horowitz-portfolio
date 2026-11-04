@@ -5,6 +5,7 @@ import { projects, projectsLive, projectsThesis } from '../content/projects'
 import type { Category, Entry } from '../content/types'
 import { useApp } from '../store'
 import Doodle from './Doodle'
+import Scribbles from './Scribbles'
 import { imageOf, path, stats, tiles } from './glance'
 import './index-mode.css'
 
@@ -97,10 +98,34 @@ function Card({ e }: { e: Entry }) {
   )
 }
 
+function Row({ e }: { e: Entry }) {
+  const setMode = useApp((s) => s.setMode)
+  const ch = chapters[e.chapter]
+  const img = imageOf(e)
+  return (
+    <li className="ix-row" style={{ ['--c' as string]: ch.accent }} id={e.id}>
+      {img ? (
+        <img className="ix-row-thumb" src={img.src} alt={img.alt} loading="lazy" style={{ objectPosition: e.imagePos }} />
+      ) : (
+        <span className="ix-row-thumb is-empty" aria-hidden="true" />
+      )}
+      <span className="ix-row-era">{ch.era}</span>
+      <span className="ix-row-title">{e.title}</span>
+      {e.stat && <span className="ix-row-stat">{e.stat.value}</span>}
+      {e.scene && (
+        <button type="button" onClick={() => setMode('story', e.scene)} aria-label={`See ${e.title} in the story`}>
+          story ▶
+        </button>
+      )}
+    </li>
+  )
+}
+
 export default function IndexMode() {
   const setMode = useApp((s) => s.setMode)
   const [cat, setCat] = useState<Category | 'All'>('All')
   const [q, setQ] = useState('')
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
   const search = useRef<HTMLInputElement>(null)
   const root = useRef<HTMLDivElement>(null)
 
@@ -167,6 +192,7 @@ export default function IndexMode() {
       flushSync(() => {
         setCat('All')
         setQ('')
+        setOpenGroups(Object.fromEntries(indexSections.map((g) => [g.id, true])))
       })
       el = document.getElementById(id)
       if (!el) return
@@ -205,6 +231,7 @@ export default function IndexMode() {
 
       <main className="ix-main" id="top">
         <section className="ix-hero" aria-labelledby="ix-name">
+          <Scribbles zone="hero" />
           <div className="ix-hero-copy">
             <p className="ix-kicker">
               {person.title.toLowerCase()}, age {person.age}
@@ -257,6 +284,7 @@ export default function IndexMode() {
         </section>
 
         <section id="glance" className="ix-sec" aria-labelledby="glance-t">
+          <Scribbles zone="glance" />
           <header className="ix-sec-head">
             <p className="ix-kicker">01</p>
             <h2 id="glance-t">At a glance</h2>
@@ -310,6 +338,7 @@ export default function IndexMode() {
         </section>
 
         <section id="path" className="ix-sec" aria-labelledby="path-t">
+          <Scribbles zone="path" />
           <header className="ix-sec-head">
             <p className="ix-kicker">02</p>
             <h2 id="path-t">The path</h2>
@@ -331,6 +360,7 @@ export default function IndexMode() {
         </section>
 
         <section id="timeline" className="ix-sec" aria-labelledby="timeline-t">
+          <Scribbles zone="everything" />
           <header className="ix-sec-head">
             <p className="ix-kicker">03</p>
             <h2 id="timeline-t">Everything</h2>
@@ -354,23 +384,49 @@ export default function IndexMode() {
             </div>
           </div>
 
-          {sections.map((s) => (
-            <div key={s.id} className="ix-group">
-              <h3 className="ix-group-t">
-                <span className="hl">{s.title}</span>
-                {s.note && <small> {s.note}</small>}
-              </h3>
-              <div className="ix-cards">
-                {s.entries.map((e) => (
-                  <Card key={e.id} e={e} />
-                ))}
+          {sections.map((s) => {
+            const limit = s.compact ? 4 : 6
+            const filtering = cat !== 'All' || q.trim() !== ''
+            const open = filtering || !!openGroups[s.id]
+            const shown = open ? s.entries : s.entries.slice(0, limit)
+            const hidden = s.entries.length - shown.length
+            return (
+              <div key={s.id} className="ix-group">
+                <h3 className="ix-group-t">
+                  <span className="hl">{s.title}</span>
+                  {s.note && <small> {s.note}</small>}
+                </h3>
+                {s.compact ? (
+                  <ul className="ix-rows">
+                    {shown.map((e) => (
+                      <Row key={e.id} e={e} />
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="ix-cards">
+                    {shown.map((e) => (
+                      <Card key={e.id} e={e} />
+                    ))}
+                  </div>
+                )}
+                {!filtering && s.entries.length > limit && (
+                  <button
+                    type="button"
+                    className="ix-seemore"
+                    aria-expanded={open}
+                    onClick={() => setOpenGroups((g) => ({ ...g, [s.id]: !g[s.id] }))}
+                  >
+                    {open ? 'See less ↑' : `See ${hidden} more ↓`}
+                  </button>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
           {!sections.length && <p className="ix-empty">Nothing matches. Try a different filter.</p>}
         </section>
 
         <section id="shipped" className="ix-sec" aria-labelledby="shipped-t">
+          <Scribbles zone="shipped" />
           <header className="ix-sec-head">
             <p className="ix-kicker">04</p>
             <h2 id="shipped-t">
@@ -409,6 +465,7 @@ export default function IndexMode() {
         </section>
 
         <section id="contact" className="ix-sec ix-contact" aria-labelledby="contact-title">
+          <Scribbles zone="contact" />
           <div>
             <p className="ix-kicker">05</p>
             <h2 id="contact-title" tabIndex={-1}>
