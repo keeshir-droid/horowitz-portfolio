@@ -21,3 +21,6 @@ Still needed from Risheek:
 3. Robotics: competition names, 1-2 projects (entry still has a `verify`).
 4. Karate division (unknown, left out); exact ranks in the science exams (never claimed).
 5. `RESEND_API_KEY` in Vercel (contact form drops messages without it); a phone + sound listen-through.
+
+## Photos (2026-11-04)
+Real photos live in `public/media/` (web copies) with originals in `public/media/photos/NN-name/`. Index: `Entry.image/imageAlt/imagePos/extraImages`; "At a glance" is a 4-col board of square cells (`glance.ts` TILES: feature 2x2, wide 2x1, sq 1x1), "Everything" is uniform cards (16:10 media box; entries without a photo get a coloured stat/category block). Story: Ch1 childhood polaroid (`ch1-walk/childhood.jpg`), Ch2 framed photos (`ch2-select/{karate,stage,council}.jpg` via `PHOTOS`), Ch4 Chewcheer logo in the product doc and `pitch-wide.jpg` on the pitch slide. Ch3 and Ch5 have no photos (the art is dense; add only if a good photo exists).

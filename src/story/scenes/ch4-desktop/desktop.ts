@@ -70,7 +70,8 @@ const SETUP = win(
 const PET = win(
   'w-pet',
   'Chewcheer · product sheet.doc',
-  `<div class="pet-h" data-step="0">Chewcheer: gut health for dogs</div>
+  `<img class="pet-logo" data-step="0" src="/media/chewcheer.jpg" alt="Chewcheer logo: a cocker spaniel holding a chew" />
+<div class="pet-h" data-step="0">Chewcheer: gut health for dogs</div>
 <div class="pet-sub" data-step="0">Helps dogs digest their food better.</div>
 <div class="pet-flow">
   <div class="pet-step" data-step="1"><svg viewBox="0 0 80 64" aria-hidden="true"><ellipse cx="40" cy="30" rx="30" ry="9" fill="#9a6a3a"/><circle cx="28" cy="27" r="5" fill="#7a4a22"/><circle cx="40" cy="24" r="5" fill="#8a5a2a"/><circle cx="52" cy="27" r="5" fill="#7a4a22"/><path d="M8 32 h64 l-8 20 h-48z" fill="#c95a3a"/><path d="M14 40 h52" stroke="#a8432a" stroke-width="3"/></svg><b>Food</b></div>
@@ -167,9 +168,8 @@ const PITCH = `<div class="c4-full c4-pitch" data-k="pitch">
 <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
 <defs><radialGradient id="c4Spot" cx="50%" cy="0%" r="100%"><stop offset="0" stop-color="#fff6d8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient></defs>
 <rect width="400" height="300" fill="#0a0806"/>
-<rect x="150" y="34" width="226" height="134" fill="#f6efe2"/>
-<text x="263" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="#2a1a10">The pitch</text>
-<rect x="185" y="104" width="156" height="7" fill="#c9b48f"/><rect x="185" y="120" width="120" height="7" fill="#c9b48f"/><rect x="185" y="136" width="140" height="7" fill="#c9b48f"/>
+<rect x="146" y="30" width="234" height="142" fill="#f6efe2"/>
+<image href="/media/pitch-wide.jpg" x="150" y="34" width="226" height="134" preserveAspectRatio="xMidYMid slice"/>
 <path data-k="spot" d="M70 0 L20 300 L150 300 L110 0Z" fill="url(#c4Spot)"/>
 <g data-k="presenter" fill="#120d09"><circle cx="85" cy="186" r="15"/><path d="M60 300 Q62 210 85 206 Q108 210 110 300Z"/><g fill="none" stroke="#5a5a5a" stroke-width="1.6"><circle cx="80" cy="185" r="3.6"/><circle cx="90" cy="185" r="3.6"/><path d="M83.6 185h2.8"/></g></g>
 <ellipse cx="85" cy="296" rx="60" ry="8" fill="#fff6d8" opacity=".18"/>

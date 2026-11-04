@@ -50,55 +50,50 @@ function Portrait() {
 
 function Card({ e }: { e: Entry }) {
   const setMode = useApp((s) => s.setMode)
+  const [open, setOpen] = useState(false)
   const ch = chapters[e.chapter]
   const img = imageOf(e)
+  const extra = e.extraImages ?? []
   return (
-    <article className="ix-card" style={{ ['--c' as string]: ch.accent }} id={e.id}>
-      <span className="ix-tape" aria-hidden="true" />
-      {img && <img className="ix-card-img" src={img.src} alt={img.alt} loading="lazy" />}
-      {e.extraImages?.map((x) => (
-        <img key={x.src} className="ix-card-img" src={x.src} alt={x.alt} loading="lazy" />
-      ))}
-      <p className="ix-tag">
-        {ch.era} · {e.category}
-      </p>
-      <h4>{e.title}</h4>
-      <p className="ix-blurb">{e.blurb}</p>
-      {e.stat && (
-        <p className="ix-stat">
-          <strong className="hl">{e.stat.value}</strong> {e.stat.label}
-        </p>
-      )}
-      <div className="ix-links">
-        {e.links?.map((l) => (
-          <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
-            {l.label} ↗
-          </a>
-        ))}
-        {e.scene && (
-          <button type="button" onClick={() => setMode('story', e.scene)}>
-            in the story ▶
+    <article className={`ix-card${open ? ' is-open' : ''}`} style={{ ['--c' as string]: ch.accent }} id={e.id}>
+      <div className={`ix-media${img ? '' : ' is-ph'}${extra.length ? ' is-duo' : ''}`}>
+        {img ? (
+          <>
+            <img src={img.src} alt={img.alt} loading="lazy" style={{ objectPosition: e.imagePos }} />
+            {extra.map((x) => (
+              <img key={x.src} src={x.src} alt={x.alt} loading="lazy" />
+            ))}
+          </>
+        ) : (
+          <span className={`ix-ph${e.stat ? '' : ' is-word'}`} aria-hidden="true">
+            {e.stat ? e.stat.value : e.category}
+          </span>
+        )}
+        <span className="ix-tag">{ch.era}</span>
+      </div>
+      <div className="ix-card-body">
+        <p className="ix-cat">{e.category}</p>
+        <h4>{e.title}</h4>
+        <p className="ix-blurb">{e.blurb}</p>
+        {e.blurb.length > 150 && (
+          <button type="button" className="ix-more" aria-expanded={open} onClick={() => setOpen(!open)}>
+            {open ? 'less ↑' : 'more ↓'}
           </button>
         )}
+        <div className="ix-links">
+          {e.links?.map((l) => (
+            <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
+              {l.label} ↗
+            </a>
+          ))}
+          {e.scene && (
+            <button type="button" onClick={() => setMode('story', e.scene)}>
+              in the story ▶
+            </button>
+          )}
+        </div>
       </div>
     </article>
-  )
-}
-
-function Row({ e }: { e: Entry }) {
-  const setMode = useApp((s) => s.setMode)
-  const ch = chapters[e.chapter]
-  return (
-    <li className="ix-row" style={{ ['--c' as string]: ch.accent }} id={e.id}>
-      <span className="ix-row-era">{ch.era}</span>
-      <span className="ix-row-title">{e.title}</span>
-      {e.stat && <span className="ix-row-stat">{e.stat.value}</span>}
-      {e.scene && (
-        <button type="button" onClick={() => setMode('story', e.scene)} aria-label={`See ${e.title} in the story`}>
-          story ▶
-        </button>
-      )}
-    </li>
   )
 }
 
@@ -276,36 +271,37 @@ export default function IndexMode() {
                   className={`ix-tile is-${size}${img ? ' has-img' : ''}`}
                   style={{ ['--c' as string]: chapters[e.chapter].accent }}
                 >
-                  <span className="ix-tape" aria-hidden="true" />
-                  <p className="ix-tag">{chapters[e.chapter].era}</p>
+                  {img && <img className="ix-tile-img" src={img.src} alt={img.alt} loading="lazy" style={{ objectPosition: e.imagePos }} />}
+                  <span className="ix-tag">{chapters[e.chapter].era}</span>
                   {stamp && (
                     <span className="ix-stamp" aria-hidden="true">
                       {stamp}
                     </span>
                   )}
-                  {img && <img className="ix-tile-img" src={img.src} alt={img.alt} loading="lazy" />}
-                  {e.stat && (
-                    <p className="ix-big">
-                      <span className={`hl is-${HL[i % HL.length]}`}>{e.stat.value}</span>
-                    </p>
-                  )}
-                  {e.stat && !e.title.toLowerCase().includes(e.stat.label.toLowerCase()) && <p className="ix-bigcap">{e.stat.label}</p>}
-                  <h3>{e.title}</h3>
-                  {size !== 'sq' && <p className="ix-blurb">{e.blurb}</p>}
-                  {dots && (
-                    <div className="ix-dots" role="img" aria-label={`${projectsLive} projects shipped`}>
-                      {projects.map((p) => (
-                        <i key={p.day} className={p.url || p.kind === 'skill' ? 'is-on' : ''} />
+                  <div className="ix-tile-body">
+                    {e.stat && (
+                      <p className="ix-big">
+                        <span className={`hl is-${HL[i % HL.length]}`}>{e.stat.value}</span>
+                      </p>
+                    )}
+                    {e.stat && !e.title.toLowerCase().includes(e.stat.label.toLowerCase()) && <p className="ix-bigcap">{e.stat.label}</p>}
+                    <h3>{e.title}</h3>
+                    {size === 'wide' && <p className="ix-blurb">{e.blurb}</p>}
+                    {dots && (
+                      <div className="ix-dots" role="img" aria-label={`${projectsLive} projects shipped`}>
+                        {projects.map((p) => (
+                          <i key={p.day} className={p.url || p.kind === 'skill' ? 'is-on' : ''} />
+                        ))}
+                      </div>
+                    )}
+                    <div className="ix-links">
+                      {e.links?.map((l) => (
+                        <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
+                          {l.label} ↗
+                        </a>
                       ))}
+                      <a href={dots ? '#shipped' : `#${e.id}`}>details ↓</a>
                     </div>
-                  )}
-                  <div className="ix-links">
-                    {e.links?.map((l) => (
-                      <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
-                        {l.label} ↗
-                      </a>
-                    ))}
-                    <a href={dots ? '#shipped' : `#${e.id}`}>details ↓</a>
                   </div>
                 </article>
               )
@@ -364,19 +360,11 @@ export default function IndexMode() {
                 <span className="hl">{s.title}</span>
                 {s.note && <small> {s.note}</small>}
               </h3>
-              {s.compact ? (
-                <ul className="ix-rows">
-                  {s.entries.map((e) => (
-                    <Row key={e.id} e={e} />
-                  ))}
-                </ul>
-              ) : (
-                <div className="ix-cards">
-                  {s.entries.map((e) => (
-                    <Card key={e.id} e={e} />
-                  ))}
-                </div>
-              )}
+              <div className="ix-cards">
+                {s.entries.map((e) => (
+                  <Card key={e.id} e={e} />
+                ))}
+              </div>
             </div>
           ))}
           {!sections.length && <p className="ix-empty">Nothing matches. Try a different filter.</p>}

@@ -15,15 +15,14 @@ export const imageOf = (e: Entry): { src: string; alt: string } | undefined =>
 export const STAT_IDS = ['decor-brand', 'adobe', '21-in-21', 'content-pitch', 'martial-arts']
 export const stats = STAT_IDS.map(byId).filter((e) => e.stat)
 
-export type TileSize = 'xl' | 'wide' | 'sq'
-/** "At a glance" pinboard, in reading order (4-column grid: xl and wide span 2, sq spans 1; 12 cells = 3 full rows). */
+export type TileSize = 'feature' | 'wide' | 'sq'
+/** "At a glance" board: 4 columns of square cells. feature = 2x2, wide = 2x1, sq = 1x1 (4 + 2 + 6 = 12 cells, no gaps). */
 export const TILES: { id: string; size: TileSize; dots?: boolean; stamp?: string }[] = [
-  { id: 'decor-brand', size: 'xl', stamp: 'Founder' },
-  { id: 'adobe', size: 'xl' },
-  { id: '21-in-21', size: 'sq', dots: true },
+  { id: 'decor-brand', size: 'feature', stamp: 'Founder' },
+  { id: 'adobe', size: 'wide' },
   { id: 'content-pitch', size: 'sq' },
-  { id: 'idea-testing-platform', size: 'wide' },
   { id: 'martial-arts', size: 'sq' },
+  { id: '21-in-21', size: 'sq', dots: true },
   { id: 'english-honor-society', size: 'sq' },
   { id: 'science-honor-society', size: 'sq' },
   { id: 'carbon-neutral', size: 'sq' },

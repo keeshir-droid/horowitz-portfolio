@@ -23,7 +23,7 @@ export const TRANSITION_COLORS: readonly string[] = ['#0a0a12', '#e0343c', '#ffd
  * Real photos, one per beat (e.g. karate: '/media/ch2-select/karate.jpg'). Empty = the illustrated stand-in with a
  * "PHOTO COMING" tag. A loaded photo is cover-fitted into the same gold frame and colour-graded to the chapter palette.
  */
-export const PHOTOS: Record<BeatKey, string> = { karate: '', stage: '', council: '' }
+export const PHOTOS: Record<BeatKey, string> = { karate: '/media/ch2-select/karate.jpg', stage: '/media/ch2-select/stage.jpg', council: '/media/ch2-select/council.jpg' }
 
 /** Seconds of scroll-time; meta.duration. Every window below is in seconds and converted with `w()`. */
 export const DUR = 11.7

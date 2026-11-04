@@ -38,6 +38,8 @@ export interface Entry {
   image?: string
   /** Alt text for `image`. */
   imageAlt?: string
+  /** CSS object-position for the cropped photo, e.g. '50% 30%'. */
+  imagePos?: string
   /** More photos for the Index card (shown under the main one). */
   extraImages?: { src: string; alt: string }[]
   /** Story-mode scene that tells this entry (so Index can link into Story). */

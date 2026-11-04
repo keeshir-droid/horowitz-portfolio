@@ -93,6 +93,8 @@
 
 /* pet brand */
 .w-pet .c4-wb { background: #fff; padding: 0.7em 1em; display: flex; flex-direction: column; }
+.pet-logo { position: absolute; right: 0.9em; top: 0.8em; width: 4.4em; height: 4.4em; object-fit: cover; border-radius: 0.35em; border: 1px solid #0003; box-shadow: 0 2px 6px #0003; }
+.c4-wb:has(.pet-logo) { position: relative; }
 .pet-h { font-family: Georgia, 'Times New Roman', serif; font-weight: bold; font-size: 1.7em; line-height: 1.15; color: #111; }
 .pet-sub { font-size: 1.08em; color: #222; margin: 0.2em 0 0.3em; }
 .pet-flow { flex: 1; display: flex; align-items: center; justify-content: space-around; gap: 0.3em; min-height: 0; }

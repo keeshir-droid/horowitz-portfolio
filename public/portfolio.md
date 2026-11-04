@@ -6,7 +6,7 @@ Contact: risheeknawka@gmail.com · https://github.com/keeshir-droid · https://w
 
 ## What I built
 
-- **Founded Summer, a home décor brand** (The builder years, Building). Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Over ₹16 lakh (roughly $16,000) in sales in under six months from about $60 of initial investment. Drew investor attention. Key fact: $60 → ~$16K, Summer · revenue in under 6 months. summerdecor.in: https://summerdecor.in Instagram: https://www.instagram.com/summerdecor.in/
+- **Founded Summer, a home décor brand** (The builder years, Building). Started Summer to test whether people would buy home décor the way they buy fashion, with strong brand pull. Over ₹16 lakh (roughly $16,000) in sales in under six months from about $60 of initial investment. Drew investor attention. Key fact: $60 → ~$16K, Summer · revenue in under 6 months. Sales screenshot (₹16.2 lakh): /media/summer-sales-proof.png summerdecor.in: https://summerdecor.in Instagram: https://www.instagram.com/summerdecor.in/
 - **7 creative-tech projects shipped** (The builder years, Building). Small, free, phone-first creative projects (software and hardware), each shipped publicly with a short reel. New ones are added as they ship. Key fact: 7, creative-tech projects shipped.
 - **Platform to test brand ideas with AI** (The builder years, Building). Built a platform that lets brands like mine test designs, ideas and value propositions with AI, without much capex, to see what real customers want.
 - **End-to-end ad automation** (The builder years, Building). Built end-to-end automations that produce ads.

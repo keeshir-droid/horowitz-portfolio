@@ -84,8 +84,8 @@ export const BREAK = {
  * (for example '/media/ch1-walk/childhood.jpg') and it renders as a dithered four-tone picture.
  */
 export const PHOTO: { src?: string; label: string } = {
-  src: undefined,
-  label: 'photo: childhood, add in public/media/ch1-walk/',
+  src: '/media/ch1-walk/childhood.jpg',
+  label: 'Best chess player award, fifth grade',
 }
 
 export const ENTRY_IDS = ['national-art', 'olympiads', 'science-talent', 'every-year', 'chess'] as const
