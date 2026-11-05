@@ -22,5 +22,11 @@ Still needed from Risheek:
 4. Karate division (unknown, left out); exact ranks in the science exams (never claimed).
 5. `RESEND_API_KEY` in Vercel (contact form drops messages without it); a phone + sound listen-through.
 
+## Solse case study (2026-11-05)
+- Page `#/solse` (`src/case-study/SolsePage.tsx` + `case-study.css`, lazy-loaded, notebook style on top of `index-mode.css`). All copy in `src/content/solse.ts` (from the Solse repo's `portfolio-kit/HANDOFF.md`); `gen-ai-files.mjs` appends it to `portfolio.md`/`portfolio.json`/`llms.txt`.
+- Entry `solse` (chapter 4): Index "What I built" + a 2x2 "At a glance" tile next to Summer; Ch4 unlocks it at the Idea Tester + Ad Maker beat as its own tier-B card whose link reads "read the case study". The older `idea-testing-platform` and `ad-automation` entries stay (Risheek's choice).
+- Images: `public/media/solse/*.webp`, resized from `~/projects/personalized-saas-products/portfolio-kit/images/`. Sample brands are fictional and AI-generated (said once on the page). Waitlist: no number, "brands have joined the waitlist".
+- Entry links starting with `#/` are internal (open in place in the Index, new tab from the Story HUD).
+
 ## Photos (2026-11-04)
 Real photos live in `public/media/` (web copies) with originals in `public/media/photos/NN-name/`. Index: `Entry.image/imageAlt/imagePos/extraImages`; "At a glance" is a 4-col board of square cells (`glance.ts` TILES: feature 2x2, wide 2x1, sq 1x1), "Everything" is uniform cards (16:10 media box; entries without a photo get a coloured stat/category block). Story: Ch1 childhood polaroid (`ch1-walk/childhood.jpg`), Ch2 framed photos (`ch2-select/{karate,stage,council}.jpg` via `PHOTOS`), Ch4 Chewcheer logo in the product doc and `pitch-wide.jpg` on the pitch slide. Ch3 and Ch5 have no photos (the art is dense; add only if a good photo exists).

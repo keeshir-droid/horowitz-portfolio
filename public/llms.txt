@@ -1,6 +1,6 @@
 # Risheek Nawka
 
-> Risheek Nawka is a 19-year-old creative technologist applying to the a16z Horowitz Academy founding class. Tagline: "I build things where art and technology meet." Key facts: Founder, Summer; Consulted for Adobe; 7 creative-tech projects shipped; Gap year, building full-time.
+> Risheek Nawka is a 19-year-old creative technologist applying to the a16z Horowitz Academy founding class. Tagline: "I build things where art and technology meet." Key facts: Founder, Summer and Solse; Consulted for Adobe; 7 creative-tech projects shipped; Gap year, building full-time.
 
 This site is an interactive portfolio. The click-through "story" is animated and has little readable text; every fact is also available as plain text below.
 
@@ -8,6 +8,7 @@ This site is an interactive portfolio. The click-through "story" is animated and
 - [Full portfolio as Markdown](https://risheeknawka.com/portfolio.md): every achievement in order, with the key number for each
 - [Structured data (JSON)](https://risheeknawka.com/portfolio.json): the same facts, machine-readable
 - [Index page](https://risheeknawka.com/#/index): the fast, readable overview in the browser
+- [Solse case study](https://risheeknawka.com/#/solse): Software that learns your brand. Mona (ads) and Luce (product testing); the full text is at the end of portfolio.md
 
 ## Contact
 - Email: risheeknawka@gmail.com

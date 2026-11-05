@@ -186,7 +186,7 @@ export default function Hud({ chapter, age, pinToast }: HudProps) {
             <div className="hud-toast-actions">
               {entry.links?.[0] && (
                 <a className="hud-link" href={entry.links[0].href} target="_blank" rel="noreferrer">
-                  view proof
+                  {entry.links[0].href.startsWith('#/') ? 'read the case study' : 'view proof'}
                 </a>
               )}
               <button type="button" className="hud-dismiss" onClick={shiftToast} aria-label="Dismiss achievement">

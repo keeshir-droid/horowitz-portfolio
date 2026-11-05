@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
-export type Mode = 'gate' | 'story' | 'index'
+/** 'solse' = the Solse case-study page (#/solse), opened from the Index. */
+export type Mode = 'gate' | 'story' | 'index' | 'solse'
 
 interface AppState {
   mode: Mode
@@ -15,6 +16,7 @@ const hashToMode = (): Mode => {
   const h = window.location.hash
   if (h.startsWith('#/index')) return 'index'
   if (h.startsWith('#/story')) return 'story'
+  if (h.startsWith('#/solse')) return 'solse'
   return 'gate'
 }
 

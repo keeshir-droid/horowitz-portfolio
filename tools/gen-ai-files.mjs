@@ -13,8 +13,11 @@ const SITE = process.env.SITE_URL || 'https://risheeknawka.com'
 const vite = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' })
 const { person, chapters, entries, indexSections } = await vite.ssrLoadModule('/src/content/entries.ts')
 const { projects, projectsThesis } = await vite.ssrLoadModule('/src/content/projects.ts')
+const { solse } = await vite.ssrLoadModule('/src/content/solse.ts')
 await vite.close()
 
+// Route links ('#/solse') become absolute so they work outside the site.
+const abs = (href) => (href.startsWith('#/') ? `${SITE}/${href}` : href)
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const era = (e) => chapters[e.chapter].era
 const sections = indexSections.map((s) => ({ title: s.title, note: s.note, items: s.entries }))
@@ -44,11 +47,28 @@ const json = {
       title: e.title,
       description: e.blurb,
       stat: e.stat ?? null,
-      links: e.links ?? [],
+      links: (e.links ?? []).map((l) => ({ ...l, href: abs(l.href) })),
     })),
   ),
   projects: projects.map((p) => ({ title: p.title, description: p.blurb, url: p.url ?? null })),
   projectsNote: projectsThesis,
+  caseStudies: [
+    {
+      id: 'solse',
+      page: `${SITE}/#/solse`,
+      name: solse.name,
+      tagline: solse.tagline,
+      summary: solse.oneLiner,
+      url: solse.url,
+      role: solse.role,
+      whatIBuilt: solse.built,
+      thesis: solse.thesis,
+      status: solse.status,
+      pricing: solse.pricing,
+      credit: solse.credit,
+      note: solse.fictionNote,
+    },
+  ],
   howToRead: {
     index: `${SITE}/#/index`,
     story: `${SITE}/#/story`,
@@ -64,13 +84,27 @@ for (const s of sections) {
   md += `## ${s.title}${s.note ? ` (${s.note})` : ''}\n\n`
   for (const e of s.items) {
     const key = e.stat ? ` Key fact: ${e.stat.value}, ${e.stat.label}.` : ''
-    const lk = e.links && e.links.length ? ' ' + e.links.map((l) => `${l.label}: ${l.href}`).join(' ') : ''
+    const lk = e.links && e.links.length ? ' ' + e.links.map((l) => `${l.label}: ${abs(l.href)}`).join(' ') : ''
     md += `- **${e.title}** (${era(e)}, ${e.category}). ${e.blurb}${key}${lk}\n`
   }
   md += '\n'
 }
 md += `## Projects shipped\n\n${projectsThesis}\n\n`
 md += projects.map((p) => `- **${p.title}**: ${p.blurb}${p.url ? ' ' + p.url : ''}`).join('\n') + '\n'
+// The Solse case study, in full, as text.
+const list = (xs) => xs.join('\n')
+md += `\n## Case study: ${solse.name} (${solse.url})\n\n${solse.tagline} ${solse.oneLiner}\n\nRole: ${solse.role}, ${solse.year}. Page: ${SITE}/#/solse\n\n`
+md += `### The problem\n\n${list(solse.problem.points.map((p) => `- ${p}`))}\n\n`
+md += `### What I built\n\n${solse.built}\n\n${solse.fictionNote}\n\n### The bet\n\n${solse.thesis}\n\n`
+md += `### Architecture\n\n${list(solse.architecture.map((a) => `- **${a.title}**: ${a.lines.join(' ')}`))}\n\n`
+md += `### The brand profile\n\n${solse.profile.lead} ${solse.profile.why} (Why<T>: value, why, source.) ${solse.profile.next}\n\n`
+md += `### The Mona pipeline (built)\n\n${list(
+  solse.pipeline.map((p, i) => `${i + 1}. **${p.title}.** ${p.body}${p.points ? ' ' + p.points.join(' ') : ''}`),
+)}\n\n${solse.pixelCheck.lead} Rejected ads were ${solse.pixelCheck.rejected} ${solse.pixelCheck.unit}; kept ads ${solse.pixelCheck.kept}.\n\n`
+md += `### Designed, not built yet\n\n${list(solse.designed.items.map((d) => `- **${d.title}**: ${d.body}`))}\n\n`
+md += `### Luce, the testing engine (designed)\n\n${solse.luce.lead}\n\n${list(solse.luce.steps.map((s, i) => `${i + 1}. ${s}`))}\n\n${solse.luce.boundary}\n\n`
+md += `### Design decisions\n\n${list(solse.decisions.map((d) => `- **${d.title}.** ${d.body}`))}\n\n`
+md += `### Status\n\n${list(solse.status.map((r) => `- ${r.part}: **${r.state}**${r.note ? ` (${r.note})` : ''}`))}\n\n${solse.pricing} ${solse.credit}\n`
 writeFileSync('public/portfolio.md', md)
 
 // llms.txt + robots.txt
@@ -84,6 +118,7 @@ This site is an interactive portfolio. The click-through "story" is animated and
 - [Full portfolio as Markdown](${SITE}/portfolio.md): every achievement in order, with the key number for each
 - [Structured data (JSON)](${SITE}/portfolio.json): the same facts, machine-readable
 - [Index page](${SITE}/#/index): the fast, readable overview in the browser
+- [Solse case study](${SITE}/#/solse): ${solse.tagline} Mona (ads) and Luce (product testing); the full text is at the end of portfolio.md
 
 ## Contact
 - Email: ${person.contact.email}

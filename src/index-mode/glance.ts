@@ -16,9 +16,10 @@ export const STAT_IDS = ['decor-brand', 'adobe', '21-in-21', 'content-pitch', 'm
 export const stats = STAT_IDS.map(byId).filter((e) => e.stat)
 
 export type TileSize = 'feature' | 'wide' | 'sq'
-/** "At a glance" board: 4 columns of square cells. feature = 2x2, wide = 2x1, sq = 1x1 (4 + 2 + 6 = 12 cells, no gaps). */
+/** "At a glance" board: 4 columns of square cells. feature = 2x2, wide = 2x1, sq = 1x1 (4 + 4 + 2 + 6 = 16 cells, no gaps). */
 export const TILES: { id: string; size: TileSize; dots?: boolean; stamp?: string }[] = [
   { id: 'decor-brand', size: 'feature', stamp: 'Founder' },
+  { id: 'solse', size: 'feature', stamp: 'Founder' },
   { id: 'adobe', size: 'wide' },
   { id: 'content-pitch', size: 'sq' },
   { id: 'martial-arts', size: 'sq' },
@@ -34,7 +35,7 @@ const PATH: Record<ChapterId, { line: string; medium: string }> = {
   1: { line: 'A curious kid: art, chess, Olympiads.', medium: 'Game Boy' },
   2: { line: 'Karate, the stage, student council.', medium: 'Arcade fighter' },
   3: { line: 'Honor societies, research, building by hand.', medium: 'School diary' },
-  4: { line: 'Summer, a pet-care brand, projects shipped.', medium: 'Family PC' },
+  4: { line: 'Summer, Solse, a pet-care brand, projects shipped.', medium: 'Family PC' },
   5: { line: 'Berkeley summer session, and Adobe.', medium: 'Golden hour' },
 }
 export const path = ([1, 2, 3, 4, 5] as ChapterId[]).map((id) => ({

@@ -9,6 +9,8 @@ import MachineText from './components/MachineText'
 
 // Story mode pulls in the heavy scene code; keep it out of the Index bundle.
 const StoryMode = lazy(() => import('./story/StoryMode'))
+// Case study pages stay out of the Index bundle too.
+const SolsePage = lazy(() => import('./case-study/SolsePage'))
 // Dev-only engine harness (?engine-demo). The DEV guard is statically false in production, so this is tree-shaken.
 const DemoHarness = import.meta.env.DEV ? lazy(() => import('./story/engine/DemoHarness')) : null
 // Dev-only Chapter 3 page preview (?ch3-pages&spread=1&u=0.6): renders one diary spread statically, no engine.
@@ -28,7 +30,8 @@ export default function App() {
 
   // Silent, de-duplicated, no-op in dev; never renders anything.
   useEffect(() => {
-    recordVisit(mode)
+    // The visit API only knows gate/story/index; the case study counts as the Index.
+    recordVisit(mode === 'solse' ? 'index' : mode)
   }, [mode])
 
   if (import.meta.env.DEV && DemoHarness && window.location.search.includes('engine-demo'))
@@ -46,6 +49,14 @@ export default function App() {
   if (import.meta.env.DEV && AudioDemo && window.location.search.includes('audio-demo'))
     return <Suspense fallback={null}><AudioDemo /></Suspense>
   if (mode === 'index') return <IndexMode />
+  if (mode === 'solse')
+    return (
+      <AppBoundary resetKey={mode}>
+        <Suspense fallback={<div className="boot-fallback">LOADING…</div>}>
+          <SolsePage />
+        </Suspense>
+      </AppBoundary>
+    )
   return (
     <AppBoundary resetKey={mode}>
       <MachineText />

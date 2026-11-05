@@ -49,6 +49,21 @@ function Portrait() {
   )
 }
 
+/** Route links ('#/solse') open the page in place; everything else is external and opens a new tab. */
+function EntryLink({ l }: { l: { label: string; href: string } }) {
+  if (l.href.startsWith('#/'))
+    return (
+      <a href={l.href} className="ix-case">
+        {l.label} →
+      </a>
+    )
+  return (
+    <a href={l.href} target="_blank" rel="noreferrer">
+      {l.label} ↗
+    </a>
+  )
+}
+
 function Card({ e }: { e: Entry }) {
   const setMode = useApp((s) => s.setMode)
   const [open, setOpen] = useState(false)
@@ -83,9 +98,7 @@ function Card({ e }: { e: Entry }) {
         )}
         <div className="ix-links">
           {e.links?.map((l) => (
-            <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
-              {l.label} ↗
-            </a>
+            <EntryLink key={l.href} l={l} />
           ))}
           {e.scene && (
             <button type="button" onClick={() => setMode('story', e.scene)}>
@@ -324,9 +337,7 @@ export default function IndexMode() {
                     )}
                     <div className="ix-links">
                       {e.links?.map((l) => (
-                        <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
-                          {l.label} ↗
-                        </a>
+                        <EntryLink key={l.href} l={l} />
                       ))}
                       <a href={dots ? '#shipped' : `#${e.id}`}>details ↓</a>
                     </div>

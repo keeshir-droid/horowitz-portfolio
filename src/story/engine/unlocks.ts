@@ -18,6 +18,8 @@ const TIER_B: ReadonlySet<string> = new Set([
   'english-honor-society',
   'science-honor-society',
   'java-inventory',
+  // own card (not lumped with the older idea tester + ad maker) so it can link to the #/solse case study
+  'solse',
   // the visa refusal is the turning point, not a win: a quiet card, never the fanfare/applause of tier A
   'visa',
 ])

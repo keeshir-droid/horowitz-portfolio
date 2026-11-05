@@ -2,7 +2,7 @@
   "name": "Risheek Nawka",
   "title": "Creative technologist",
   "age": 19,
-  "summary": "Risheek Nawka is a 19-year-old creative technologist applying to the a16z Horowitz Academy founding class. Tagline: \"I build things where art and technology meet.\" Key facts: Founder, Summer; Consulted for Adobe; 7 creative-tech projects shipped; Gap year, building full-time.",
+  "summary": "Risheek Nawka is a 19-year-old creative technologist applying to the a16z Horowitz Academy founding class. Tagline: \"I build things where art and technology meet.\" Key facts: Founder, Summer and Solse; Consulted for Adobe; 7 creative-tech projects shipped; Gap year, building full-time.",
   "tagline": "I build things where art and technology meet.",
   "contact": {
     "email": "risheeknawka@gmail.com",
@@ -48,6 +48,15 @@
       "description": "Small, free, phone-first creative projects (software and hardware), each shipped publicly with a short reel. New ones are added as they ship."
     },
     {
+      "id": "solse",
+      "title": "Founded Solse, software that learns your brand",
+      "stat": {
+        "value": "Live",
+        "label": "at trysolse.com, with a brand waitlist"
+      },
+      "description": "Two products for product brands: Mona makes ads from the brand’s real product photo, with the words set by code so they are never garbled, and Luce finds and tests the next product before it is made. I designed the product and the architecture and built it with AI coding tools (Claude Code). The site is live and brands have joined the waitlist; Mona’s engine runs locally, and Luce is designed."
+    },
+    {
       "id": "adobe",
       "title": "Consulted for Adobe in San Francisco",
       "stat": {
@@ -81,6 +90,28 @@
         {
           "label": "Instagram",
           "href": "https://www.instagram.com/summerdecor.in/"
+        }
+      ]
+    },
+    {
+      "id": "solse",
+      "section": "What I built",
+      "period": "The builder years",
+      "category": "Building",
+      "title": "Founded Solse, software that learns your brand",
+      "description": "Two products for product brands: Mona makes ads from the brand’s real product photo, with the words set by code so they are never garbled, and Luce finds and tests the next product before it is made. I designed the product and the architecture and built it with AI coding tools (Claude Code). The site is live and brands have joined the waitlist; Mona’s engine runs locally, and Luce is designed.",
+      "stat": {
+        "value": "Live",
+        "label": "at trysolse.com, with a brand waitlist"
+      },
+      "links": [
+        {
+          "label": "Case study",
+          "href": "https://risheeknawka.com/#/solse"
+        },
+        {
+          "label": "trysolse.com",
+          "href": "https://trysolse.com"
         }
       ]
     },
@@ -474,6 +505,44 @@
     }
   ],
   "projectsNote": "Free, phone-first websites for young, expressive people. You do something real with your hands, your phone captures it, the site turns it into something delightful, you send it to someone, and they discover the site.",
+  "caseStudies": [
+    {
+      "id": "solse",
+      "page": "https://risheeknawka.com/#/solse",
+      "name": "Solse",
+      "tagline": "Software that learns your brand.",
+      "summary": "Two products for product brands: Mona makes ads, and Luce finds and tests the next product before you make it.",
+      "url": "https://trysolse.com",
+      "role": "Founder: product, architecture, design, build",
+      "whatIBuilt": "I designed Solse’s architecture, the product and the ad engine: brand parameters, ads made from the brand’s real product photo, text added by code so it’s never garbled, and checks before and after each image. I built it with AI coding tools, launched it at trysolse.com, and brands have already joined the waitlist.",
+      "thesis": "Generic ads come from generic context. The moat is depth of personalization: a brand profile that is specific, traceable and keeps learning. Features are not the moat. One engine serves every brand, so a new customer is a new config, not new code.",
+      "status": [
+        {
+          "part": "Marketing site, waitlist + referrals, contact form, Terms/Privacy",
+          "state": "Live",
+          "note": "at trysolse.com"
+        },
+        {
+          "part": "Mona ad engine (brand pack, prompt compiler, lint, spend gate, code typesetting, pixel + realism checks)",
+          "state": "Built",
+          "note": "runs locally; not yet connected to accounts or the database"
+        },
+        {
+          "part": "Learning loop, three scores, two layers",
+          "state": "Designed",
+          "note": ""
+        },
+        {
+          "part": "Luce",
+          "state": "Designed",
+          "note": "the site shows a mock of it with sample numbers"
+        }
+      ],
+      "pricing": "Founding prices: Mona from $19/mo, Luce from $49/mo. Nobody pays yet.",
+      "credit": "I designed the product and the architecture, and built it with AI coding tools (Claude Code).",
+      "note": "LOUD, Drowsy, Zest. and nuit. are made-up brands, and every sample image here is AI-generated."
+    }
+  ],
   "howToRead": {
     "index": "https://risheeknawka.com/#/index",
     "story": "https://risheeknawka.com/#/story",

@@ -111,7 +111,7 @@ export const UNLOCKS: readonly { t: number; ids: readonly string[] }[] = [
   { t: T.tycDone, ids: ['decor-brand'] },
   { t: 46.0, ids: ['content-pitch'] },
   { t: 51.6, ids: ['21-in-21'] },
-  { t: T.adDone, ids: ['idea-testing-platform', 'ad-automation'] },
+  { t: T.adDone, ids: ['idea-testing-platform', 'ad-automation', 'solse'] },
   { t: 61.8, ids: ['unconference'] },
   { t: 64.8, ids: ['prototyping-class'] },
 ]

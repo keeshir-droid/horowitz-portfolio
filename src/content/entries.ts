@@ -7,7 +7,7 @@ export const person = {
   age: 19,
   tagline: 'I build things where art and technology meet.',
   /** One-line facts under the name in Index mode (for reviewers who read nothing else). */
-  facts: ['Founder, Summer', 'Consulted for Adobe', `${projectsLive} creative-tech projects shipped`, 'Gap year, building full-time'],
+  facts: ['Founder, Summer and Solse', 'Consulted for Adobe', `${projectsLive} creative-tech projects shipped`, 'Gap year, building full-time'],
   contact: {
     email: 'risheeknawka@gmail.com',
     linkedin: 'https://www.linkedin.com/in/risheek-nawka/',
@@ -345,6 +345,25 @@ export const entries: Entry[] = [
     media: 'before/after reel',
   },
   {
+    // Full case study: src/content/solse.ts, page #/solse. Waitlist count deliberately not given (Risheek, 2026-11-05).
+    id: 'solse',
+    chapter: 4,
+    title: 'Founded Solse, software that learns your brand',
+    blurb:
+      'Two products for product brands: Mona makes ads from the brand’s real product photo, with the words set by code so they are never garbled, and Luce finds and tests the next product before it is made. I designed the product and the architecture and built it with AI coding tools (Claude Code). The site is live and brands have joined the waitlist; Mona’s engine runs locally, and Luce is designed.',
+    category: 'Building',
+    image: '/media/solse/four-brands.webp',
+    imageAlt: 'Ads made by Mona for four fictional brands: hot sauce, sleep gummies, sparkling soda and candles',
+    imagePos: '50% 40%',
+    highlight: true,
+    stat: { value: 'Live', label: 'at trysolse.com, with a brand waitlist' },
+    links: [
+      { label: 'Case study', href: '#/solse' },
+      { label: 'trysolse.com', href: 'https://trysolse.com' },
+    ],
+    scene: 'ch4-desktop',
+  },
+  {
     id: 'prototyping-class',
     chapter: 4,
     title: 'Designed and taught a prototyping class',
@@ -388,7 +407,7 @@ const byId = (id: string): Entry => {
 }
 
 /** Highlights strip, most valuable to an a16z reviewer first (only entries with `highlight: true`). */
-const HIGHLIGHT_ORDER = ['decor-brand', 'adobe', '21-in-21', 'content-pitch', 'martial-arts']
+const HIGHLIGHT_ORDER = ['decor-brand', 'solse', 'adobe', '21-in-21', 'content-pitch', 'martial-arts']
 export const highlights = HIGHLIGHT_ORDER.map(byId).filter((e) => e.highlight)
 
 /** Filter chips, builder categories first. */
@@ -414,7 +433,7 @@ export const indexSections: IndexSection[] = [
   {
     id: 'built',
     title: 'What I built',
-    entries: ['decor-brand', '21-in-21', 'idea-testing-platform', 'ad-automation', 'pet-brand', 'java-inventory'].map(byId),
+    entries: ['decor-brand', 'solse', '21-in-21', 'idea-testing-platform', 'ad-automation', 'pet-brand', 'java-inventory'].map(byId),
   },
   {
     id: 'work',
